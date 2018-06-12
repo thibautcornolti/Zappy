@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2018
-** Project
+** zappy
 ** File description:
 ** poll_cond.c
 */

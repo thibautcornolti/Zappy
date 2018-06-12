@@ -5,24 +5,23 @@
 ## Makefile
 ##
 
-MAKEPOLL	=	make --no-print-directory -C ../libs/lpoll
-MAKESOCKET	=	make --no-print-directory -C ../libs/lsocket
-
 CC		=	gcc
 
-NAME		=	zappy_server
+NAME		=	libpoll.a
 
 SRCDIR		=	src
 OBJDIR		=	build
 
-FILES		=	main			\
+FILES		=	poll_cond		\
+			poll_interact		\
+			poll_wait
 
 SORTEDFILES	=	$(sort $(FILES))
 SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
 OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 
-CFLAGS 		=	-I../libs -W -Wall -Wextra -Wunused -Wuninitialized
-LDFLAGS		=	-L../libs/lsocket -lsocket -L../libs/lpoll -lpoll
+CFLAGS 		=	-W -Wall -Wextra -Wunused -Wuninitialized
+LDFLAGS		=
 
 DIRS		=
 
@@ -42,19 +41,13 @@ RES     	=       \033[0m
 all:	$(NAME)
 
 $(NAME):	$(OBJDIR) $(OBJDIRS) $(OBJS)
-		@$(MAKEPOLL)
-		@$(MAKESOCKET)
-		@echo -e "[$(RED)LINKING$(RES)] $(YEL)$(OBJDIR)/server/*.o$(RES) $(BLUE)=>$(RES) $(YEL)$(NAME)$(RES)"
-		@gcc -o $(NAME) $(OBJS) $(LDFLAGS)
+		@echo -e "[$(RED)LINKING$(RES)] $(YEL)$(OBJDIR)/*.o$(RES) $(BLUE)=>$(RES) $(YEL)$(NAME)$(RES)"
+		@ar rc $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
-	@$(MAKEPOLL) clean
-	@$(MAKESOCKET) clean
 	@rm -rf $(OBJDIR)
 
 fclean:	clean
-	@$(MAKEPOLL) fclean
-	@$(MAKESOCKET) fclean
 	@rm -f $(NAME)
 
 re: fclean all
