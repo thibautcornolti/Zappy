@@ -6,6 +6,7 @@
 ##
 
 MAKEPOLL	=	make --no-print-directory -C lib/poll
+MAKELIST	=	make --no-print-directory -C lib/list
 MAKESOCKET	=	make --no-print-directory -C lib/socket
 
 CC		=	gcc
@@ -53,16 +54,19 @@ all:	$(NAME)
 
 $(NAME):	$(OBJDIR) $(OBJDIRS) $(OBJS)
 		@$(MAKEPOLL)
+		@$(MAKELIST)
 		@$(MAKESOCKET)
 		@echo -e "[$(RED)LINKING$(RES)] $(YEL)$(OBJDIR)/server/*.o$(RES) $(BLUE)=>$(RES) $(YEL)$(NAME)$(RES)"
 		@gcc -o $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
 	@$(MAKEPOLL) clean
+	@$(MAKELIST) clean
 	@$(MAKESOCKET) clean
 	@rm -rf $(OBJDIR)
 
 fclean:	clean
+	@$(MAKEPOLL) fclean
 	@$(MAKEPOLL) fclean
 	@$(MAKESOCKET) fclean
 	@rm -f $(NAME)
