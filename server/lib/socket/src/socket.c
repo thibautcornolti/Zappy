@@ -12,6 +12,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
+int receive_data()
+
 int create_server(short port)
 {
 	struct sockaddr_in addr = {0};
