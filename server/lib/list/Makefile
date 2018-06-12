@@ -7,7 +7,7 @@
 
 CC		=	gcc
 
-NAME		=	libpoll.a
+NAME		=	liblist.a
 
 SRCDIR		=	src
 OBJDIR		=	build
