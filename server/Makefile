@@ -5,8 +5,8 @@
 ## Makefile
 ##
 
-MAKEPOLL	=	make --no-print-directory -C ../libs/lpoll
-MAKESOCKET	=	make --no-print-directory -C ../libs/lsocket
+MAKEPOLL	=	make --no-print-directory -C lib/poll
+MAKESOCKET	=	make --no-print-directory -C lib/socket
 
 CC		=	gcc
 
@@ -15,14 +15,14 @@ NAME		=	zappy_server
 SRCDIR		=	src
 OBJDIR		=	build
 
-FILES		=	main			\
+FILES		=	main
 
 SORTEDFILES	=	$(sort $(FILES))
 SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
 OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 
-CFLAGS 		=	-I../libs -W -Wall -Wextra -Wunused -Wuninitialized
-LDFLAGS		=	-L../libs/lsocket -lsocket -L../libs/lpoll -lpoll
+CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized
+LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist
 
 DIRS		=
 
