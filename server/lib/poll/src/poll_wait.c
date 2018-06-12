@@ -7,7 +7,7 @@
 
 #include <glob.h>
 #include <poll.h>
-#include "poll.h"
+#include "common.h"
 
 static size_t size_list(poll_t *p)
 {
