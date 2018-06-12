@@ -1,12 +1,12 @@
 /*
 ** EPITECH PROJECT, 2018
-** Project
+** zappy
 ** File description:
 ** poll_cond.c
 */
 
 #include <poll.h>
-#include "poll.h"
+#include "common.h"
 
 int poll_canread(poll_t *p, int fd)
 {

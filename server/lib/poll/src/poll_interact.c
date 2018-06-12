@@ -6,7 +6,7 @@
 */
 
 #include <malloc.h>
-#include "poll.h"
+#include "common.h"
 
 int poll_add(poll_t **p, int fd, short evt)
 {
