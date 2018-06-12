@@ -2,7 +2,9 @@
 # coding = utf-8
 
 import argparse
-from src.classes import AIController, Client
+from src.Classes.AIController import AIController
+from src.Classes.Client import Client
+
 
 
 def parse_arg():
@@ -37,10 +39,10 @@ def run(args):
 
 def main():
     args = parse_arg()
-    try:
-        run(args)
-    except Exception as e:
-        exit("Fatal Error: %s" % e)
+    # try:
+    run(args)
+    # except Exception as e:
+    #     exit("Fatal Error: %s" % e)
 
 
 if __name__ == "__main__":
