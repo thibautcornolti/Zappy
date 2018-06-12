@@ -6,7 +6,7 @@
 */
 
 #include <poll.h>
-#include "common.h"
+#include "poll.h"
 
 int poll_canread(poll_t *p, int fd)
 {
