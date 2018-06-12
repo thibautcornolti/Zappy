@@ -2,7 +2,7 @@ import socket
 import hashlib
 
 
-class AI:
+class AIController:
     def __init__(self, client, team):
         self.client = client
         self.team = team
