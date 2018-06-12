@@ -15,7 +15,17 @@ NAME		=	zappy_server
 SRCDIR		=	src
 OBJDIR		=	build
 
-FILES		=	main
+FILES		=	main			\
+			task_assigner		\
+			commands/cmd_msz	\
+			commands/cmd_bct	\
+			commands/cmd_mct	\
+			commands/cmd_tna	\
+			commands/cmd_ppo	\
+			commands/cmd_plv	\
+			commands/cmd_pin	\
+			commands/cmd_sgt	\
+			commands/cmd_sst
 
 SORTEDFILES	=	$(sort $(FILES))
 SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
@@ -24,7 +34,7 @@ OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized
 LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist
 
-DIRS		=
+DIRS		=	commands
 
 SORTEDDIRS	=	$(sort $(DIRS))
 SRCDIRS		=	$(SORTEDDIRS:%=$(SRCDIR)/%)
