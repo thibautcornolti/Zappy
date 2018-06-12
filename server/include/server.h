@@ -74,6 +74,7 @@ typedef struct tuple_s {
 	void (*func)(control_t *, client_t *);
 } tuple_t;
 
+//Comamnds
 void cmd_msv(control_t *, client_t *);
 void cmd_bct(control_t *, client_t *);
 void cmd_mct(control_t *, client_t *);
@@ -83,3 +84,6 @@ void cmd_plv(control_t *, client_t *);
 void cmd_pin(control_t *, client_t *);
 void cmd_sgt(control_t *, client_t *);
 void cmd_sst(control_t *, client_t *);
+
+size_t extract_cmd(control_t *, client_t *);
+void proceed_cmd(control_t *, client_t *);

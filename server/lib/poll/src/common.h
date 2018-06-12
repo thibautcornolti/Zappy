@@ -20,7 +20,7 @@ typedef struct poll_s {
 	struct poll_s *next;
 } poll_t;
 
-int poll_add(poll_t **p, int fd, short evt);
+poll_t *poll_add(poll_t **p, int fd, short evt);
 int poll_rm(poll_t **p, int fd);
 int poll_update(poll_t *p, int fd, short evt);
 

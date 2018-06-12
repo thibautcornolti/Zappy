@@ -28,12 +28,28 @@ bool add_new_client(control_t *control)
 	return (true);
 }
 
+ssize_t receive_data(client_t *cl)
+{
+	ssize_t ret = 0;
+	char data[CMD_SIZE];
+	int len = cl->cmd.rbuf.size;
+	int *epos = &cl->cmd.rbuf.end;
+	char *rbuf = cl->cmd.rbuf.buffer;
+
+	ret = recv(cl->fd, data, CMD_SIZE, 0);
+	for (int i = 0; i < ret; ++i) {
+		rbuf[*epos] = data[i];
+		*epos = (*epos + 1) % len;
+	}
+	return (ret);
+}
+
 bool handle_client(control_t *control, client_t *cl, size_t idx)
 {
 	bool to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
 
 	if (!to_evict && (cl->node->revt & POLLIN))
-		to_evict; // = ; // TODO: Receive and extract-loop
+		to_evict = !(receive_data(cl) && extract_cmd(control, cl));
 	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
 		; // TODO: Send to client
 	if (to_evict) {
@@ -61,6 +77,13 @@ bool control_init(control_t *control)
 int main()
 {
 	control_t control = {0};
+//	client_t cl = {0};
+//	char str[] = "test\n\nerfioerjriegjreo\nzef fez zef \n";
+//
+//	 memcpy(cl.cmd.rbuf.buffer, str, strlen(str));
+//	 cl.cmd.rbuf.end = (int) strlen(str);
+//	 cl.cmd.rbuf.size = RBUFFER_SIZE;
+//	 extract_cmd(&control, &cl);
 
 	CHECK(control_init(&control), == false, false);
 	CHECK(control.fd = create_server(4242), == -1, 84);
