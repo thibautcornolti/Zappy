@@ -31,11 +31,15 @@ bool add_new_client(control_t *control)
 bool handle_client(control_t *control, client_t *cl, size_t idx)
 {
 	bool to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
+	char *str;
 
 	if (!to_evict && (cl->node->revt & POLLIN))
 		to_evict; // = ; // TODO: Receive and extract-loop
-	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
-		; // TODO: Send to client
+	if (!to_evict && (cl->node->revt & POLLOUT))
+		while (cl->pending->length) {
+			str = llist_remove(cl->pending, 0);
+			write(cl->fd, str, strlen(str));
+		}
 	if (to_evict) {
 		poll_rm(&control->list, cl->fd);
 		llist_clear(cl->pending, true);
