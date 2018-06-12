@@ -5,8 +5,8 @@
 ## Makefile
 ##
 
-MAKEPOLL	=	make --no-print-directory -C ../libs/lpoll
-MAKESOCKET	=	make --no-print-directory -C ../libs/lsocket
+MAKEPOLL	=	make --no-print-directory -C lib/poll
+MAKESOCKET	=	make --no-print-directory -C lib/socket
 
 CC		=	gcc
 
@@ -16,15 +16,25 @@ SRCDIR		=	src
 OBJDIR		=	build
 
 FILES		=	main			\
+			task_assigner		\
+			commands/cmd_msz	\
+			commands/cmd_bct	\
+			commands/cmd_mct	\
+			commands/cmd_tna	\
+			commands/cmd_ppo	\
+			commands/cmd_plv	\
+			commands/cmd_pin	\
+			commands/cmd_sgt	\
+			commands/cmd_sst
 
 SORTEDFILES	=	$(sort $(FILES))
 SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
 OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 
-CFLAGS 		=	-I../libs -W -Wall -Wextra -Wunused -Wuninitialized
-LDFLAGS		=	-L../libs/lsocket -lsocket -L../libs/lpoll -lpoll
+CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized
+LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll
 
-DIRS		=
+DIRS		=	commands
 
 SORTEDDIRS	=	$(sort $(DIRS))
 SRCDIRS		=	$(SORTEDDIRS:%=$(SRCDIR)/%)
