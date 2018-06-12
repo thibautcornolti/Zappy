@@ -8,7 +8,7 @@
 #include <malloc.h>
 #include "common.h"
 
-int poll_add(poll_t **p, int fd, short evt)
+poll_t *poll_add(poll_t **p, int fd, short evt)
 {
 	poll_t *new_elem = malloc(sizeof(poll_t));
 	poll_t *cpy = *p;
@@ -26,7 +26,7 @@ int poll_add(poll_t **p, int fd, short evt)
 			cpy = cpy->next;
 		cpy->next = new_elem;
 	}
-	return (1);
+	return (new_elem);
 }
 
 int poll_rm(poll_t **p, int fd)

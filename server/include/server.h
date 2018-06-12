@@ -59,6 +59,8 @@ typedef struct client_s {
 	size_t id;
 	vec2_t pos;
 	size_t food;
+	poll_t *node;
+	list_t *pending;
 } client_t;
 
 typedef struct control_s {

@@ -5,9 +5,9 @@
 ** main
 */
 
+#include "list/src/list.h"
 #include "server.h"
 #include "socket/src/socket.h"
-#include "list/src/list.h"
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -22,14 +22,34 @@ bool add_new_client(control_t *control)
 	client->fd = accept(control->fd, (struct sockaddr *)&addr, &size);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
 		false);
+	CHECK(client->node = poll_add(control->list, client->fd, POLLIN), == 0,
+		false);
 	CHECK(llist_push(control->clients, 1, client), == -1, false);
+	return (true);
+}
+
+bool handle_client(control_t *control, client_t *cl, size_t idx)
+{
+	bool to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
+
+	if (!to_evict && (cl->node->revt & POLLIN))
+		to_evict; // = ; // TODO: Receive and extract-loop
+	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
+		; // TODO: Send to client
+	if (to_evict) {
+		poll_rm(&control->list, cl->fd);
+		llist_clear(cl->pending, true);
+		llist_destroy(cl->pending);
+		close(cl->fd);
+		free(cl);
+	}
 	return (true);
 }
 
 bool handle_request(control_t *control)
 {
-	(void)control;
-	return (true);
+	control->clients = llist_filter(control->clients,
+		(bool (*)(void *, void *, size_t))handle_client, control);
 }
 
 bool control_init(control_t *control)
@@ -53,5 +73,5 @@ int main()
 		else
 			handle_request(&control);
 	}
-	return 0;
+	return (0);
 }
