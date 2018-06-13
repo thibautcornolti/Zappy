@@ -14,6 +14,7 @@
 
 #define RBUFFER_SIZE 4096
 #define CMD_SIZE 2048
+#define CMD_COUNT 9
 
 #ifndef CHECK
 #define CHECK(x, y, z)                                                        \

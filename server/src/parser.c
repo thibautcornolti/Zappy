@@ -19,6 +19,7 @@ static void add_param(cmd_t *cmd, char *str)
 static void parse_cmd(client_t *cl)
 {
 	char *cmd = strdup(cl->cmd.cmd);
+	char *save = cmd;
 	char *tmp = strsep(&cmd, " ");
 
 	memset(cl->cmd.name, 0, CMD_SIZE);
@@ -28,6 +29,7 @@ static void parse_cmd(client_t *cl)
 		if (tmp && tmp[0])
 			add_param(&cl->cmd, tmp);
 	} while (tmp);
+	free(save);
 }
 
 static void extract_found_cmd(client_t *client, char *tmp, int csize)
