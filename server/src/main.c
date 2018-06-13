@@ -58,7 +58,8 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 	}
 	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT)) {
 		str = llist_remove(cl->pending, 0);
-		write(cl->fd, str, strlen(str));
+		if (str)
+			write(cl->fd, str, strlen(str));
 	}
 	if (to_evict) {
 		poll_rm(&control->list, cl->fd);
