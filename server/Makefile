@@ -17,7 +17,8 @@ SRCDIR		=	src
 OBJDIR		=	build
 
 FILES		=	main			\
-			task_assigner		\
+			assigner		\
+			parser			\
 			commands/cmd_msz	\
 			commands/cmd_bct	\
 			commands/cmd_mct	\
