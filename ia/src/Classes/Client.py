@@ -1,10 +1,11 @@
 import socket
+import select
 
 
 class Client:
     def __init__(self, ip, port):
-        self.ip = ip
         self.port = port
+        self.ip = ip
 
     def __enter__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,3 +29,6 @@ class Client:
             c = self.sock.recv(1)
         print("Receive: %s" % bytes.decode(res))
         return bytes.decode(res)
+
+    def poll(self):
+        print(socket.sel)
