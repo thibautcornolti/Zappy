@@ -20,6 +20,7 @@ bool add_new_client(control_t *control)
 
 	CHECK(client = calloc(sizeof(client_t), 1), == 0, false);
 	client->cmd = llist_init();
+	client->pending = llist_init();
 	client->rbuf.size = RBUFFER_SIZE;
 	client->fd = accept(control->fd, (struct sockaddr *)&addr, &size);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
