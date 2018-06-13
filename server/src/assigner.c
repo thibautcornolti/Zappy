@@ -8,9 +8,18 @@
 #include "server.h"
 
 static tuple_t fcmd[] = {
-		{"msv", &cmd_msv}, {"bct", &cmd_bct}, {"mct", &cmd_mct},
-		{"tna", &cmd_tna}, {"ppo", &cmd_ppo}, {"plv", &cmd_plv},
-		{"pin", &cmd_pin}, {"sgt", &cmd_sgt}, {"sst", &cmd_sst}
+	{"forward",     &cmd_forward},
+	{"right",       &cmd_right},
+	{"left",        &cmd_left},
+	{"look",        &cmd_look},
+	{"inventory",   &cmd_inventory},
+	{"broadcast",   &cmd_broadcast},
+	{"connect_nbr", &cmd_connect_nbr},
+	{"fork",        &cmd_fork},
+	{"eject",       &cmd_eject},
+	{"take",        &cmd_take},
+	{"set",         &cmd_set},
+	{"incantation", &cmd_incantation}
 };
 
 static void cmd_unknown(client_t *cl, cmd_t *cmd)
@@ -30,8 +39,8 @@ void clear_cmd(cmd_t *cmd)
 
 void proceed_cmd(control_t *ctrl, client_t *cl)
 {
-	(void)ctrl;
-	cmd_t *cmd = ((cmd_t *)cl->cmd->head->payload);
+	(void) ctrl;
+	cmd_t *cmd = ((cmd_t *) cl->cmd->head->payload);
 
 	printf("CMD: %s\n", cmd->name);
 	for (int i = 0; i < cmd->nparam; ++i)
