@@ -75,9 +75,9 @@ typedef struct client_s {
 } client_t;
 
 typedef struct team_s {
-	char *name
+	char *name;
 	client_t **cl;
-	size_t count;
+	size_t av;
 } team_t;
 
 typedef struct control_s {
@@ -109,3 +109,12 @@ void cmd_incantation(control_t *, client_t *);
 
 size_t extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);
+
+//teams
+bool team_add_client(control_t *, client_t *, char *);
+bool team_remove_client(control_t *, client_t *);
+void team_add(control_t *, team_t *);
+bool team_remove(control_t *, char *);
+void team_init(control_t *);
+void team_realloc_arr(control_t *);
+void team_release(team_t *);

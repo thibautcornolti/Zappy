@@ -19,6 +19,8 @@ OBJDIR		=	build
 FILES		=	main				\
 			assigner			\
 			parser				\
+			t_manager			\
+			t_tools				\
 			commands/cmd_forward		\
 			commands/cmd_right		\
 			commands/cmd_left		\

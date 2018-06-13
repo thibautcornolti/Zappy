@@ -87,16 +87,6 @@ bool control_init(control_t *control)
 int main()
 {
 	control_t control = {0};
-//	client_t cl = {0};
-//	char str[] = "test\n\nerfioerjriegjreo\nzef fez zef \n";
-//
-//	cl.cmd = llist_init();
-//	 memcpy(cl.rbuf.buffer, str, strlen(str));
-//	 cl.rbuf.end = (int)strlen(str);
-//	 cl.rbuf.size = RBUFFER_SIZE;
-//	extract_rbuf_cmd(&cl);
-//	while (cl.cmd->length)
-//		proceed_cmd(&control, &cl);
 
 	 CHECK(control_init(&control), == false, false);
 	 CHECK(control.fd = create_server(4242), == -1, 84);
