@@ -22,8 +22,8 @@ bool add_new_client(control_t *control)
 	client->fd = accept(control->fd, (struct sockaddr *)&addr, &size);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
 		false);
-	CHECK(client->node = poll_add(control->list, client->fd, POLLIN), == 0,
-		false);
+	CHECK(client->node = poll_add(&control->list, client->fd, POLLIN),
+		== 0, false);
 	CHECK(llist_push(control->clients, 1, client), == -1, false);
 	return (true);
 }
@@ -35,11 +35,10 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 
 	if (!to_evict && (cl->node->revt & POLLIN))
 		to_evict; // = ; // TODO: Receive and extract-loop
-	if (!to_evict && (cl->node->revt & POLLOUT))
-		while (cl->pending->length) {
-			str = llist_remove(cl->pending, 0);
-			write(cl->fd, str, strlen(str));
-		}
+	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT)) {
+		str = llist_remove(cl->pending, 0);
+		write(cl->fd, str, strlen(str));
+	}
 	if (to_evict) {
 		poll_rm(&control->list, cl->fd);
 		llist_clear(cl->pending, true);
