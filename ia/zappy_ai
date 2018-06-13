@@ -2,9 +2,10 @@
 # coding = utf-8
 
 import argparse
+import os
 from src.Classes.AIController import AIController
 from src.Classes.Client import Client
-
+from src import config
 
 
 def parse_arg():
@@ -24,6 +25,10 @@ def parse_arg():
     port    is the port number
     name    is the name of the team
     machine is the name of the machine; localhost by default""")
+    config.file_name = os.path.realpath(__file__)
+    config.hostname = args.h
+    config.port = args.p
+    config.team_name = args.n
     return args
 
 
@@ -31,10 +36,11 @@ def run(args):
     with Client(args.h, args.p) as (client, error):
         if error:
             exit(error)
-        ai = AIController(client, args.n)
-        print(ai.ulapid)
-        print(ai.broadcast("test"))
-        print(client.read_line())
+        client.poll()
+        # ai = AIController(client, args.n)
+        # print(ai.ulapid)
+        # print(ai.broadcast("test"))
+        # print(client.read_line())
 
 
 def main():
