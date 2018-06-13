@@ -51,6 +51,7 @@ typedef struct params_s {
 	size_t width;
 	size_t height;
 	char **teams;
+	size_t nteam;
 	size_t nclt;
 	size_t tickrate;
 } params_t;
@@ -69,12 +70,22 @@ typedef struct client_s {
 	size_t food;
 	poll_t *node;
 	list_t *pending;
+	struct team_s *team;
+
 } client_t;
+
+typedef struct team_s {
+	char *name
+	client_t **cl;
+	size_t count;
+} team_t;
 
 typedef struct control_s {
 	int fd;
 	poll_t *list;
 	list_t *clients;
+	team_t *teams;
+	params_t params;
 } control_t;
 
 typedef struct tuple_s {
