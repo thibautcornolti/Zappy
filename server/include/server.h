@@ -33,7 +33,6 @@ typedef struct rbuf_s {
 } rbuf_t;
 
 typedef struct cmd_s {
-	rbuf_t rbuf;
 	char cmd[CMD_SIZE];
 	char name[CMD_SIZE];
 	char **param;
@@ -56,7 +55,8 @@ typedef struct vec2_s {
 typedef struct client_s {
 	int fd;
 	char ip[INET_ADDRSTRLEN];
-	cmd_t cmd;
+	list_t *cmd;
+	rbuf_t rbuf;
 	size_t id;
 	vec2_t pos;
 	size_t food;
@@ -86,5 +86,5 @@ void cmd_pin(control_t *, client_t *);
 void cmd_sgt(control_t *, client_t *);
 void cmd_sst(control_t *, client_t *);
 
-size_t extract_cmd(control_t *, client_t *);
+size_t extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);

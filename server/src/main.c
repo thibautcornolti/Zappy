@@ -32,9 +32,9 @@ ssize_t receive_data(client_t *cl)
 {
 	ssize_t ret = 0;
 	char data[CMD_SIZE];
-	int len = cl->cmd.rbuf.size;
-	int *epos = &cl->cmd.rbuf.end;
-	char *rbuf = cl->cmd.rbuf.buffer;
+	int len = cl->rbuf.size;
+	int *epos = &cl->rbuf.end;
+	char *rbuf = cl->rbuf.buffer;
 
 	ret = recv(cl->fd, data, CMD_SIZE, 0);
 	for (int i = 0; i < ret; ++i) {
@@ -48,8 +48,11 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 {
 	bool to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
 
-	if (!to_evict && (cl->node->revt & POLLIN))
-		to_evict = !(receive_data(cl) && extract_cmd(control, cl));
+	if (!to_evict && (cl->node->revt & POLLIN)) {
+		to_evict = !(receive_data(cl) && extract_rbuf_cmd(cl));
+		if (!to_evict)
+			proceed_cmd(control, cl);
+	}
 	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
 		; // TODO: Send to client
 	if (to_evict) {
@@ -80,10 +83,13 @@ int main()
 	client_t cl = {0};
 	char str[] = "test\n\nerfioerjriegjreo\nzef fez zef \n";
 
-	 memcpy(cl.cmd.rbuf.buffer, str, strlen(str));
-	 cl.cmd.rbuf.end = (int) strlen(str);
-	 cl.cmd.rbuf.size = RBUFFER_SIZE;
-	 extract_cmd(&control, &cl);
+	cl.cmd = llist_init();
+	 memcpy(cl.rbuf.buffer, str, strlen(str));
+	 cl.rbuf.end = (int)strlen(str);
+	 cl.rbuf.size = RBUFFER_SIZE;
+	extract_rbuf_cmd(&cl);
+	while (cl.cmd->length)
+		proceed_cmd(&control, &cl);
 
 //	CHECK(control_init(&control), == false, false);
 //	CHECK(control.fd = create_server(4242), == -1, 84);
