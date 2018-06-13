@@ -132,7 +132,7 @@ void proceed_cmd(control_t *, client_t *);
 //teams
 bool team_add_client(control_t *, client_t *, char *);
 bool team_remove_client(control_t *, client_t *);
-void team_add(control_t *, team_t *);
+void team_add(control_t *, char *);
 bool team_remove(control_t *, char *);
 void team_init(control_t *);
 void team_realloc_arr(control_t *);
