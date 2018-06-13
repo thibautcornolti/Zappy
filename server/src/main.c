@@ -19,6 +19,8 @@ bool add_new_client(control_t *control)
 	socklen_t size = sizeof(addr);
 
 	CHECK(client = calloc(sizeof(client_t), 1), == 0, false);
+	client->cmd = llist_init();
+	client->rbuf.size = RBUFFER_SIZE;
 	client->fd = accept(control->fd, (struct sockaddr *)&addr, &size);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
 		false);
@@ -83,27 +85,27 @@ bool control_init(control_t *control)
 int main()
 {
 	control_t control = {0};
-	client_t cl = {0};
-	char str[] = "test\n\nerfioerjriegjreo\nzef fez zef \n";
+//	client_t cl = {0};
+//	char str[] = "test\n\nerfioerjriegjreo\nzef fez zef \n";
+//
+//	cl.cmd = llist_init();
+//	 memcpy(cl.rbuf.buffer, str, strlen(str));
+//	 cl.rbuf.end = (int)strlen(str);
+//	 cl.rbuf.size = RBUFFER_SIZE;
+//	extract_rbuf_cmd(&cl);
+//	while (cl.cmd->length)
+//		proceed_cmd(&control, &cl);
 
-	cl.cmd = llist_init();
-	 memcpy(cl.rbuf.buffer, str, strlen(str));
-	 cl.rbuf.end = (int)strlen(str);
-	 cl.rbuf.size = RBUFFER_SIZE;
-	extract_rbuf_cmd(&cl);
-	while (cl.cmd->length)
-		proceed_cmd(&control, &cl);
-
-	// CHECK(control_init(&control), == false, false);
-	// CHECK(control.fd = create_server(4242), == -1, 84);
-	// CHECK(poll_add(&control.list, control.fd, POLLIN), == 0, 84);
-	// while (1) {
-	// 	CHECK(poll_wait(control.list, -1), == -1, 84);
-	// 	if (poll_canread(control.list, control.fd)) {
-	// 		CHECK(add_new_client(&control), == false, 84);
-	// 	}
-	// 	else
-	// 		handle_request(&control);
-	// }
+	 CHECK(control_init(&control), == false, false);
+	 CHECK(control.fd = create_server(4242), == -1, 84);
+	 CHECK(poll_add(&control.list, control.fd, POLLIN), == 0, 84);
+	 while (1) {
+	 	CHECK(poll_wait(control.list, -1), == -1, 84);
+	 	if (poll_canread(control.list, control.fd)) {
+	 		CHECK(add_new_client(&control), == false, 84);
+	 	}
+	 	else
+	 		handle_request(&control);
+	 }
 	return (0);
 }

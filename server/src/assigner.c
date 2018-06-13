@@ -29,12 +29,19 @@ static void cmd_unknown(client_t *cl, cmd_t *cmd)
 
 void clear_cmd(cmd_t *cmd)
 {
-	if (cmd->param) {
+	if (cmd && cmd->param) {
 		for (int i = 0; i < cmd->nparam && cmd->param[i]; ++i)
 			free(cmd->param[i]);
 		free(cmd->param);
+		free(cmd);
 	}
-	free(cmd);
+}
+
+void show_cmd(cmd_t *cmd)
+{
+	printf("CMD: %s\n", cmd->name);
+	for (int i = 0; i < cmd->nparam; ++i)
+		printf("[%d] %s\n", i, cmd->param[i]);
 }
 
 void proceed_cmd(control_t *ctrl, client_t *cl)
@@ -42,9 +49,7 @@ void proceed_cmd(control_t *ctrl, client_t *cl)
 	(void) ctrl;
 	cmd_t *cmd = ((cmd_t *) cl->cmd->head->payload);
 
-	printf("CMD: %s\n", cmd->name);
-	for (int i = 0; i < cmd->nparam; ++i)
-		printf("[%d] %s\n", i, cmd->param[i]);
+	show_cmd(cmd);
 	for (int i = 0; i < CMD_COUNT; ++i)
 		if (!strcasecmp(cmd->name, fcmd[i].cmd)) {
 			fcmd[i].func(ctrl, cl);
