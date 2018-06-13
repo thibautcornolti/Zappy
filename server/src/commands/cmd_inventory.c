@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void cmd_bct(control_t *control, client_t *client) {
+void cmd_inventory(control_t *control, client_t *client) {
 	(void)control;
 	(void)client;
 }

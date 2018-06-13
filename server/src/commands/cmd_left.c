@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void cmd_sst(control_t *control, client_t *client) {
+void cmd_left(control_t *control, client_t *client) {
 	(void)control;
 	(void)client;
 }

@@ -25,6 +25,13 @@
 	}
 #endif
 
+typedef enum facing_e {
+	NORTH = 0,
+	EAST,
+	SOUTH,
+	WEST
+} facing_t;
+
 typedef struct rbuf_s {
 	char buffer[RBUFFER_SIZE];
 	int start;

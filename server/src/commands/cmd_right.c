@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void cmd_tna(control_t *control, client_t *client) {
+void cmd_right(control_t *control, client_t *client) {
 	(void)control;
 	(void)client;
 }

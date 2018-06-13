@@ -16,18 +16,21 @@ NAME		=	zappy_server
 SRCDIR		=	src
 OBJDIR		=	build
 
-FILES		=	main			\
-			assigner		\
-			parser			\
-			commands/cmd_msz	\
-			commands/cmd_bct	\
-			commands/cmd_mct	\
-			commands/cmd_tna	\
-			commands/cmd_ppo	\
-			commands/cmd_plv	\
-			commands/cmd_pin	\
-			commands/cmd_sgt	\
-			commands/cmd_sst
+FILES		=	main				\
+			assigner			\
+			parser				\
+			commands/cmd_forward		\
+			commands/cmd_right		\
+			commands/cmd_left		\
+			commands/cmd_look		\
+			commands/cmd_inventory		\
+			commands/cmd_broadcast		\
+			commands/cmd_connect_nbr	\
+			commands/cmd_fork		\
+			commands/cmd_eject		\
+			commands/cmd_take		\
+			commands/cmd_set		\
+			commands/cmd_incantation
 
 SORTEDFILES	=	$(sort $(FILES))
 SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)

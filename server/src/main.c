@@ -18,7 +18,7 @@ bool add_new_client(control_t *control)
 	struct sockaddr_in addr = {0};
 	socklen_t size = sizeof(addr);
 
-	CHECK(client = calloc(sizeof(client_t), 0), == 0, false);
+	CHECK(client = calloc(sizeof(client_t), 1), == 0, false);
 	client->fd = accept(control->fd, (struct sockaddr *)&addr, &size);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
 		false);
@@ -88,16 +88,16 @@ int main()
 	 cl.cmd.rbuf.size = RBUFFER_SIZE;
 	 extract_cmd(&control, &cl);
 
-//	CHECK(control_init(&control), == false, false);
-//	CHECK(control.fd = create_server(4242), == -1, 84);
-//	CHECK(poll_add(&control.list, control.fd, POLLIN), == 0, 84);
-//	while (1) {
-//		CHECK(poll_wait(control.list, -1), == -1, 84);
-//		if (poll_canread(control.list, control.fd)) {
-//			CHECK(add_new_client(&control), == false, 84);
-//		}
-//		else
-//			handle_request(&control);
-//	}
+	// CHECK(control_init(&control), == false, false);
+	// CHECK(control.fd = create_server(4242), == -1, 84);
+	// CHECK(poll_add(&control.list, control.fd, POLLIN), == 0, 84);
+	// while (1) {
+	// 	CHECK(poll_wait(control.list, -1), == -1, 84);
+	// 	if (poll_canread(control.list, control.fd)) {
+	// 		CHECK(add_new_client(&control), == false, 84);
+	// 	}
+	// 	else
+	// 		handle_request(&control);
+	// }
 	return (0);
 }

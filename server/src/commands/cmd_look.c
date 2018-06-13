@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void cmd_sgt(control_t *control, client_t *client) {
+void cmd_look(control_t *control, client_t *client) {
 	(void)control;
 	(void)client;
 }

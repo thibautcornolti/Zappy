@@ -21,7 +21,7 @@ int create_server(short port)
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port = htons(port);
 	addr.sin_family = AF_INET;
-	CHECK(fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP), != -1, -1);
+	CHECK(fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP), == -1, -1);
 	CHECK(setsockopt(fd, SOCK_STREAM, SO_REUSEADDR, &opt, sizeof(opt)),
 		== -1, -1);
 	CHECK(bind(fd, (const struct sockaddr *)&addr, sizeof(addr)), == -1,

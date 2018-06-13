@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void cmd_pin(control_t *control, client_t *client) {
+void cmd_forward(control_t *control, client_t *client) {
 	(void)control;
 	(void)client;
 }

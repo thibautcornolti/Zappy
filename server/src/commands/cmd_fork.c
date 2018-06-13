@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void cmd_ppo(control_t *control, client_t *client) {
+void cmd_fork(control_t *control, client_t *client) {
 	(void)control;
 	(void)client;
 }

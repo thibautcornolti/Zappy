@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void cmd_mct(control_t *control, client_t *client) {
+void cmd_broadcast(control_t *control, client_t *client) {
 	(void)control;
 	(void)client;
 }
