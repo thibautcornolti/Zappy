@@ -67,7 +67,6 @@ static bool retrieve_cmd(client_t *client)
 	}
 	if (loop && client->cmd && llist_size(client->cmd) < 10)
 		extract_found_cmd(client, tmp, csize);
-	printf("Command extracted, returning %d\n", loop);
 	return (loop);
 }
 

@@ -16,23 +16,31 @@ NAME		=	zappy_server
 SRCDIR		=	src
 OBJDIR		=	build
 
-FILES		=	main				\
+FILES		=	args				\
 			assigner			\
+			main				\
 			parser				\
 			t_manager			\
 			t_tools				\
-			commands/cmd_forward		\
-			commands/cmd_right		\
-			commands/cmd_left		\
-			commands/cmd_look		\
-			commands/cmd_inventory		\
 			commands/cmd_broadcast		\
 			commands/cmd_connect_nbr	\
-			commands/cmd_fork		\
 			commands/cmd_eject		\
-			commands/cmd_take		\
+			commands/cmd_fork		\
+			commands/cmd_forward		\
+			commands/cmd_incantation	\
+			commands/cmd_inventory		\
+			commands/cmd_left		\
+			commands/cmd_look		\
+			commands/cmd_right		\
 			commands/cmd_set		\
-			commands/cmd_incantation
+			commands/cmd_take		\
+			arguments/parse_clients		\
+			arguments/parse_freq		\
+			arguments/parse_height		\
+			arguments/parse_help		\
+			arguments/parse_names		\
+			arguments/parse_port		\
+			arguments/parse_width
 
 SORTEDFILES	=	$(sort $(FILES))
 SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
@@ -41,7 +49,8 @@ OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized
 LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist
 
-DIRS		=	commands
+DIRS		=	commands		\
+			arguments
 
 SORTEDDIRS	=	$(sort $(DIRS))
 SRCDIRS		=	$(SORTEDDIRS:%=$(SRCDIR)/%)
@@ -90,5 +99,5 @@ $(OBJDIR):
 	@mkdir -p $@
 
 $(OBJDIR)/%:
-	@echo -e "[$(RED)MKDIR$(RES)] $(YEL)$<$(RES)"
+	@echo -e "[$(RED)MKDIR$(RES)] $(YEL)$@$(RES)"
 	@mkdir -p $@

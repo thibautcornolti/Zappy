@@ -16,6 +16,16 @@
 #define CMD_SIZE 2048
 #define CMD_COUNT 12
 
+#define HELP_MSG                                                              \
+	"USAGE: %s -p port -x width -y height -n name1 name2 ... -c "         \
+	"clientsNb -f freq\n"                                                 \
+	"\tport\t\tis the port number\n"                                        \
+	"\twidth\t\tis the width of the world\n"                                \
+	"\theight\t\tis the height of the world\n"                              \
+	"\tnameX\t\tis the name of the team X\n"                                \
+	"\tclientsNb\tis the number of authorized clients per team\n"         \
+	"\tfreq\t\tis the reciprocal of time unit for execution of actions\n"
+
 #ifndef CHECK
 #define CHECK(x, y, z)                                                        \
 	if ((x)y) {                                                           \
@@ -25,12 +35,7 @@
 	}
 #endif
 
-typedef enum facing_e {
-	NORTH = 0,
-	EAST,
-	SOUTH,
-	WEST
-} facing_t;
+typedef enum facing_e { NORTH = 0, EAST, SOUTH, WEST } facing_t;
 
 typedef struct rbuf_s {
 	char buffer[RBUFFER_SIZE];
@@ -47,6 +52,7 @@ typedef struct cmd_s {
 } cmd_t;
 
 typedef struct params_s {
+	bool help;
 	size_t port;
 	size_t width;
 	size_t height;
@@ -55,6 +61,7 @@ typedef struct params_s {
 	size_t nclt;
 	size_t tickrate;
 } params_t;
+
 typedef struct vec2_s {
 	size_t x;
 	size_t y;
@@ -93,7 +100,11 @@ typedef struct tuple_s {
 	void (*func)(control_t *, client_t *);
 } tuple_t;
 
-//Comamnds
+typedef struct param_parse_s {
+	char *cmd;
+	bool (*func)(size_t, const char **, params_t *, size_t *);
+} param_parse_t;
+
 void cmd_forward(control_t *, client_t *);
 void cmd_right(control_t *, client_t *);
 void cmd_left(control_t *, client_t *);
@@ -107,6 +118,14 @@ void cmd_take(control_t *, client_t *);
 void cmd_set(control_t *, client_t *);
 void cmd_incantation(control_t *, client_t *);
 
+bool parse_port(size_t ac, const char **av, params_t *params, size_t *i);
+bool parse_width(size_t ac, const char **av, params_t *params, size_t *i);
+bool parse_height(size_t ac, const char **av, params_t *params, size_t *i);
+bool parse_names(size_t ac, const char **av, params_t *params, size_t *i);
+bool parse_clients(size_t ac, const char **av, params_t *params, size_t *i);
+bool parse_freq(size_t ac, const char **av, params_t *params, size_t *i);
+bool parse_help(size_t ac, const char **av, params_t *params, size_t *i);
+
 size_t extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);
 
@@ -118,3 +137,7 @@ bool team_remove(control_t *, char *);
 void team_init(control_t *);
 void team_realloc_arr(control_t *);
 void team_release(team_t *);
+
+//args parsing
+int disp_help(const char *);
+bool parse_args(size_t ac, const char **av, params_t *params);
