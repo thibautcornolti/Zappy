@@ -18,7 +18,7 @@ bool add_new_client(control_t *control)
 	struct sockaddr_in addr = {0};
 	socklen_t size = sizeof(addr);
 
-	CHECK(client = calloc(sizeof(client_t), 1), == 0, false);
+	CHECK(client = calloc(1, sizeof(client_t)), == 0, false);
 	CHECK(client->cmd = llist_init(), == 0, false);
 	CHECK(client->pending = llist_init(), == 0, false);
 	client->rbuf.size = RBUFFER_SIZE;

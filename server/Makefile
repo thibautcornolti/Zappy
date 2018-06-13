@@ -22,6 +22,7 @@ FILES		=	args				\
 			parser				\
 			t_manager			\
 			t_tools				\
+			map				\
 			commands/cmd_broadcast		\
 			commands/cmd_connect_nbr	\
 			commands/cmd_eject		\

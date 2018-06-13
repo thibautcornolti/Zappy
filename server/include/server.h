@@ -35,7 +35,28 @@
 	}
 #endif
 
-typedef enum facing_e { NORTH = 0, EAST, SOUTH, WEST } facing_t;
+typedef enum facing_e {
+	NORTH = 0,
+	EAST,
+	SOUTH,
+	WEST
+} facing_t;
+
+typedef enum item_s {
+	FOOD,
+	LINEMATE,
+	DERAUMERE,
+	SIBUR,
+	MENDIANE,
+	PHIRAS,
+	THYSTAME
+} item_t;
+
+typedef struct cell_s {
+	size_t x;
+	size_t y;
+	list_t *item;
+} cell_t;
 
 typedef struct rbuf_s {
 	char buffer[RBUFFER_SIZE];
@@ -92,6 +113,7 @@ typedef struct control_s {
 	poll_t *list;
 	list_t *clients;
 	team_t *teams;
+	cell_t *map;
 	params_t params;
 } control_t;
 

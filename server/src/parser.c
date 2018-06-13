@@ -35,7 +35,7 @@ static void parse_cmd(cmd_t *item)
 static void extract_found_cmd(client_t *client, char *tmp, int csize)
 {
 	int len = client->rbuf.size;
-	cmd_t *cmd = calloc(sizeof(cmd_t), 1);
+	cmd_t *cmd = calloc(1, sizeof(cmd_t));
 	char *rbuf = client->rbuf.buffer;
 
 	if (!cmd)
