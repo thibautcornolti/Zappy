@@ -55,7 +55,7 @@ typedef enum item_s {
 typedef struct cell_s {
 	size_t x;
 	size_t y;
-	list_t *item;
+	list_t *items;
 } cell_t;
 
 typedef struct rbuf_s {
