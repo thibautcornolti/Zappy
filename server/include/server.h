@@ -14,7 +14,7 @@
 
 #define RBUFFER_SIZE 4096
 #define CMD_SIZE 2048
-#define CMD_COUNT 9
+#define CMD_COUNT 12
 
 #ifndef CHECK
 #define CHECK(x, y, z)                                                        \
@@ -76,15 +76,18 @@ typedef struct tuple_s {
 } tuple_t;
 
 //Comamnds
-void cmd_msv(control_t *, client_t *);
-void cmd_bct(control_t *, client_t *);
-void cmd_mct(control_t *, client_t *);
-void cmd_tna(control_t *, client_t *);
-void cmd_ppo(control_t *, client_t *);
-void cmd_plv(control_t *, client_t *);
-void cmd_pin(control_t *, client_t *);
-void cmd_sgt(control_t *, client_t *);
-void cmd_sst(control_t *, client_t *);
+void cmd_forward(control_t *, client_t *);
+void cmd_right(control_t *, client_t *);
+void cmd_left(control_t *, client_t *);
+void cmd_look(control_t *, client_t *);
+void cmd_inventory(control_t *, client_t *);
+void cmd_broadcast(control_t *, client_t *);
+void cmd_connect_nbr(control_t *, client_t *);
+void cmd_fork(control_t *, client_t *);
+void cmd_eject(control_t *, client_t *);
+void cmd_take(control_t *, client_t *);
+void cmd_set(control_t *, client_t *);
+void cmd_incantation(control_t *, client_t *);
 
 size_t extract_cmd(control_t *, client_t *);
 void proceed_cmd(control_t *, client_t *);

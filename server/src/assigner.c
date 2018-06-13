@@ -8,9 +8,12 @@
 #include "server.h"
 
 static tuple_t fcmd[] = {
-		{"msv", &cmd_msv}, {"bct", &cmd_bct}, {"mct", &cmd_mct},
-		{"tna", &cmd_tna}, {"ppo", &cmd_ppo}, {"plv", &cmd_plv},
-		{"pin", &cmd_pin}, {"sgt", &cmd_sgt}, {"sst", &cmd_sst}
+	{"forward", &cmd_forward}, {"right", &cmd_right},
+	{"left", &cmd_left}, {"look", &cmd_look},
+	{"inventory", &cmd_inventory}, {"broadcast", &cmd_broadcast},
+	{"connect_nbr", &cmd_connect_nbr}, {"fork", &cmd_fork},
+	{"eject", &cmd_eject}, {"take", &cmd_take}, {"set", &cmd_set},
+	{"incantation", &cmd_incantation}
 };
 
 static void cmd_unknown(control_t *ctrl, client_t *cl)
@@ -42,7 +45,8 @@ void proceed_cmd(control_t *ctrl, client_t *cl)
 		if (!strcasecmp(cl->cmd.name, fcmd[i].cmd)) {
 			fcmd[i].func(ctrl, cl);
 			break;
-		} else if (i + 1 == CMD_COUNT)
+		}
+		else if (i + 1 == CMD_COUNT)
 			cmd_unknown(ctrl, cl);
 	clear_cmd(&cl->cmd);
 }
