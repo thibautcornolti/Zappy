@@ -21,7 +21,7 @@ static void parse_cmd(client_t *cl)
 	char *cmd = strdup(cl->cmd.cmd);
 	char *save = cmd;
 	char *tmp = strsep(&cmd, " ");
-
+	
 	memset(cl->cmd.name, 0, CMD_SIZE);
 	memcpy(cl->cmd.name, tmp, strlen(tmp));
 	do {
@@ -38,7 +38,6 @@ static void extract_found_cmd(client_t *client, char *tmp, int csize)
 	char *rbuf = client->cmd.rbuf.buffer;
 
 	tmp[csize - 1] = 0;
-	csize += 1;
 	for (int i = 0; i < csize; ++i) {
 		client->cmd.cmd[i % CMD_SIZE] = tmp[i];
 		rbuf[(client->cmd.rbuf.start + i) % len] = 0;
