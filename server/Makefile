@@ -50,7 +50,7 @@ SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
 OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 
 CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized
-LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist -Llib/str -lstr
+LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist -Llib/str -lstr -lm
 
 DIRS		=	commands		\
 			arguments

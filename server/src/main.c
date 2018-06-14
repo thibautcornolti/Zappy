@@ -5,14 +5,17 @@
 ** main
 */
 
-#include "list/src/list.h"
-#include "server.h"
-#include "socket/src/socket.h"
+#include <time.h>
+#include <math.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <time.h>
+#include "list/src/list.h"
+#include "server.h"
+#include "socket/src/socket.h"
 
 bool add_new_client(control_t *control)
 {
@@ -90,6 +93,23 @@ bool control_init(control_t *control)
 	return (true);
 }
 
+static void cycle_adjustment(control_t *ctrl, bool await)
+{
+	long ms = 0;
+	long tr = (long) round(1.0 / ctrl->params.tickrate * 1000);
+	static struct timespec start;
+	struct timespec stop;
+
+	if (!await)
+		clock_gettime(CLOCK_REALTIME, &start);
+	else {
+		clock_gettime(CLOCK_REALTIME, &stop);
+		ms = (long) ((round(stop.tv_nsec -  start.tv_nsec) / 1.0e6));
+		printf("Awaiting [%ld] ms\n", ((ms < tr) ? tr - ms : 0));
+		usleep((__useconds_t) ((ms < tr) ? tr - ms : 0));
+	}
+}
+
 int main(int ac, const char **av)
 {
 	control_t control = {0};
@@ -104,13 +124,18 @@ int main(int ac, const char **av)
 	CHECK(control_init(&control), == false, 84);
 	CHECK(control.fd = create_server(control.params.port), == -1, 84);
 	CHECK(poll_add(&control.list, control.fd, POLLIN), == 0, 84);
+
+	//FIXME
+	control.params.tickrate = 20;
 	while (1) {
-		CHECK(ret = poll_wait(control.list, -1), == -1, 84);
+		cycle_adjustment(&control, false);
+		CHECK(ret = poll_wait(control.list, (int)(1/control.params.tickrate * 1000)), == -1, 84);
 		if (poll_canread(control.list, control.fd)) {
 			CHECK(add_new_client(&control), == false, 84);
 		}
 		else
 			handle_request(&control);
+		cycle_adjustment(&control, true);
 	}
 	return (0);
 }
