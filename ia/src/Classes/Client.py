@@ -1,7 +1,9 @@
 import socket
+from _smbc import ConnectionRefusedError
 
 
 class Client:
+
     def __init__(self, ip, port):
         self.ip = ip
         self.port = port
@@ -16,6 +18,9 @@ class Client:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.sock.close()
+
+    def poll(self, timeout):
+        raise NotImplemented
 
     def write(self, msg):
         self.sock.sendall(str.encode(msg + "\n"))
