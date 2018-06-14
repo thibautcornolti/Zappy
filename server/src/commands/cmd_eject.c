@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void cmd_eject(control_t *control, client_t *client) {
-	(void)control;
+void cmd_eject(control_t *ctrl, client_t *client) {
+	(void)ctrl;
 	(void)client;
 }

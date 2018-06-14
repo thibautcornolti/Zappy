@@ -140,13 +140,13 @@ void cmd_take(control_t *, client_t *);
 void cmd_set(control_t *, client_t *);
 void cmd_incantation(control_t *, client_t *);
 
-bool parse_port(size_t ac, const char **av, params_t *params, size_t *i);
-bool parse_width(size_t ac, const char **av, params_t *params, size_t *i);
-bool parse_height(size_t ac, const char **av, params_t *params, size_t *i);
-bool parse_names(size_t ac, const char **av, params_t *params, size_t *i);
-bool parse_clients(size_t ac, const char **av, params_t *params, size_t *i);
-bool parse_freq(size_t ac, const char **av, params_t *params, size_t *i);
-bool parse_help(size_t ac, const char **av, params_t *params, size_t *i);
+bool parse_port(size_t, const char **, params_t *, size_t *);
+bool parse_width(size_t, const char **, params_t *, size_t *);
+bool parse_height(size_t, const char **, params_t *, size_t *);
+bool parse_names(size_t, const char **, params_t *, size_t *);
+bool parse_clients(size_t, const char **, params_t *, size_t *);
+bool parse_freq(size_t, const char **, params_t *, size_t *);
+bool parse_help(size_t, const char **, params_t *, size_t *);
 
 size_t extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);

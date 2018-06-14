@@ -10,11 +10,12 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include "list/src/list.h"
 #include "server.h"
 #include "socket/src/socket.h"
 
-bool add_new_client(control_t *control)
+bool add_new_client(control_t *ctrl)
 {
 	client_t *client;
 	struct sockaddr_in addr = {0};
@@ -24,12 +25,12 @@ bool add_new_client(control_t *control)
 	CHECK(client->cmd = llist_init(), == 0, false);
 	CHECK(client->pending = llist_init(), == 0, false);
 	client->rbuf.size = RBUFFER_SIZE;
-	client->fd = accept(control->fd, (struct sockaddr *)&addr, &size);
+	client->fd = accept(ctrl->fd, (struct sockaddr *)&addr, &size);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
 		false);
-	CHECK(client->node = poll_add(&control->list, client->fd, POLLIN),
+	CHECK(client->node = poll_add(&ctrl->list, client->fd, POLLIN),
 		== 0, false);
-	CHECK(llist_push(control->clients, 1, client), == -1, false);
+	CHECK(llist_push(ctrl->clients, 1, client), == -1, false);
 	return (true);
 }
 
@@ -49,7 +50,7 @@ ssize_t receive_data(client_t *cl)
 	return (ret);
 }
 
-bool handle_client(control_t *control, client_t *cl, size_t idx)
+bool handle_client(control_t *ctrl, client_t *cl, size_t idx)
 {
 	bool to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
 	char *str;
@@ -58,7 +59,7 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 	if (!to_evict && (cl->node->revt & POLLIN)) {
 		to_evict = !(receive_data(cl) && extract_rbuf_cmd(cl));
 		if (!to_evict)
-			proceed_cmd(control, cl);
+			proceed_cmd(ctrl, cl);
 	}
 	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT)) {
 		str = llist_remove(cl->pending, 0);
@@ -66,7 +67,7 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 			write(cl->fd, str, strlen(str));
 	}
 	if (to_evict) {
-		poll_rm(&control->list, cl->fd);
+		poll_rm(&ctrl->list, cl->fd);
 		llist_clear(cl->pending, true);
 		llist_destroy(cl->pending);
 		close(cl->fd);
@@ -75,61 +76,59 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 	return (true);
 }
 
-bool handle_request(control_t *control)
+bool handle_request(control_t *ctrl)
 {
-	control->clients = llist_filter(control->clients,
-		(bool (*)(void *, void *, size_t))handle_client, control);
+	ctrl->clients = llist_filter(ctrl->clients,
+		(bool (*)(void *, void *, size_t))handle_client, ctrl);
 	return (true);
 }
 
-bool control_init(control_t *control)
+bool ctrl_init(control_t *ctrl)
 {
-	CHECK(control->clients = llist_init(), == 0, false);
+	CHECK(ctrl->clients = llist_init(), == 0, false);
 	return (true);
 }
 
-static void cycle_adjustment(control_t *ctrl, bool await)
+static int cycle_adjustment(control_t *ctrl, bool await)
 {
-	long ms = 0;
-	long tr = (long) round(1.0 / ctrl->params.tickrate * 1000);
-	static struct timespec start;
-	struct timespec stop;
+	static long ms = 0;
+	struct timeval stop;
+	static struct timeval start;
+	long tr = (long) round(1 * 1e3 / ctrl->params.tickrate);
 
-	if (!await)
-		clock_gettime(CLOCK_REALTIME, &start);
-	else {
-		clock_gettime(CLOCK_REALTIME, &stop);
-		ms = (long) ((round(stop.tv_nsec -  start.tv_nsec) / 1.0e6));
-		printf("Awaiting [%ld] ms\n", ((ms < tr) ? tr - ms : 0));
+	if (!await) {
+		ms = (tr > ms) ? tr : 2 * tr - ms;
+		gettimeofday(&start, NULL);
+	} else {
+		gettimeofday(&stop, NULL);
+		ms = (long) ((round(stop.tv_usec -  start.tv_usec) / 1e3));
+		ms = (long) ((ms < 0) ? 1e3 + ms : ms);
 		usleep((__useconds_t) ((ms < tr) ? tr - ms : 0));
 	}
+	return ((int) ms);
 }
 
 int main(int ac, const char **av)
 {
-	control_t control = {0};
+	control_t ctrl = {0};
 	params_t params = {false, 4242, 20, 20, 0, 0, 5, 100};
 	int ret;
 
-	control.params = params;
-	CHECK(parse_args((size_t)(ac), av, &control.params), == false, 84);
-	if (control.params.help)
+	ctrl.params = params;
+	CHECK(parse_args((size_t)(ac), av, &ctrl.params), == false, 84);
+	if (ctrl.params.help)
 		return (disp_help(av[0]));
-	CHECK(control_init(&control), == false, 84);
-	CHECK(control.fd = create_server(control.params.port), == -1, 84);
-	CHECK(poll_add(&control.list, control.fd, POLLIN), == 0, 84);
+	CHECK(ctrl_init(&ctrl), == false, 84);
+	CHECK(ctrl.fd = create_server(ctrl.params.port), == -1, 84);
+	CHECK(poll_add(&ctrl.list, ctrl.fd, POLLIN), == 0, 84);
 
-	//FIXME
-	control.params.tickrate = 20;
 	while (1) {
-		cycle_adjustment(&control, false);
-		CHECK(ret = poll_wait(control.list, (int)(1/control.params.tickrate * 1000)), == -1, 84);
-		if (poll_canread(control.list, control.fd)) {
-			CHECK(add_new_client(&control), == false, 84);
-		}
-		else
-			handle_request(&control);
-		cycle_adjustment(&control, true);
+		CHECK(ret = poll_wait(ctrl.list, cycle_adjustment(&ctrl, false)), == -1, 84);
+		if (poll_canread(ctrl.list, ctrl.fd)) {
+			CHECK(add_new_client(&ctrl), == false, 84);
+		} else
+			handle_request(&ctrl);
+		cycle_adjustment(&ctrl, true);
 	}
 	return (0);
 }
