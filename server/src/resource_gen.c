@@ -5,7 +5,7 @@
 ** resource_gen
 */
 
-#include "item_names.h"
+#include "server.h"
 
 bool place_resource(control_t *control, size_t x, size_t y)
 {

@@ -8,13 +8,13 @@
 #include <regex.h>
 #include "server.h"
 
-bool reset_cast(control_t *ctrl, client_t *cl, size_t id)
+static bool reset_cast(control_t *ctrl, client_t *cl, size_t id)
 {
 	bool ret = false;
 
 	for (size_t i = 0; i < ctrl->clients->length; ++i) {
 		if (((client_t *) (llist_at(ctrl->clients, i)))->id == id) {
-			((client_t *) (llist_at(ctrl->clients, i)))->last = 1;
+			((client_t *) (llist_at(ctrl->clients, i)))->task.time = 1;
 			ret = true;
 			break;
 		}

@@ -6,7 +6,7 @@
 */
 
 #include <regex.h>
-#include "server.h
+#include "server.h"
 
 void adm_teams(control_t *ctrl, client_t *cl)
 {

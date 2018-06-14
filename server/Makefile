@@ -60,7 +60,8 @@ CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized
 LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist -Llib/str -lstr -lm
 
 DIRS		=	commands		\
-			arguments
+			arguments		\
+			admin
 
 SORTEDDIRS	=	$(sort $(DIRS))
 SRCDIRS		=	$(SORTEDDIRS:%=$(SRCDIR)/%)
