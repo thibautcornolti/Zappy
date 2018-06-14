@@ -7,17 +7,18 @@
 
 #include "server.h"
 
-void init_map(control_t *ctrl)
+bool init_map(control_t *ctrl)
 {
 	size_t height = ctrl->params.height;
 	size_t width = ctrl->params.width;
 
-	ctrl->map = calloc(height * width, sizeof(cell_t));
+	CHECK(ctrl->map = calloc(height * width, sizeof(cell_t)), == 0, false);
 	for (size_t i = 0; ctrl->map && i < height * width; ++i) {
 		ctrl->map[i].y = i / width;
 		ctrl->map[i].x = i % width;
-		ctrl->map[i].items = llist_init();
+		CHECK(ctrl->map[i].items = llist_init(), == 0, false);
 	}
+	return (true);
 }
 
 list_t *map_get(control_t *control, size_t x, size_t y)

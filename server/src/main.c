@@ -10,7 +10,9 @@
 #include "socket/src/socket.h"
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 bool add_new_client(control_t *control)
 {
@@ -83,6 +85,8 @@ bool handle_request(control_t *control)
 bool control_init(control_t *control)
 {
 	CHECK(control->clients = llist_init(), == 0, false);
+	CHECK(init_map(control), == false, false);
+	CHECK(place_resources(control), == false, false);
 	return (true);
 }
 
@@ -92,6 +96,7 @@ int main(int ac, const char **av)
 	params_t params = {false, 4242, 20, 20, 0, 0, 5, 100};
 	int ret;
 
+	srand(getpid() * time(0));
 	control.params = params;
 	CHECK(parse_args((size_t)(ac), av, &control.params), == false, 84);
 	if (control.params.help)
