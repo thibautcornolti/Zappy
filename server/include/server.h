@@ -15,6 +15,7 @@
 #define RBUFFER_SIZE 4096
 #define CMD_SIZE 2048
 #define CMD_COUNT 12
+#define ITEM_COUNT 7
 
 #define HELP_MSG                                                              \
 	"USAGE: %s -p port -x width -y height -n name1 name2 ... -c "         \
@@ -174,10 +175,20 @@ bool parse_args(size_t , const char **, params_t *);
 */
 bool init_map(control_t *);
 list_t *map_get(control_t *, size_t, size_t);
-void map_set(control_t *, size_t, size_t, item_t);
+void map_add(control_t *, size_t, size_t, item_t);
 void map_remove(control_t *, size_t, size_t, item_t);
 
 /*
  * resource_gen
  */
 bool place_resources(control_t *);
+
+/*
+ * admin commands
+ */
+void adm_teams(control_t *ctrl, client_t *cl);
+void adm_spawn(control_t *ctrl, client_t *cl);
+void adm_tickrate(control_t *ctrl, client_t *cl);
+void adm_move(control_t *ctrl, client_t *cl);
+void adm_cast(control_t *ctrl, client_t *cl);
+void adm_killall(control_t *ctrl, client_t *cl);

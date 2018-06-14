@@ -37,6 +37,12 @@ FILES		=	args				\
 			commands/cmd_right		\
 			commands/cmd_set		\
 			commands/cmd_take		\
+			admin/adm_teams			\
+			admin/adm_spawn			\
+			admin/adm_tickrate		\
+			admin/adm_move			\
+			admin/adm_cast			\
+			admin/adm_killall		\
 			arguments/parse_clients		\
 			arguments/parse_freq		\
 			arguments/parse_height		\
