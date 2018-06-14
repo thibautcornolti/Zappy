@@ -88,19 +88,19 @@ bool control_init(control_t *control)
 	return (true);
 }
 
-void cycle_ajustment(control_t *ctrl, bool await)
+static void cycle_adjustment(control_t *ctrl, bool await)
 {
-	long ms;
-	long tr;
+	long ms = 0;
+	long tr = (long) round(1.0 / ctrl->params.tickrate * 1000);
 	static struct timespec start;
 	struct timespec stop;
 
 	if (!await)
 		clock_gettime(CLOCK_REALTIME, &start);
 	else {
-		tr = (long) round(1.0 / ctrl->params.tickrate * 1000);
 		clock_gettime(CLOCK_REALTIME, &stop);
-		ms = (long) (round(stop.tv_nsec / 1.0e6) - round(start.tv_nsec / 1.0e6));
+		ms = (long) ((round(stop.tv_nsec -  start.tv_nsec) / 1.0e6));
+		printf("Awaiting [%ld] ms\n", ((ms < tr) ? tr - ms : 0));
 		usleep((__useconds_t) ((ms < tr) ? tr - ms : 0));
 	}
 }
@@ -120,16 +120,16 @@ int main(int ac, const char **av)
 	CHECK(poll_add(&control.list, control.fd, POLLIN), == 0, 84);
 
 	//FIXME
-	control.params.tickrate = 1;
+	control.params.tickrate = 20;
 	while (1) {
-		cycle_ajustment(NULL, false);
-		CHECK(ret = poll_wait(control.list, 1/control.params.tickrate * 1000), == -1, 84);
+		cycle_adjustment(&control, false);
+		CHECK(ret = poll_wait(control.list, (int)(1/control.params.tickrate * 1000)), == -1, 84);
 		if (poll_canread(control.list, control.fd)) {
 			CHECK(add_new_client(&control), == false, 84);
 		}
 		else
 			handle_request(&control);
-		cycle_ajustment(&control, true);
+		cycle_adjustment(&control, true);
 	}
 	return (0);
 }
