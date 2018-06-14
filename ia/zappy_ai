@@ -36,7 +36,7 @@ def run(args):
     with Client(args.h, args.p) as (client, error):
         if error:
             exit(error)
-        client.poll()
+        client.poll(1000)
         # ai = AIController(client, args.n)
         # print(ai.ulapid)
         # print(ai.broadcast("test"))
@@ -45,10 +45,10 @@ def run(args):
 
 def main():
     args = parse_arg()
-    try:
-        run(args)
-    except Exception as e:
-        exit("Fatal Error: %s" % e)
+    # try:
+    run(args)
+    # except Exception as e:
+    #     exit("Fatal Error: %s" % e)
 
 
 if __name__ == "__main__":
