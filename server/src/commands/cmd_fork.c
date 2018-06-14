@@ -7,7 +7,16 @@
 
 #include "server.h"
 
-void cmd_fork(control_t *ctrl, client_t *client) {
-	(void)ctrl;
-	(void)client;
+void cmd_fork(control_t *control, client_t *client)
+{
+	(void)(control);
+	client->task.time = 42;
+	client->task.type = FORK;
+	llist_push(client->pending, 1, strdup(OK_MSG));
+}
+
+void exec_fork(control_t *control, client_t *client)
+{
+	(void)(control);
+	(void)(client);
 }

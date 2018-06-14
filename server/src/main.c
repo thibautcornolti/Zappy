@@ -5,16 +5,16 @@
 ** main
 */
 
-#include <math.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <time.h>
 #include "list/src/list.h"
 #include "server.h"
 #include "socket/src/socket.h"
+#include <arpa/inet.h>
+#include <math.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
 bool add_new_client(control_t *ctrl)
 {
@@ -29,8 +29,8 @@ bool add_new_client(control_t *ctrl)
 	client->fd = accept(ctrl->fd, (struct sockaddr *)&addr, &size);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
 		false);
-	CHECK(client->node = poll_add(&ctrl->list, client->fd, POLLIN),
-		== 0, false);
+	CHECK(client->node = poll_add(&ctrl->list, client->fd, POLLIN), == 0,
+		false);
 	CHECK(llist_push(ctrl->clients, 1, client), == -1, false);
 	return (true);
 }
@@ -59,7 +59,7 @@ bool handle_client(control_t *ctrl, client_t *cl, size_t idx)
 	(void)(idx);
 	if (!to_evict && (cl->node->revt & POLLIN)) {
 		to_evict = !(receive_data(cl) && extract_rbuf_cmd(cl));
-		if (!to_evict)
+		if (!to_evict && cl->task.type == NONE)
 			proceed_cmd(ctrl, cl);
 	}
 	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT)) {
@@ -79,8 +79,17 @@ bool handle_client(control_t *ctrl, client_t *cl, size_t idx)
 
 bool handle_request(control_t *ctrl)
 {
+	team_t *team;
+	size_t client_count;
+
 	ctrl->clients = llist_filter(ctrl->clients,
 		(bool (*)(void *, void *, size_t))handle_client, ctrl);
+	for (size_t i = 0; i < ctrl->params.nteam; ++i) {
+		team = &(ctrl->teams[i]);
+		client_count = ctrl->params.nclt - team->av;
+		for (size_t j = 0; j < client_count; ++j)
+			CHECK(exec_task(ctrl, team->cl[j]), == false, false);
+	}
 	return (true);
 }
 
@@ -97,18 +106,19 @@ static int cycle_adjustment(control_t *ctrl, bool await)
 	static long ms = 0;
 	struct timeval stop;
 	static struct timeval start;
-	long tr = (long) round(1 * 1e3 / ctrl->params.tickrate);
+	long tr = (long)round(1 * 1e3 / ctrl->params.tickrate);
 
 	if (!await) {
 		ms = (tr > ms) ? tr : 2 * tr - ms;
 		gettimeofday(&start, NULL);
-	} else {
-		gettimeofday(&stop, NULL);
-		ms = (long) ((round(stop.tv_usec -  start.tv_usec) / 1e3));
-		ms = (long) ((ms < 0) ? 1e3 + ms : ms);
-		usleep((__useconds_t) ((ms < tr) ? tr - ms : 0));
 	}
-	return ((int) ms);
+	else {
+		gettimeofday(&stop, NULL);
+		ms = (long)((round(stop.tv_usec - start.tv_usec) / 1e3));
+		ms = (long)((ms < 0) ? 1e3 + ms : ms);
+		usleep((__useconds_t)((ms < tr) ? tr - ms : 0));
+	}
+	return ((int)(ms));
 }
 
 int main(int ac, const char **av)
@@ -130,10 +140,13 @@ int main(int ac, const char **av)
 	CHECK(poll_add(&ctrl.list, ctrl.fd, POLLIN), == 0, 84);
 
 	while (1) {
-		CHECK(ret = poll_wait(ctrl.list, cycle_adjustment(&ctrl, false)), == -1, 84);
+		CHECK(ret = poll_wait(
+			      ctrl.list, cycle_adjustment(&ctrl, false)),
+			== -1, 84);
 		if (poll_canread(ctrl.list, ctrl.fd)) {
 			CHECK(add_new_client(&ctrl), == false, 84);
-		} else
+		}
+		else
 			handle_request(&ctrl);
 		cycle_adjustment(&ctrl, true);
 	}

@@ -7,7 +7,14 @@
 
 #include "server.h"
 
-void cmd_set(control_t *ctrl, client_t *client) {
-	(void)ctrl;
+void cmd_set(control_t *control, client_t *client)
+{
+	(void)control;
+	(void)client;
+}
+
+void exec_set(control_t *control, client_t *client)
+{
+	(void)control;
 	(void)client;
 }
