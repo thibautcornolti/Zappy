@@ -176,3 +176,8 @@ bool init_map(control_t *);
 list_t *map_get(control_t *, size_t, size_t);
 void map_set(control_t *, size_t, size_t, item_t);
 void map_remove(control_t *, size_t, size_t, item_t);
+
+/*
+ * resource_gen
+ */
+bool place_resources(control_t *);
