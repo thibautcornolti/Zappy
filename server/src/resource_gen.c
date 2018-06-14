@@ -41,6 +41,7 @@ bool place_resources(control_t *control)
 	for (size_t y = 0; y < control->params.height; ++y)
 		for (size_t x = 0; x < control->params.width; ++x)
 			CHECK(place_resource(control, x, y), == false, false);
+	return (true);
 	// for (size_t y = 0; y < control->params.height; ++y) {
 	// 	printf("|");
 	// 	for (size_t x = 0; x < control->params.width; ++x) {

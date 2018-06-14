@@ -7,7 +7,14 @@
 
 #include "server.h"
 
-void cmd_inventory(control_t *control, client_t *client) {
+void cmd_inventory(control_t *control, client_t *client)
+{
+	(void)control;
+	(void)client;
+}
+
+void exec_inventory(control_t *control, client_t *client)
+{
 	(void)control;
 	(void)client;
 }

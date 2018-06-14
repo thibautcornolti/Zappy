@@ -16,6 +16,8 @@
 #define CMD_SIZE 2048
 #define CMD_COUNT 12
 
+#define OK_MSG "ok"
+#define KO_MSG "ko"
 #define HELP_MSG                                                              \
 	"USAGE: %s -p port -x width -y height -n name1 name2 ... -c "         \
 	"clientsNb -f freq\n"                                                 \
@@ -37,10 +39,23 @@
 
 typedef enum facing_e { NORTH = 0, EAST, SOUTH, WEST } facing_t;
 
-typedef enum state_e {
-	ANONYMOUS,
-	PLAYING
-} state_t;
+typedef enum state_e { ANONYMOUS, PLAYING } state_t;
+
+typedef enum task_type_e {
+	NONE = 0,
+	FORWARD,
+	LEFT,
+	RIGHT,
+	LOOK,
+	INVENTORY,
+	BROADCAST,
+	CONNECT_NBR,
+	FORK,
+	EJECT,
+	TAKE,
+	SET,
+	INCANTATION
+} task_type_t;
 
 typedef enum item_s {
 	FOOD,
@@ -88,6 +103,11 @@ typedef struct vec2_s {
 	size_t y;
 } vec2_t;
 
+typedef struct task_s {
+	size_t time;
+	task_type_t type;
+} task_t;
+
 typedef struct client_s {
 	int fd;
 	char ip[INET_ADDRSTRLEN];
@@ -99,8 +119,8 @@ typedef struct client_s {
 	size_t food;
 	poll_t *node;
 	list_t *pending;
+	task_t task;
 	struct team_s *team;
-
 } client_t;
 
 typedef struct team_s {
@@ -141,6 +161,19 @@ void cmd_take(control_t *, client_t *);
 void cmd_set(control_t *, client_t *);
 void cmd_incantation(control_t *, client_t *);
 
+void exec_forward(control_t *, client_t *);
+void exec_right(control_t *, client_t *);
+void exec_left(control_t *, client_t *);
+void exec_look(control_t *, client_t *);
+void exec_inventory(control_t *, client_t *);
+void exec_broadcast(control_t *, client_t *);
+void exec_connect_nbr(control_t *, client_t *);
+void exec_fork(control_t *, client_t *);
+void exec_eject(control_t *, client_t *);
+void exec_take(control_t *, client_t *);
+void exec_set(control_t *, client_t *);
+void exec_incantation(control_t *, client_t *);
+
 bool parse_port(size_t ac, const char **av, params_t *params, size_t *i);
 bool parse_width(size_t ac, const char **av, params_t *params, size_t *i);
 bool parse_height(size_t ac, const char **av, params_t *params, size_t *i);
@@ -151,6 +184,8 @@ bool parse_help(size_t ac, const char **av, params_t *params, size_t *i);
 
 size_t extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);
+bool exec_task(control_t *, client_t *);
+bool place_resources(control_t *);
 
 /*
 ** Teams

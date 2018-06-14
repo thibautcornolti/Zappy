@@ -7,7 +7,14 @@
 
 #include "server.h"
 
-void cmd_take(control_t *control, client_t *client) {
+void cmd_take(control_t *control, client_t *client)
+{
+	(void)control;
+	(void)client;
+}
+
+void exec_take(control_t *control, client_t *client)
+{
 	(void)control;
 	(void)client;
 }

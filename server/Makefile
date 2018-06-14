@@ -24,6 +24,7 @@ FILES		=	args				\
 			t_manager			\
 			t_tools				\
 			map				\
+			exec				\
 			resource_gen			\
 			commands/cmd_broadcast		\
 			commands/cmd_connect_nbr	\
