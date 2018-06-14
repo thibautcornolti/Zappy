@@ -1,12 +1,12 @@
 import socket
-from _smbc import ConnectionRefusedError
+import select
 
 
 class Client:
 
     def __init__(self, ip, port):
-        self.ip = ip
         self.port = port
+        self.ip = ip
 
     def __enter__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,7 +20,7 @@ class Client:
         self.sock.close()
 
     def poll(self, timeout):
-        raise NotImplemented
+        raise NotImplementedError("Poll")
 
     def write(self, msg):
         self.sock.sendall(str.encode(msg + "\n"))
