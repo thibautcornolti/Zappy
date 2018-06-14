@@ -8,9 +8,11 @@
 #include "server.h"
 #include <stdio.h>
 
-static const param_parse_t tab[] = {{"-p", parse_port}, {"-x", parse_width},
+static const param_parse_t tab[] = {
+	{"-p", parse_port}, {"-x", parse_width},
 	{"-y", parse_height}, {"-n", parse_names}, {"-c", parse_clients},
-	{"-f", parse_freq}, {"-help", parse_help}};
+	{"-f", parse_freq}, {"-help", parse_help}
+};
 
 int disp_help(const char *prog_name)
 {

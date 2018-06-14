@@ -9,8 +9,14 @@
 #include <math.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <sys/time.h>
+#include <sys/types.h>
+<<<<<<< HEAD
+#include <sys/time.h>
+=======
+#include <unistd.h>
+#include <time.h>
+>>>>>>> e9f35a0cc3fdecdddc004ea761f7999e25a23645
 #include "list/src/list.h"
 #include "server.h"
 #include "socket/src/socket.h"
@@ -86,6 +92,8 @@ bool handle_request(control_t *ctrl)
 bool ctrl_init(control_t *ctrl)
 {
 	CHECK(ctrl->clients = llist_init(), == 0, false);
+	CHECK(init_map(ctrl), == false, false);
+	CHECK(place_resources(ctrl), == false, false);
 	return (true);
 }
 
@@ -114,9 +122,16 @@ int main(int ac, const char **av)
 	params_t params = {false, 4242, 20, 20, 0, 0, 5, 100};
 	int ret;
 
+<<<<<<< HEAD
 	ctrl.params = params;
 	CHECK(parse_args((size_t)(ac), av, &ctrl.params), == false, 84);
 	if (ctrl.params.help)
+=======
+	srand(getpid() * time(0));
+	control.params = params;
+	CHECK(parse_args((size_t)(ac), av, &control.params), == false, 84);
+	if (control.params.help)
+>>>>>>> e9f35a0cc3fdecdddc004ea761f7999e25a23645
 		return (disp_help(av[0]));
 	CHECK(ctrl_init(&ctrl), == false, 84);
 	CHECK(ctrl.fd = create_server(ctrl.params.port), == -1, 84);

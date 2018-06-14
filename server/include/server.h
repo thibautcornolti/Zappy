@@ -19,10 +19,10 @@
 #define HELP_MSG                                                              \
 	"USAGE: %s -p port -x width -y height -n name1 name2 ... -c "         \
 	"clientsNb -f freq\n"                                                 \
-	"\tport\t\tis the port number\n"                                        \
-	"\twidth\t\tis the width of the world\n"                                \
-	"\theight\t\tis the height of the world\n"                              \
-	"\tnameX\t\tis the name of the team X\n"                                \
+	"\tport\t\tis the port number\n"                                      \
+	"\twidth\t\tis the width of the world\n"                              \
+	"\theight\t\tis the height of the world\n"                            \
+	"\tnameX\t\tis the name of the team X\n"                              \
 	"\tclientsNb\tis the number of authorized clients per team\n"         \
 	"\tfreq\t\tis the reciprocal of time unit for execution of actions\n"
 
@@ -35,12 +35,12 @@
 	}
 #endif
 
-typedef enum facing_e {
-	NORTH = 0,
-	EAST,
-	SOUTH,
-	WEST
-} facing_t;
+typedef enum facing_e { NORTH = 0, EAST, SOUTH, WEST } facing_t;
+
+typedef enum state_e {
+	ANONYMOUS,
+	PLAYING
+} state_t;
 
 typedef enum item_s {
 	FOOD,
@@ -55,7 +55,7 @@ typedef enum item_s {
 typedef struct cell_s {
 	size_t x;
 	size_t y;
-	list_t *item;
+	list_t *items;
 } cell_t;
 
 typedef struct rbuf_s {
@@ -95,6 +95,7 @@ typedef struct client_s {
 	rbuf_t rbuf;
 	size_t id;
 	vec2_t pos;
+	facing_t facing;
 	size_t food;
 	poll_t *node;
 	list_t *pending;
@@ -151,7 +152,9 @@ bool parse_help(size_t, const char **, params_t *, size_t *);
 size_t extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);
 
-//teams
+/*
+** Teams
+*/
 bool team_add_client(control_t *, client_t *, char *);
 bool team_remove_client(control_t *, client_t *);
 void team_add(control_t *, char *);
@@ -160,6 +163,16 @@ void team_init(control_t *);
 void team_realloc_arr(control_t *);
 void team_release(team_t *);
 
-//args parsing
+/*
+** Args parsing
+*/
 int disp_help(const char *);
-bool parse_args(size_t ac, const char **av, params_t *params);
+bool parse_args(size_t , const char **, params_t *);
+
+/*
+** Map
+*/
+bool init_map(control_t *);
+list_t *map_get(control_t *, size_t, size_t);
+void map_set(control_t *, size_t, size_t, item_t);
+void map_remove(control_t *, size_t, size_t, item_t);

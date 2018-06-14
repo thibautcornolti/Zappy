@@ -5,6 +5,7 @@
 ## Makefile
 ##
 
+MAKESTR		=	make --no-print-directory -C lib/str
 MAKEPOLL	=	make --no-print-directory -C lib/poll
 MAKELIST	=	make --no-print-directory -C lib/list
 MAKESOCKET	=	make --no-print-directory -C lib/socket
@@ -23,6 +24,7 @@ FILES		=	args				\
 			t_manager			\
 			t_tools				\
 			map				\
+			resource_gen			\
 			commands/cmd_broadcast		\
 			commands/cmd_connect_nbr	\
 			commands/cmd_eject		\
@@ -48,7 +50,7 @@ SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
 OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 
 CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized
-LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist -lm
+LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist -Llib/str -lstr -lm
 
 DIRS		=	commands		\
 			arguments
@@ -69,6 +71,7 @@ RES     	=       \033[0m
 all:	$(NAME)
 
 $(NAME):	$(OBJDIR) $(OBJDIRS) $(OBJS)
+		@$(MAKESTR)
 		@$(MAKEPOLL)
 		@$(MAKELIST)
 		@$(MAKESOCKET)
@@ -76,12 +79,14 @@ $(NAME):	$(OBJDIR) $(OBJDIRS) $(OBJS)
 		@gcc -o $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
+	@$(MAKESTR) clean
 	@$(MAKEPOLL) clean
 	@$(MAKELIST) clean
 	@$(MAKESOCKET) clean
 	@rm -rf $(OBJDIR)
 
 fclean:	clean
+	@$(MAKESTR) fclean
 	@$(MAKEPOLL) fclean
 	@$(MAKEPOLL) fclean
 	@$(MAKESOCKET) fclean
