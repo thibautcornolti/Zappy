@@ -25,7 +25,7 @@ bool parse_names(size_t ac, const char **av, params_t *params, size_t *i)
 	CHECK(params->teams = calloc(params->nteam, sizeof(char *)), == 0,
 		false);
 	for (size_t s = 0; s < params->nteam; ++s)
-		CHECK(params->teams[s] = strdup(av[*i + s]), == 0, false);
+		CHECK(params->teams[s] = strdup(av[*i + s + 1]), == 0, false);
 	*i += s;
 	return (true);
 }

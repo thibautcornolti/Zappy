@@ -9,6 +9,7 @@
 
 void cmd_fork(control_t *control, client_t *client)
 {
+	// TODO: Further check requirements
 	(void)(control);
 	client->task.time = 42;
 	client->task.type = FORK;
@@ -17,6 +18,9 @@ void cmd_fork(control_t *control, client_t *client)
 
 void exec_fork(control_t *control, client_t *client)
 {
+	// TODO: Further check requirements
+	// TODO: Spawn Egg
+	// TODO: Increase team available count (Maybe ??)
 	(void)(control);
-	(void)(client);
+	client->task.type = NONE;
 }

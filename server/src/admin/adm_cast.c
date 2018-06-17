@@ -10,16 +10,14 @@
 
 static bool reset_cast(control_t *ctrl, client_t *cl, size_t id)
 {
-	bool ret = false;
-
-	for (size_t i = 0; i < ctrl->clients->length; ++i) {
-		if (((client_t *) (llist_at(ctrl->clients, i)))->id == id) {
-			((client_t *) (llist_at(ctrl->clients, i)))->task.time = 1;
-			ret = true;
-			break;
+	for (list_elem_t *it = ctrl->clients->head; it; it = it->next) {
+		cl = it->payload;
+		if (cl->id == id) {
+			cl->task.time = 1;
+			return (true);
 		}
 	}
-	return (ret);
+	return (false);
 }
 
 void adm_cast(control_t *ctrl, client_t *cl)

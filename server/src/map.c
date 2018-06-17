@@ -50,7 +50,7 @@ void map_remove(control_t *control, size_t x, size_t y, item_t item)
 		return;
 	items = control->map[x + y * control->params.width].items;
 	idx = llist_find_index(
-		items, (bool (*)(void *, void *, size_t))find_item, &item);
+		items, (bool (*)(void *, void *, size_t))(find_item), &item);
 	if (idx == -1)
 		return;
 	llist_remove(items, idx);

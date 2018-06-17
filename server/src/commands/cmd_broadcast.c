@@ -9,12 +9,12 @@
 
 void cmd_broadcast(control_t *control, client_t *client)
 {
-	(void)control;
-	(void)client;
+	(void)(control);
+	(void)(client);
 }
 
 void exec_broadcast(control_t *control, client_t *client)
 {
-	(void)control;
-	(void)client;
+	(void)(control);
+	client->task.type = NONE;
 }

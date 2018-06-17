@@ -47,9 +47,9 @@ void show_cmd(cmd_t *cmd)
 
 void proceed_cmd(control_t *ctrl, client_t *cl)
 {
-	(void) ctrl;
-	cmd_t *cmd = ((cmd_t *) cl->cmd->head->payload);
+	cmd_t *cmd = cl->cmd->head->payload;
 
+	(void)(ctrl);
 	show_cmd(cmd);
 	for (int i = 0; i < CMD_COUNT; ++i)
 		if (!strcasecmp(cmd->name, fcmd[i].cmd)) {

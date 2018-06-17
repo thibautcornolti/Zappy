@@ -5,23 +5,23 @@
 ** Created by rectoria
 */
 
-#include <regex.h>
 #include "server.h"
+#include <regex.h>
 
 static bool move_player(control_t *ctrl, client_t *cl, size_t y, size_t x)
 {
-	bool ret = false;
-	size_t id = strtoul(((cmd_t *)cl->cmd->head->payload)->param[0], 0, 10);
+	cmd_t *cmd = cl->cmd->head->payload;
+	size_t id = strtoul(cmd->param[0], 0, 10);
 
-	for (size_t i = 0; i < ctrl->clients->length; ++i) {
-		if (((client_t *)(llist_at(ctrl->clients, i)))->id == id){
-			((client_t *)(llist_at(ctrl->clients, i)))->pos.x = x;
-			((client_t *)(llist_at(ctrl->clients, i)))->pos.y = y;
-			ret = true;
-			break;
+	for (list_elem_t *it = ctrl->clients->head; it; it = it->next) {
+		cl = it->payload;
+		if (cl->id == id) {
+			cl->pos.x = x;
+			cl->pos.y = y;
+			return (true);
 		}
 	}
-	return (ret);
+	return (false);
 }
 
 void adm_move(control_t *ctrl, client_t *cl)
@@ -36,11 +36,12 @@ void adm_move(control_t *ctrl, client_t *cl)
 	if (cmd->nparam == 3 && !regexec(&preg, cmd->cmd, 0, NULL, 0)) {
 		y = strtoul(cmd->param[1], 0, 10);
 		x = strtoul(cmd->param[2], 0, 10);
-		if (y < ctrl->params.height && x < ctrl->params.width
-		    && move_player(ctrl, cl, y, x)) {}
-			llist_push(cl->pending, 1,
-			           "Command [SPAWN] successful");
-	} else
+		if (y < ctrl->params.height && x < ctrl->params.width &&
+			move_player(ctrl, cl, y, x)) {
+		}
+		llist_push(cl->pending, 1, "Command [SPAWN] successful");
+	}
+	else
 		llist_push(cl->pending, 1, strdup(usage));
 	regfree(&preg);
 }

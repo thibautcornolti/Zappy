@@ -12,14 +12,15 @@ void cmd_right(control_t *control, client_t *client)
 	(void)(control);
 	client->task.time = 7;
 	client->task.type = RIGHT;
-	llist_push(client->pending, 1, strdup(OK_MSG));
 }
 
 void exec_right(control_t *control, client_t *client)
 {
 	(void)(control);
-	if (client->facing == WEST)
-		client->facing = NORTH;
+	if (client->facing == NORTH)
+		client->facing = EAST;
 	else
-		client->facing += 1;
+		client->facing -= 1;
+	llist_push(client->pending, 1, strdup(OK_MSG));
+	client->task.type = NONE;
 }

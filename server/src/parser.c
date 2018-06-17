@@ -70,7 +70,7 @@ static bool retrieve_cmd(client_t *client)
 	return (loop);
 }
 
-size_t extract_rbuf_cmd(client_t *cl)
+bool extract_rbuf_cmd(client_t *cl)
 {
 	bool loop = true;
 

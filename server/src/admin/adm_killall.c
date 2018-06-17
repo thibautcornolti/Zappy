@@ -9,5 +9,6 @@
 
 void adm_killall(control_t *ctrl, client_t *cl)
 {
-	
+	(void)(ctrl);
+	(void)(cl);
 }

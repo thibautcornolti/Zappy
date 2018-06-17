@@ -9,12 +9,15 @@
 
 void cmd_set(control_t *control, client_t *client)
 {
-	(void)control;
-	(void)client;
+	// TODO: Add argument passing field to task_t
+	(void)(control);
+	client->task.time = 7;
+	client->task.type = SET;
 }
 
 void exec_set(control_t *control, client_t *client)
 {
-	(void)control;
-	(void)client;
+	// TODO: Drop item
+	(void)(control);
+	client->task.type = NONE;
 }

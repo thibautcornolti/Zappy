@@ -15,10 +15,11 @@
 #define RBUFFER_SIZE 4096
 #define CMD_SIZE 2048
 #define CMD_COUNT 12
-#define ITEM_COUNT 7
+#define FOOD_DELAY 126
 
 #define OK_MSG "ok"
 #define KO_MSG "ko"
+#define WELCOME_MSG "WELCOME"
 #define HELP_MSG                                                              \
 	"USAGE: %s -p port -x width -y height -n name1 name2 ... -c "         \
 	"clientsNb -f freq\n"                                                 \
@@ -38,9 +39,9 @@
 	}
 #endif
 
-typedef enum facing_e { NORTH = 0, EAST, SOUTH, WEST } facing_t;
+typedef enum facing_e { NORTH = 0, WEST, SOUTH, EAST } facing_t;
 
-typedef enum state_e { ANONYMOUS, PLAYING } state_t;
+typedef enum state_e { ANONYMOUS = 0, PLAYING } state_t;
 
 typedef enum task_type_e {
 	NONE = 0,
@@ -59,13 +60,14 @@ typedef enum task_type_e {
 } task_type_t;
 
 typedef enum item_s {
-	FOOD,
+	FOOD = 0,
 	LINEMATE,
 	DERAUMERE,
 	SIBUR,
 	MENDIANE,
 	PHIRAS,
-	THYSTAME
+	THYSTAME,
+	ITEM_COUNT
 } item_t;
 
 typedef struct cell_s {
@@ -118,10 +120,13 @@ typedef struct client_s {
 	vec2_t pos;
 	facing_t facing;
 	size_t food;
+	size_t food_delay;
 	poll_t *node;
 	list_t *pending;
 	task_t task;
 	struct team_s *team;
+	state_t state;
+	size_t inventory[ITEM_COUNT];
 } client_t;
 
 typedef struct team_s {
@@ -183,7 +188,7 @@ bool parse_clients(size_t, const char **, params_t *, size_t *);
 bool parse_freq(size_t, const char **, params_t *, size_t *);
 bool parse_help(size_t, const char **, params_t *, size_t *);
 
-size_t extract_rbuf_cmd(client_t *);
+bool extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);
 bool exec_task(control_t *, client_t *);
 bool place_resources(control_t *);
@@ -195,7 +200,7 @@ bool team_add_client(control_t *, client_t *, char *);
 bool team_remove_client(control_t *, client_t *);
 void team_add(control_t *, char *);
 bool team_remove(control_t *, char *);
-void team_init(control_t *);
+bool team_init(control_t *);
 void team_realloc_arr(control_t *);
 void team_release(team_t *);
 
@@ -203,7 +208,7 @@ void team_release(team_t *);
 ** Args parsing
 */
 int disp_help(const char *);
-bool parse_args(size_t , const char **, params_t *);
+bool parse_args(size_t, const char **, params_t *);
 
 /*
 ** Map
@@ -212,6 +217,9 @@ bool init_map(control_t *);
 list_t *map_get(control_t *, size_t, size_t);
 void map_add(control_t *, size_t, size_t, item_t);
 void map_remove(control_t *, size_t, size_t, item_t);
+bool display_map(control_t *control);
+void move_forward(control_t *control, client_t *client);
+void move_directed(control_t *control, client_t *client, facing_t direction);
 
 /*
  * resource_gen

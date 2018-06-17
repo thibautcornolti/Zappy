@@ -34,7 +34,8 @@ bool team_remove_client(control_t *ctrl, client_t *cl)
 			if (!ret && cl->team->cl[i] == cl) {
 				cl->team->cl[i] = 0;
 				ret = true;
-			} else if (ret && i < ctrl->params.nclt - 1) {
+			}
+			else if (ret && i < ctrl->params.nclt - 1) {
 				cl->team->cl[i] = cl->team->cl[i + 1];
 				cl->team->cl[i + 1] = 0;
 			}
@@ -63,12 +64,13 @@ bool team_remove(control_t *ctrl, char *name)
 	for (size_t i = 0; i < ctrl->params.nteam; ++i) {
 		if (!ret && !strcmp(ctrl->teams[i].name, name)) {
 			for (size_t k = 0;
-			     k < ctrl->params.nclt - ctrl->teams[i].av; ++k)
+				k < ctrl->params.nclt - ctrl->teams[i].av; ++k)
 				ctrl->teams[i].cl[k]->team = 0;
 			team_release(&ctrl->teams[i]);
 			i -= 1;
 			ret = true;
-		} else if (ret && i < ctrl->params.nteam - 1) {
+		}
+		else if (ret && i < ctrl->params.nteam - 1) {
 			ctrl->params.teams[i] = ctrl->params.teams[i + 1];
 			ctrl->teams[i].name = ctrl->params.teams[i];
 			ctrl->teams[i].cl = ctrl->teams[i + 1].cl;
@@ -80,13 +82,17 @@ bool team_remove(control_t *ctrl, char *name)
 	return (ret);
 }
 
-void team_init(control_t *ctrl)
+bool team_init(control_t *ctrl)
 {
-	ctrl->teams = calloc(ctrl->params.nteam, sizeof(team_t));
+	CHECK(ctrl->teams = calloc(ctrl->params.nteam, sizeof(team_t)), == 0,
+		false);
 	for (size_t i = 0; i < ctrl->params.nteam; ++i) {
+		dprintf(2, "Creating team (ID: %lu): '%s'\n", i, ctrl->params.teams[i]);
 		ctrl->teams[i].name = ctrl->params.teams[i];
 		ctrl->teams[i].av = ctrl->params.nclt;
-		ctrl->teams[i].cl = calloc(ctrl->teams[i].av,
-		                           sizeof(client_t *));
+		CHECK(ctrl->teams[i].cl =
+				calloc(ctrl->teams[i].av, sizeof(client_t *)),
+			== 0, false);
 	}
+	return (true);
 }

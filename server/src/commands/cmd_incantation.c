@@ -17,6 +17,9 @@ void cmd_incantation(control_t *control, client_t *client)
 
 void exec_incantation(control_t *control, client_t *client)
 {
+	// TODO: Check incantation requirements
+	// TODO: Consume stones from inventory
+	// TODO: Upgrade level
 	(void)(control);
-	(void)(client);
+	client->task.type = NONE;
 }
