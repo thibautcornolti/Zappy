@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "@types/node": "^10.3.3",
+    "@types/socket.io": "^1.4.35",
     "@types/socket.io-client": "^1.4.32",
     "@types/three": "^0.92.5",
     "express": "^4.16.3",
@@ -22,7 +23,9 @@
     "webpack-cli": "^3.0.5",
     "webpack-command": "^0.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^4.12.0"
+  },
   "scripts": {
     "test": "webpack",
     "build": "webpack",

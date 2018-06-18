@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import path from "path"
+import * as path from "path"
 // import {Group} from "three"
 import {MTLLoader, OBJLoader} from 'three-obj-mtl-loader'
 import {MaterialCreator} from "three";
@@ -14,15 +14,11 @@ export default class AssetsPool {
 
     constructor() {
         this.assets = {};
-        console.log("Three:", THREE);
         // THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
     }
 
     loadAssets(key: string, pathObj: string, pathMat: string, onProgress?: (evt: ProgressEvent) => void, onFinish?: (obj: THREE.Group) => void, onError?: (evt: ErrorEvent) => void) {
         console.log("start loading");
-        // console.log("yo", THREE.MTLLoader);
-        // console.log("yo2", OBJLoader);
-        // console.log("yo3", new MTLLoader());
         let mtlload = new MTLLoader();
         mtlload.setPath(path.dirname(pathMat) + '/');
         mtlload.load(path.basename(pathMat), (materials) => {

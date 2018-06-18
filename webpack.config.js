@@ -2,9 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: [
-        './src/main.ts',
-        // './OBJLoader.js',
-        // './MTLLoader.js'
+        path.join(__dirname, './src/main.ts')
     ],
     module: {
         rules: [
@@ -17,11 +15,22 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.ts']
+        extensions: ['.ts'],
+        modules: [
+            path.join(__dirname, 'node_modules')
+        ]
     },
     mode: 'development',
     output: {
         path: path.resolve(__dirname, 'public/dist'),
         filename: 'bundle.js'
+    },
+    resolveLoader: {
+        modules: [
+            path.join(__dirname, 'node_modules')
+        ]
+    },
+    externals: {
+        "socket.io-client": "io"
     }
 };

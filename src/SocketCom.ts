@@ -1,29 +1,44 @@
-// import net, { Socket } from "net"
-
-import io from "socket.io-client";
-
-// import SocketIOClient from "socket.io-client"
+import * as io from "socket.io-client"
 
 export default class SocketCom {
     private sock: SocketIOClient.Socket;
+    private isError: boolean;
 
-    constructor(port : number, host : string = "127.0.0.1") {
-        console.log("http://" + host + ":" + port);
+    constructor(port: number, host: string = "127.0.0.1", onConnect?: () => void, onError?: () => void, onData?: (resp: string) => void) {
+        this.isError = false;
         this.sock = io.connect("http://" + host + ":" + port);
 
-        this.sock.on('my_error', this.onError);
-        this.sock.on('my_data', this.onData);
+        if (onConnect)
+            this.sock.on('connect', () => {
+                setTimeout(() => {
+                    if (!this.isError)
+                        onConnect();
+                    else if (onError)
+                        onError();
+                }, 200);
+            });
+        this.sock.on('my_error', (error: String) => {
+            this.isError = true;
+            this.onError(error);
+        });
+        if (onData)
+            this.sock.on('my_data', onData);
     }
 
-    onError(error : String) {
+    public setOnData(fnt: (resp: string) => void) {
+        this.sock.removeListener('my_data');
+        this.sock.on('my_data', fnt);
+    }
+
+    private onError(error: String) {
         console.error(error);
     }
 
-    onData(msg : String) {
-        console.log(msg);
+    private onData(msg: String) {
+        // console.log(msg);
     }
 
-    send(str: String) {
+    public send(str: String) {
         this.sock.emit('data', str);
     }
 }

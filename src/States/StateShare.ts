@@ -1,3 +1,5 @@
+import AssetsPool from "../AssetsPool";
+
 interface Value {
     [name: string]: any
 }
@@ -23,5 +25,9 @@ export default class StateShare {
 
     getSocket() : SocketIOClient.Socket {
         return this.values["socket"];
+    }
+
+    getAssetsPool() : AssetsPool {
+        return this.values["assetsPool"];
     }
 }
