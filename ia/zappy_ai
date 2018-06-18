@@ -3,10 +3,9 @@
 
 import argparse
 import os
-from ia.src.classes.com.Client import init_client, ClientException
-from ia.src.classes.states.StateMachine import statemachine
+from ia.src.classes.com.Client import init_client
 from ia.src.classes.states.ConnectionState import ConnectionState
-from ia.src.classes.ia_res.Ant import Ant
+from ia.src.classes.ia_res.Ant import init_ant
 from src import config
 
 
@@ -36,8 +35,9 @@ def parse_arg():
 
 def run(args):
     with init_client(args.h, args.p):
-        ant = Ant(args.n)
-        conn_state = ConnectionState(ant)
+        from ia.src.classes.states.StateMachine import statemachine
+        init_ant(args.n)
+        conn_state = ConnectionState()
         statemachine.push(conn_state)
         while True:
             statemachine.update()
@@ -45,8 +45,10 @@ def run(args):
 
 def main():
     args = parse_arg()
+    run(args)
     try:
-        run(args)
+        #run(args)
+        pass
     except Exception as e:
         exit(e)
 

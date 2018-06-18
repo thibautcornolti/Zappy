@@ -97,7 +97,10 @@ class Client:
         if len(self._buffer) > self._readSize:
             self._buffer = self._buffer[self._readSize - 1:]
         if self._buffer.find("\n"):
-            self._readQueue += self._buffer.split("\n")[:-1]
+            split = self._buffer.split("\n")
+            while '' in split:
+                split.remove('')
+            self._readQueue += split
             self._buffer = ""
 
     def consult(self):

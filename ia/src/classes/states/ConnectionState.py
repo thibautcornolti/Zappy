@@ -1,15 +1,15 @@
 # coding = utf-8
 import re
 
-from .StateMachine import AState, StateException
+from ia.src.classes.states.SeekItemsState import SeekItemsState
+from .StateMachine import AState, StateException, statemachine
+from ia.src.classes.ia_res.Ant import ant
 
 
 class ConnectionState(AState):
 
-    def __init__(self, ant):
+    def __init__(self):
         super().__init__("Connection")
-
-        self.ant = ant
 
         self._welcome = False
         self._position = False
@@ -30,7 +30,7 @@ class ConnectionState(AState):
         if self._welcome:
             raise StateException("Welcomed twice")
         self._welcome = True
-        cli.write(self.ant.team)
+        cli.write(ant.team)
         del value, match
 
     def map_size(self, cli, value, match):
@@ -38,15 +38,19 @@ class ConnectionState(AState):
         if self._position:
             raise StateException("Position set twice")
         self._position = True
-        self.ant.map_size.x = match[0][0]
-        self.ant.map_size.y = match[0][1]
+        ant.map_size.x = match[0][0]
+        ant.map_size.y = match[0][1]
+
+        def replaceClosure():
+            statemachine.replace(SeekItemsState([]))
+        statemachine.closure = replaceClosure
 
     def current_nbr(self, cli, value, match):
         del cli, value
         if self._team:
             raise StateException("Team set twice")
         self._team = True
-        self.ant.current_nbr = int(match[0])
+        ant.current_nbr = int(match[0])
 
     def update_in(self, cli, inputs):
         for elem in inputs:
