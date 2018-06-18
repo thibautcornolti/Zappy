@@ -18,7 +18,6 @@ export default class AssetsPool {
     }
 
     loadAssets(key: string, pathObj: string, pathMat: string, onProgress?: (evt: ProgressEvent) => void, onFinish?: (obj: THREE.Group) => void, onError?: (evt: ErrorEvent) => void) {
-        console.log("start loading");
         let mtlload = new MTLLoader();
         mtlload.setPath(path.dirname(pathMat) + '/');
         mtlload.load(path.basename(pathMat), (materials) => {
@@ -29,10 +28,8 @@ export default class AssetsPool {
             objload.setPath(path.dirname(pathObj) + '/');
             objload.load(path.basename(pathObj), (object) => {
                 this.assets[key] = object;
-                if (onFinish) {
+                if (onFinish)
                     onFinish(object);
-                }
-                console.log("Loaded:", pathObj);
             }, onProgress, onError);
 
         });

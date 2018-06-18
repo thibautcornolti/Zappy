@@ -27,9 +27,9 @@
     "webpack": "^4.12.0"
   },
   "scripts": {
-    "test": "webpack",
+    "test": "webpack && node app.js",
     "build": "webpack",
-    "run": "node app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",

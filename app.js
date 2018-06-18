@@ -1,11 +1,24 @@
 #!/usr/bin/node
 
 const net = require('net');
+const process = require('process');
 
 const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const serveStatic = require('serve-static');
+
+let ipZappy = "127.0.0.1";
+let portZappy = 333334;
+
+process.argv.forEach((elem) => {
+    if (elem.startsWith("--serv=")) {
+        let servZappy = elem.split("--serv=")[1];
+        ipZappy = servZappy.split(":")[0];
+        portZappy = parseInt(servZappy.split(":")[1]);
+    }
+});
+
 
 server.listen(33333);
 
@@ -18,12 +31,19 @@ io.on('connection', function (sock) {
 
     cli = net.connect(33334, "127.0.0.1", () => {
         isConnected = true;
-        console.log("connected");
     });
 
     cli.on('error', (err) => {
         isConnected = false;
         sock.emit('my_error', {code: err.code});
+    });
+
+    cli.on('data', (msg) => {
+        sock.emit('my_data', msg.toString());
+    });
+
+    cli.on('close', () => {
+        sock.emit('my_error', {code: "DISCONNECTED"});
     });
 
     sock.on('data', (msg) => {
@@ -32,10 +52,6 @@ io.on('connection', function (sock) {
         } else {
             sock.emit('my_error', {code: "NOTCONNECTED"});
         }
-    });
-
-    cli.on('data', (msg) => {
-       sock.emit('my_data', msg);
     });
 
     sock.on('disconnect', () => {

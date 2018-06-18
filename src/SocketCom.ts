@@ -1,11 +1,17 @@
 import * as io from "socket.io-client"
 
+interface Error {
+    code: string
+}
+
 export default class SocketCom {
     private sock: SocketIOClient.Socket;
     private isError: boolean;
+    private isRefused: boolean;
 
     constructor(port: number, host: string = "127.0.0.1", onConnect?: () => void, onError?: () => void, onData?: (resp: string) => void) {
         this.isError = false;
+        this.isRefused = false;
         this.sock = io.connect("http://" + host + ":" + port);
 
         if (onConnect)
@@ -17,7 +23,7 @@ export default class SocketCom {
                         onError();
                 }, 200);
             });
-        this.sock.on('my_error', (error: String) => {
+        this.sock.on('my_error', (error: Error) => {
             this.isError = true;
             this.onError(error);
         });
@@ -30,8 +36,14 @@ export default class SocketCom {
         this.sock.on('my_data', fnt);
     }
 
-    private onError(error: String) {
+    private onError(error: Error) {
         console.error(error);
+        if (error.code === "ECONNREFUSED")
+            this.isRefused = true;
+        if (error.code === "DISCONNECTED" && !this.isRefused) {
+            alert("You have been disconnected from the server");
+            window.location.href = "/";
+        }
     }
 
     private onData(msg: String) {
