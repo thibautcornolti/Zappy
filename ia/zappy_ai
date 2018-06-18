@@ -3,8 +3,10 @@
 
 import argparse
 import os
-from src.Classes.Controller import Controller
-from src.Classes.Client import Client
+from ia.src.classes.com.Client import init_client, ClientException
+from ia.src.classes.states.StateMachine import statemachine
+from ia.src.classes.states.ConnectionState import ConnectionState
+from ia.src.classes.ia_res.Ant import Ant
 from src import config
 
 
@@ -33,22 +35,20 @@ def parse_arg():
 
 
 def run(args):
-    with Client(args.h, args.p) as (client, error):
-        if error:
-            exit(error)
-        client.poll(1000)
-        # ai = AIController(client, args.n)
-        # print(ai.ulapid)
-        # print(ai.broadcast("test"))
-        # print(client.read_line())
+    with init_client(args.h, args.p):
+        ant = Ant(args.n)
+        conn_state = ConnectionState(ant)
+        statemachine.push(conn_state)
+        while True:
+            statemachine.update()
 
 
 def main():
     args = parse_arg()
-    # try:
-    run(args)
-    # except Exception as e:
-    #     exit("Fatal Error: %s" % e)
+    try:
+        run(args)
+    except Exception as e:
+        exit(e)
 
 
 if __name__ == "__main__":

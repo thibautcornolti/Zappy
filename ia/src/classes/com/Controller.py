@@ -1,7 +1,7 @@
 # coding = utf-8
 
 import enum
-from .HashManager import HashManager
+from ia.src.classes.com.HashManager import HashManager
 
 
 class Ressources(enum.Enum):
@@ -13,12 +13,18 @@ class Ressources(enum.Enum):
     minerai_b = 0
     minerai_c = 0
 
+class GameException(Exception):
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr("GameException : " + self.value)
+
 
 class Controller(object):
 
-    def __init__(self, client, team):
-        self.client = client
-        self.team = team
+    def __init__(self):
         self._uuid = HashManager.generate()
 
     @property
@@ -32,8 +38,7 @@ class Controller(object):
         raise Exception("Can't set uuid directly")
 
     def broadcast(self, msg):
-        self.client.write("Broadcast %s %s" % (self.uuid, msg))
-        return True if self.client.read_line() == 'ok' else False
+        raise NotImplementedError("Broadcast")
 
     def look(self):
         raise NotImplementedError("Look")
@@ -65,3 +70,11 @@ class Controller(object):
 
     def incantation(self):
         raise NotImplementedError("Incantation")
+
+    def checkEndGame(self, args):
+        for elem in args:
+            if elem == "dead":
+                raise GameException("You died")
+
+
+controller = Controller()
