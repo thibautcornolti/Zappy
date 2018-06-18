@@ -9,7 +9,7 @@ const io = require('socket.io')(server);
 const serveStatic = require('serve-static');
 
 let ipZappy = "127.0.0.1";
-let portZappy = 333334;
+let portZappy = 33334;
 
 process.argv.forEach((elem) => {
     if (elem.startsWith("--serv=")) {
@@ -29,7 +29,7 @@ io.on('connection', function (sock) {
     let cli = null;
     let isConnected = false;
 
-    cli = net.connect(33334, "127.0.0.1", () => {
+    cli = net.connect(portZappy, ipZappy, () => {
         isConnected = true;
     });
 
