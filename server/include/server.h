@@ -106,14 +106,21 @@ typedef struct vec2_s {
 	size_t y;
 } vec2_t;
 
+typedef struct vec2f_s {
+	float x;
+	float y;
+} vec2f_t;
+
 typedef struct task_s {
 	size_t time;
 	task_type_t type;
+	char *data;
 } task_t;
 
 typedef struct client_s {
 	int fd;
 	char ip[INET_ADDRSTRLEN];
+	size_t level;
 	list_t *cmd;
 	rbuf_t rbuf;
 	size_t id;
@@ -217,18 +224,25 @@ bool init_map(control_t *);
 list_t *map_get(control_t *, size_t, size_t);
 void map_add(control_t *, size_t, size_t, item_t);
 void map_remove(control_t *, size_t, size_t, item_t);
-bool display_map(control_t *control);
-void move_forward(control_t *control, client_t *client);
-void move_directed(control_t *control, client_t *client, facing_t direction);
+bool display_map(control_t *);
+void move_forward(control_t *, client_t *);
+void move_directed(control_t *, client_t *, facing_t);
 
 /*
- * resource_gen
- */
+** Incantation
+*/
+list_t *count_clients(control_t *, client_t *);
+size_t count_items(control_t *, vec2_t, item_t);
+void upgrade_level(control_t *, client_t *, size_t);
+
+/*
+** resource_gen
+*/
 bool place_resources(control_t *);
 
 /*
- * admin commands
- */
+** admin commands
+*/
 void adm_teams(control_t *ctrl, client_t *cl);
 void adm_spawn(control_t *ctrl, client_t *cl);
 void adm_tickrate(control_t *ctrl, client_t *cl);
