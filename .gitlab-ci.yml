@@ -1,0 +1,3 @@
+srv_compile:
+  script:
+    - make -C server
