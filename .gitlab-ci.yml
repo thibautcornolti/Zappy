@@ -8,4 +8,4 @@ srv_connect:
   script:
     - ./server/zappy_server &
     - timeout 1 nc -C 0 4242 > /tmp/zappy_output&
-    - 'if (! [ -s /tmp/zappy_output ])'
+    - '[ ! -s /tmp/zappy_output ]'
