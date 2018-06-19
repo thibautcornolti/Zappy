@@ -3,6 +3,7 @@ import re
 
 from ia.src.classes.states.SeekItemsState import SeekItemsState
 from .StateMachine import AState, StateException, statemachine
+from ia.src.classes.com.Controller import required
 from ia.src.classes.ia_res.Ant import ant
 
 
@@ -42,7 +43,7 @@ class ConnectionState(AState):
         ant.map_size.y = match[0][1]
 
         def replaceClosure():
-            statemachine.replace(SeekItemsState([]))
+            statemachine.replace(SeekItemsState(required[2][1], True))
         statemachine.closure = replaceClosure
 
     def current_nbr(self, cli, value, match):
@@ -52,12 +53,10 @@ class ConnectionState(AState):
         self._team = True
         ant.current_nbr = int(match[0])
 
-    def update_in(self, cli, inputs):
+    def update(self, cli, inputs):
         for elem in inputs:
             for k, v in self._matches.items():
                 match = re.findall(k, elem)
                 if match:
                     v(cli, elem, match)
 
-    def update_out(self, cli):
-        pass

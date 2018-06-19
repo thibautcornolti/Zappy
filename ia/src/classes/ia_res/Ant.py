@@ -2,8 +2,6 @@
 
 from ia.src.classes.com.HashManager import HashManager
 
-print("ANT")
-
 class Vector(object):
 
     def __init__(self, x=0, y=None):
@@ -11,6 +9,8 @@ class Vector(object):
             y = x
         self.x = x
         self.y = y
+    def __repr__(self):
+        return repr("({}, {})".format(self.x, self.y))
 
 
 class Ant(object):

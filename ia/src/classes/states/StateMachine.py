@@ -19,28 +19,28 @@ class AState(object):
     def __init__(self, name):
         self._name = name
 
-    def update_in(self, cli, inputs):
-        raise NotImplementedError("AState update_in : pure virtual fct called")
+    def update(self, cli, inputs):
+        pass
 
-    def update_out(self, cli):
-        raise NotImplementedError("AState update_out : pure virtual fct called")
+    def on_push(self, cli):
+        pass
+
+    def on_pop(self, cli):
+        pass
 
     def __repr__(self):
         return repr(self._name)
 
 
-class AAIState(object):
+class AAIState(AState):
 
     def __init__(self, name):
-        self._name = name
+        super().__init__(name)
 
-    def update_in(self, cli, inputs):
+    def update(self, cli, inputs):
         del cli
         for elem in inputs:
             controller.applyTop(elem)
-
-    def update_out(self, cli):
-        raise NotImplementedError("AState update_out : pure virtual fct called")
 
     def __repr__(self):
         return repr(self._name)
@@ -56,12 +56,13 @@ class StateMachine(object):
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):
             raise Exception("State is not a valid variable type")
         self._stack.insert(0, state)
+        self._stack[0].on_push(COM.cli)
 
     def pop(self):
+        self._stack[0].on_pop(COM.cli)
         self._stack.pop(0)
 
     def replace(self, state):
-        print(state)
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):
             raise Exception("State is not a valid variable type")
         self.pop()
@@ -70,12 +71,13 @@ class StateMachine(object):
     def update(self):
         if len(self._stack) == 0:
             raise StateException("All the states ends")
-        self._stack[0].update_out(COM.cli)
         value = COM.cli.poll()
-        if select.POLLIN & value:
+        if select.POLLIN & value and not controller.hasBufferizedCmds():
             msgs = COM.cli.consult()
             controller.checkEndGame(msgs)
-            self._stack[0].update_in(COM.cli, msgs)
+            self._stack[0].update(COM.cli, msgs)
+        else:
+            controller.flushCmds()
         if self.closure:
             self.closure()
             self.closure = None
