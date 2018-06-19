@@ -1,3 +1,12 @@
 srv_compile:
   script:
     - make -C server
+
+srv_connect:
+  script:
+    - ./server/zappy_server &
+    - ZAPPY_ID=$!
+    - timeout 1 nc -C 0 4242 > /tmp/zappy_output
+    - kill $ZAPPY_ID
+    - ls -l /tmp/zappy_output
+    - [ -s /tmp/zappy_output ]
