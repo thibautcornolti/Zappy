@@ -32,7 +32,7 @@ class Resources(enum.Enum):
 
 
 required = {
-    2: (1, {Resources.Linemate: 1}),
+    2: (1, {Resources.Linemate: 1, Resources.Food: 10}),
     # 3: (2, {Resources.Linemate: 1}),
     # 4: (2, {Resources.Linemate: 2}),
     # 5: (4, {Resources.Linemate: 1}),
@@ -54,6 +54,8 @@ class GameException(Exception):
 def defaultError():
     raise GameException("An unexpected result come from a safe call")
 
+def defaultOk():
+    raise GameException("An unexpected result come from a safe call")
 
 def defaultConnectNbr(nbr):
     ant.current_nbr = int(nbr)
@@ -66,19 +68,19 @@ class Controller(object):
 
     def __init__(self):
         self._answersCallers = {
-            Cmd.Forward: Controller._applyDefault,
-            Cmd.Right: Controller._applyDefault,
-            Cmd.Left: Controller._applyDefault,
-            Cmd.Look: Controller._applyLook,
-            Cmd.Inventory: Controller._applyInventory,
-            Cmd.Broadcast: Controller._applyDefault,
-            Cmd.Connect_nbr: Controller._applyArgOK,
-            Cmd.Fork: Controller._applyDefault,
-            Cmd.Eject: Controller._applyDefault,
-            Cmd.Take: Controller._applyTake,
-            Cmd.Set: Controller._applySet,
-            Cmd.IncantationStart: Controller._applyDefault,
-            Cmd.IncantationStop: Controller._applyDefault,
+            Cmd.Forward: self._applyDefault,
+            Cmd.Right: self._applyDefault,
+            Cmd.Left: self._applyDefault,
+            Cmd.Look: self._applyLook,
+            Cmd.Inventory: self._applyInventory,
+            Cmd.Broadcast: self._applyDefault,
+            Cmd.Connect_nbr: self._applyArgOK,
+            Cmd.Fork: self._applyDefault,
+            Cmd.Eject: self._applyDefault,
+            Cmd.Take: self._applyTake,
+            Cmd.Set: self._applySet,
+            Cmd.IncantationStart: self._applyDefault,
+            Cmd.IncantationStop: self._applyArgOK,
         }
         self._cmdStack = []
         self._takeQueue = []
@@ -87,21 +89,24 @@ class Controller(object):
 
     def _write(self, value):
         if len(self._cmdStack) >= 10:
-            self._cmdStack.append(value)
+            self._writeStack.append(value)
         else:
             COM.cli.write(value)
 
-    def move(self, callback):
+    def forward(self, callback):
+        print("forward")
         cmd = Cmd.Forward
         self._write(cmd.value)
         self._cmdStack.append((cmd, callback, defaultError))
 
     def right(self, callback):
+        print("right")
         cmd = Cmd.Right
         self._write(cmd.value)
         self._cmdStack.append((cmd, callback, defaultError))
 
     def left(self, callback):
+        print("left")
         cmd = Cmd.Left
         self._write(cmd.value)
         self._cmdStack.append((cmd, callback, defaultError))
@@ -148,44 +153,49 @@ class Controller(object):
         self._write(cmd.value)
         self._cmdStack.append((cmd, ok, ko))
 
-    def take(self, type, ok, ko):
+    def take(self, object, ok, ko):
         """
         :param callback: (object) -> void x 2
         :return:
         """
-        if type(type) != Resources:
+        if type(object) != Resources:
             raise Exception("Invalid type")
         cmd = Cmd.Take
-        self._write(' '.join((cmd.value, type.value)))
+        self._write(' '.join((cmd.value, object.value)))
         self._cmdStack.append((cmd, ok, ko))
-        self._takeQueue.append(type.value)
+        self._takeQueue.append(object.value)
 
-    def set(self, type, ok, ko):
+    def set(self, object, ok, ko):
         """
         :param callback: (object) -> void x 2
         :return:
         """
-        if type(type) != Resources:
+        if type(object) != Resources:
             raise Exception("Invalid type")
         cmd = Cmd.Set
-        self._write(' '.join((cmd.value, type.value)))
+        self._write(' '.join((cmd.value, object.value)))
         self._cmdStack.append((cmd, ok, ko))
-        self._setQueue.append(type.value)
+        self._setQueue.append(object.value)
 
     def incantation(self, ok_start, ko_start, ok_end, ko_end):
+        """
+        :param ok_start: () -> void
+        :param ko_start: () -> void
+        :param ok_end: (lvl) -> void
+        :param ko_end: () -> void
+        :return:
+        """
         cmd = Cmd.IncantationStart
         self._write(cmd.value)
         self._cmdStack.append((cmd, ok_start, ko_start))
-        self._cmdStack.append((cmd, ok_end, ko_end))
+        self._cmdStack.append((Cmd.IncantationStop, ok_end, ko_end))
 
-    @staticmethod
-    def _applyDefault(server_answer, cmd_item):
+    def _applyDefault(self, server_answer, cmd_item):
         if server_answer == "ko":
             cmd_item[2]()
         cmd_item[1]()
 
-    @staticmethod
-    def _applyArgOK(server_answer, cmd_item):
+    def _applyArgOK(self, server_answer, cmd_item):
         if server_answer == "ko":
             cmd_item[2]()
         cmd_item[1](server_answer)
@@ -200,10 +210,10 @@ class Controller(object):
             cmd_item[2](self._takeQueue.pop(0))
         cmd_item[1](self._takeQueue.pop(0))
 
-    @staticmethod
-    def _applyLook(server_answer, cmd_item):
+    def _applyLook(self, server_answer, cmd_item):
         if server_answer == "ko":
             cmd_item[2]()
+        print(server_answer)
         server_answer = server_answer[1:-1].split(', ')
         while '' in server_answer:
             server_answer.remove('')
@@ -213,8 +223,7 @@ class Controller(object):
                 server_answer[i].remove('')
         cmd_item[1](server_answer)
 
-    @staticmethod
-    def _applyInventory(server_answer, cmd_item):
+    def _applyInventory(self, server_answer, cmd_item):
         if server_answer == "ko":
             cmd_item[2]()
         server_answer = server_answer[1:-1].split(', ')

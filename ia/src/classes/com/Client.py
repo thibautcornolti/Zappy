@@ -44,7 +44,7 @@ class Client:
         self._poll = select.poll()
         self._sock = None
         self._buffer = ""
-        self._readSize = 1024
+        self._readSize = 4096
 
     def __enter__(self):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -95,8 +95,8 @@ class Client:
             self._disconnection()
         self._buffer += msg.decode()
         if len(self._buffer) > self._readSize:
-            self._buffer = self._buffer[self._readSize - 1:]
-        if self._buffer.find("\n"):
+            self._buffer = self._buffer[len(self._buffer) - self._readSize - 1:]
+        if self._buffer.find("\n") >= 0:
             split = self._buffer.split("\n")
             while '' in split:
                 split.remove('')

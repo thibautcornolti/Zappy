@@ -34,14 +34,7 @@ def parse_arg():
 
 
 def run(args):
-    from ia.src.classes.ia_res.Path import Path
 
-    path = Path()
-    path.addConePoint(0, None)
-    path.addConePoint(11, None)
-    path.addConePoint(3, None)
-    print(path.generateOrder()[0])
-    exit(0)
     with init_client(args.h, args.p):
         from ia.src.classes.states.StateMachine import statemachine
         init_ant(args.n)
@@ -55,8 +48,7 @@ def main():
     args = parse_arg()
     run(args)
     try:
-        #run(args)
-        pass
+        run(args)
     except Exception as e:
         exit(e)
 

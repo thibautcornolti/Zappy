@@ -9,6 +9,7 @@ class Vector(object):
             y = x
         self.x = x
         self.y = y
+
     def __repr__(self):
         return repr("({}, {})".format(self.x, self.y))
 
@@ -19,7 +20,7 @@ class Ant(object):
         self.team = team
         self.map_size = Vector()
         self.current_nbr = 0
-        self.lvl = 0
+        self.lvl = 1
         self.look = []
         self.inventory = {}
         self._uuid = HashManager.generate()

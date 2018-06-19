@@ -43,7 +43,7 @@ class ConnectionState(AState):
         ant.map_size.y = match[0][1]
 
         def replaceClosure():
-            statemachine.replace(SeekItemsState(required[2][1], True))
+            statemachine.replace(SeekItemsState(required[2][1]))
         statemachine.closure = replaceClosure
 
     def current_nbr(self, cli, value, match):
