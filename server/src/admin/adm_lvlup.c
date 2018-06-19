@@ -16,7 +16,7 @@ void lvlup_player(size_t id)
 void adm_lvlup(control_t *ctrl, client_t *cl)
 {
 	(void)ctrl;
-	regex_t preg;
+	regex_t pregit g;
 	cmd_t *cmd = cl->cmd->head->payload;
 	char pattern[] = R"(?:\/lvlup \d+$)";
 	char usage[] = "LVLUP: [id]";
