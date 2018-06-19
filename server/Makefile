@@ -44,6 +44,7 @@ FILES		=	args				\
 			admin/adm_move			\
 			admin/adm_cast			\
 			admin/adm_killall		\
+			admin/adm_lvlup			\
 			arguments/parse_clients		\
 			arguments/parse_freq		\
 			arguments/parse_height		\

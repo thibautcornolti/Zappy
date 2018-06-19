@@ -243,9 +243,10 @@ bool place_resources(control_t *);
 /*
 ** admin commands
 */
-void adm_teams(control_t *ctrl, client_t *cl);
-void adm_spawn(control_t *ctrl, client_t *cl);
-void adm_tickrate(control_t *ctrl, client_t *cl);
-void adm_move(control_t *ctrl, client_t *cl);
-void adm_cast(control_t *ctrl, client_t *cl);
-void adm_killall(control_t *ctrl, client_t *cl);
+void adm_teams(control_t *, client_t *);
+void adm_spawn(control_t *, client_t *);
+void adm_tickrate(control_t *, client_t *);
+void adm_move(control_t *, client_t *);
+void adm_cast(control_t *, client_t *);
+void adm_killall(control_t *, client_t *);
+void adm_move(control_t *, client_t *);

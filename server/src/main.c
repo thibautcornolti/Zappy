@@ -108,17 +108,17 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 	(void)(idx);
 	if (!to_evict && (cl->node->revt & POLLIN))
 		to_evict = !(receive_data(cl) && extract_rbuf_cmd(cl));
-	if (cl->cmd->length && cl->state == ANONYMOUS)
-		append_to_team(control, cl);
-	else if (cl->cmd->length && cl->state == PLAYING && !to_evict &&
-		cl->task.type == NONE)
-		proceed_cmd(control, cl);
-	if (cl->task.type != NONE && !to_evict)
-		exec_task(control, cl);
-	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
-		write_to_client(control, cl);
-	if (to_evict)
-		evict_client(control, cl);
+//	if (cl->cmd->length && cl->state == ANONYMOUS)
+//		append_to_team(control, cl);
+//	else if (cl->cmd->length && cl->state == PLAYING && !to_evict &&
+//		cl->task.type == NONE)
+//		proceed_cmd(control, cl);
+//	if (cl->task.type != NONE && !to_evict)
+//		exec_task(control, cl);
+//	if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
+//		write_to_client(control, cl);
+//	if (to_evict)
+//		evict_client(control, cl);
 	return (to_evict == false);
 }
 
@@ -159,24 +159,31 @@ bool ctrl_init(control_t *ctrl)
 	return (true);
 }
 
-static int cycle_adjustment(control_t *ctrl, bool await)
+static bool perfom_poll_actions(control_t *ctrl)
 {
-	static long ms = 0;
-	struct timeval stop;
-	static struct timeval start;
-	long tr = (long)(round(1 * 1e3 / ctrl->params.tickrate));
-
-	if (!await) {
-		ms = (tr > ms) ? tr : 2 * tr - ms;
-		CHECK(gettimeofday(&start, NULL), == -1, -1);
+	if (poll_canread(ctrl->list, ctrl->fd)) {
+		CHECK(add_new_client(ctrl), == false, 84);
 	}
-	else {
+	else if (ctrl->clients->length)
+		handle_request(ctrl);
+	return (true);
+}
+
+static bool cycle_adjustment(control_t *ctrl)
+{
+	struct timeval stop, start;
+	long tr = (long)(round(1 * 1e3 / ctrl->params.tickrate));
+	long ms = tr;
+
+	CHECK(gettimeofday(&start, NULL), == -1, -1);
+	while (ms > 0) {
+		if (poll_wait(ctrl->list, (int)ms) > 0)
+			perfom_poll_actions(ctrl);
 		CHECK(gettimeofday(&stop, NULL), == -1, -1);
 		ms = (long)((round(stop.tv_usec - start.tv_usec) / 1e3));
-		ms = (long)((ms < 0) ? 1e3 + ms : ms);
-		usleep((__useconds_t)((ms < tr) ? tr - ms : 0));
+		ms = (ms < tr) ? tr - ms : 0;
 	}
-	return ((int)(ms));
+	return (true);
 }
 
 int main(int ac, const char **av)
@@ -194,15 +201,8 @@ int main(int ac, const char **av)
 	CHECK(ctrl.fd = create_server(ctrl.params.port), == -1, 84);
 	CHECK(poll_add(&ctrl.list, ctrl.fd, POLLIN), == 0, 84);
 	while (1) {
-		CHECK(ret = poll_wait(
-			      ctrl.list, cycle_adjustment(&ctrl, false)),
-			== -1, 84);
-		if (poll_canread(ctrl.list, ctrl.fd)) {
-			CHECK(add_new_client(&ctrl), == false, 84);
-		}
-		else if (ctrl.clients->length)
-			handle_request(&ctrl);
-		cycle_adjustment(&ctrl, true);
+		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
+		//TODO Exec pending commands : cycle is calibrated and all possible commands are parsed and stored in their corresponding client.
 	}
 	return (0);
 }
