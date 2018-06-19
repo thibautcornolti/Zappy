@@ -7,7 +7,7 @@
 
 #include "str.h"
 
-static int internal_lstr_spaces_len(char *str)
+static int internal_lstr_spaces_len(const char *str)
 {
 	int count = -1;
 

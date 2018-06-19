@@ -124,6 +124,7 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 
 bool consume_food(control_t *control, client_t *client)
 {
+	(void)(control);
 	client->food_delay -= 1;
 	if (client->food_delay == 0) {
 		client->food -= 1;
@@ -131,6 +132,7 @@ bool consume_food(control_t *control, client_t *client)
 	}
 	if (client->food == 0)
 		; // TODO: Kill player
+	return (true);
 }
 
 bool handle_request(control_t *control)

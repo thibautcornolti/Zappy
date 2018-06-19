@@ -10,7 +10,7 @@
 /*
 ** Returns whether the specified string is found within this string.
 */
-bool lstr_includes(char *this, char *to_find)
+bool lstr_includes(const char *this, const char *to_find)
 {
 	if (this == NULL)
 		return (false);
@@ -21,7 +21,7 @@ bool lstr_includes(char *this, char *to_find)
 ** Returns the number of times the specified string
 ** is found within this string
 */
-ssize_t lstr_nb_occur(char *this, char *str)
+ssize_t lstr_nb_occur(const char *this, const char *str)
 {
 	int nb_occur;
 	int idx;
@@ -40,7 +40,7 @@ ssize_t lstr_nb_occur(char *this, char *str)
 /*
 ** Returns whether this string starts with the specified string.
 */
-bool lstr_starts_with(char *this, char *prefix)
+bool lstr_starts_with(const char *this, const char *prefix)
 {
 	if (this == NULL)
 		return (false);
@@ -50,7 +50,7 @@ bool lstr_starts_with(char *this, char *prefix)
 /*
 ** Returns whether this string ends with the specified string.
 */
-bool lstr_ends_with(char *this, char *suffix)
+bool lstr_ends_with(const char *this, const char *suffix)
 {
 	int cur;
 	int len;
@@ -69,7 +69,7 @@ bool lstr_ends_with(char *this, char *suffix)
 ** Returns the index of the first occurence of the specified string
 ** within this string starting at an offset.
 */
-ssize_t lstr_index_of(char *this, size_t offset, char *to_find)
+ssize_t lstr_index_of(const char *this, size_t offset, const char *to_find)
 {
 	char *idx;
 

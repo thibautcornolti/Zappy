@@ -12,7 +12,7 @@
 **
 ** Does directly modify the original string.
 */
-char *lstr_prepend(char *this, char *str)
+char *lstr_prepend(char *this, const char *str)
 {
 	char *ret;
 
@@ -31,7 +31,7 @@ char *lstr_prepend(char *this, char *str)
 **
 ** Does directly modify the original string.
 */
-char *lstr_append(char *this, char *str)
+char *lstr_append(char *this, const char *str)
 {
 	char *ret;
 

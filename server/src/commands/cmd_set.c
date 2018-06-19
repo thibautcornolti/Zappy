@@ -36,12 +36,13 @@ void exec_set(control_t *control, client_t *client)
 		llist_push(client->pending, 1, strdup(KO_MSG));
 		return;
 	}
-	if (llist_includes(
-		    map_get(control, client->pos.x, client->pos.y), chosen)) {
+	if (llist_includes(map_get(control, client->pos.x, client->pos.y),
+		    (void *)(chosen))) {
 		map_remove(control, client->pos.x, client->pos.y, chosen);
 		client->inventory[chosen] += 1;
 		llist_push(client->pending, 1, strdup(OK_MSG));
-	} else
+	}
+	else
 		llist_push(client->pending, 1, strdup(KO_MSG));
 	free(client->task.data);
 }

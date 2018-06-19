@@ -8,6 +8,8 @@
 MAKESTR		=	make --no-print-directory -C lib/str
 MAKEPOLL	=	make --no-print-directory -C lib/poll
 MAKELIST	=	make --no-print-directory -C lib/list
+MAKEOBJECT	=	make --no-print-directory -C lib/object
+MAKEJSON	=	make --no-print-directory -C lib/json
 MAKESOCKET	=	make --no-print-directory -C lib/socket
 
 CC		=	gcc
@@ -32,6 +34,7 @@ FILES		=	args				\
 			commands/cmd_fork		\
 			commands/cmd_forward		\
 			commands/cmd_incantation	\
+			commands/cmd_incantation_helper	\
 			commands/cmd_inventory		\
 			commands/cmd_left		\
 			commands/cmd_look		\
@@ -58,7 +61,8 @@ SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
 OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 
 CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized -D_GNU_SOURCE -g
-LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/list -llist -Llib/str -lstr -lm
+LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/json -ljson -Llib/object -lobject
+LDFLAGS		+=	-Llib/list -llist -Llib/str -lstr -lm
 
 DIRS		=	commands		\
 			arguments		\
@@ -84,6 +88,8 @@ $(NAME):	$(OBJDIR) $(OBJDIRS) $(OBJS)
 		@$(MAKEPOLL)
 		@$(MAKELIST)
 		@$(MAKESOCKET)
+		@$(MAKEOBJECT)
+		@$(MAKEJSON)
 		@echo -e "[$(RED)LINKING$(RES)] $(YEL)$(OBJDIR)/server/*.o$(RES) $(BLUE)=>$(RES) $(YEL)$(NAME)$(RES)"
 		@gcc -o $(NAME) $(OBJS) $(LDFLAGS)
 
@@ -92,6 +98,8 @@ clean:
 	@$(MAKEPOLL) clean
 	@$(MAKELIST) clean
 	@$(MAKESOCKET) clean
+	@$(MAKEOBJECT) clean
+	@$(MAKEJSON) clean
 	@rm -rf $(OBJDIR)
 
 fclean:	clean
@@ -99,6 +107,8 @@ fclean:	clean
 	@$(MAKEPOLL) fclean
 	@$(MAKEPOLL) fclean
 	@$(MAKESOCKET) fclean
+	@$(MAKEOBJECT) fclean
+	@$(MAKEJSON) fclean
 	@rm -f $(NAME)
 
 re: fclean all

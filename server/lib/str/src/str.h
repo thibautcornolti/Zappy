@@ -5,8 +5,7 @@
 ** str
 */
 
-#ifndef LIBSTR_H_
-#define LIBSTR_H_
+#pragma once
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -16,26 +15,24 @@
 
 typedef enum e_strtype { LSTR_STR, LSTR_CHAR, LSTR_INT } strtype_t;
 
-char *lstr_append(char *, char *);
-char *lstr_prepend(char *, char *);
+char *lstr_append(char *, const char *);
+char *lstr_prepend(char *, const char *);
 char *lstr_concat(char *, size_t, ...);
 char *lstr_reverse(char *);
 char *lstr_capitalize(char *);
 char *lstr_to_upper_case(char *);
 char *lstr_to_lower_case(char *);
-char *lstr_substr(char *, size_t, size_t);
-char **lstr_split(const char *, char *);
-char *lstr_slice(char *, size_t, size_t);
-char *lstr_replace(char *, char *, char *);
+char *lstr_substr(const char *, size_t, size_t);
+char **lstr_split(const char *, const char *);
+char *lstr_slice(const char *, size_t, size_t);
+char *lstr_replace(char *, const char *, const char *);
 char *lstr_trim(char *);
 char *lstr_epur(char *);
-ssize_t lstr_index_of(char *, size_t, char *);
-bool lstr_equals(char *, char *);
-bool lstr_match(char *, char *);
-bool lstr_test(char *, char *);
-bool lstr_includes(char *, char *);
-ssize_t lstr_nb_occur(char *, char *);
-bool lstr_ends_with(char *, char *);
-bool lstr_starts_with(char *, char *);
-
-#endif /* !LIBSTR_H_ */
+ssize_t lstr_index_of(const char *, size_t, const char *);
+bool lstr_equals(const char *, const char *);
+bool lstr_match(const char *, const char *);
+bool lstr_test(const char *, const char *);
+bool lstr_includes(const char *, const char *);
+ssize_t lstr_nb_occur(const char *, const char *);
+bool lstr_ends_with(const char *, const char *);
+bool lstr_starts_with(const char *, const char *);

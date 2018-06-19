@@ -7,17 +7,17 @@
 
 #include "str.h"
 
-static int is_maj(char c)
+static int is_maj(const char c)
 {
 	return (c >= 'A' && c <= 'Z');
 }
 
-static int is_min(char c)
+static int is_min(const char c)
 {
 	return (c >= 'a' && c <= 'z');
 }
 
-static int is_alphanum(char c)
+static int is_alphanum(const char c)
 {
 	return (is_min(c) || is_maj(c) || (c >= '0' && c <= '9'));
 }

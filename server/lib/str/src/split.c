@@ -7,7 +7,7 @@
 
 #include "str.h"
 
-static int internal_lstr_len_to_substr(const char *src, char *suffix)
+static int internal_lstr_len_to_substr(const char *src, const char *suffix)
 {
 	char *idx;
 
@@ -38,7 +38,7 @@ static char **internal_lstr_add_tab(char **tab, char *to_add)
 }
 
 static char **intern_lstr_split_helper(
-	const char *this, char *sep, char **ret, int *idx)
+	const char *this, const char *sep, char **ret, int *idx)
 {
 	int len = internal_lstr_len_to_substr(this + *idx, sep);
 	char *to_add =
@@ -58,7 +58,7 @@ static char **intern_lstr_split_helper(
 **
 ** Does not modify the original string.
 */
-char **lstr_split(const char *this, char *sep)
+char **lstr_split(const char *this, const char *sep)
 {
 	char **ret = 0;
 	int idx = -1;

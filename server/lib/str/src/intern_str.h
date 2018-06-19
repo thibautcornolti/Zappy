@@ -7,5 +7,8 @@
 
 #pragma once
 
-bool lstr_intern_match(char *s1, char *s2, int idx1, int idx2);
-bool lstr_intern_match_helper(char *s1, char *s2, int idx1, int idx2);
+#include <stdbool.h>
+
+bool lstr_intern_match(const char *s1, const char *s2, int idx1, int idx2);
+bool lstr_intern_match_helper(
+	const char *s1, const char *s2, int idx1, int idx2);

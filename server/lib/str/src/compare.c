@@ -5,20 +5,21 @@
 ** compare
 */
 
-#include "str.h"
 #include "intern_str.h"
+#include "str.h"
 
 /*
 ** Returns whether the candidate string is equal to this string.
 */
-bool lstr_equals(char *this, char *candidate)
+bool lstr_equals(const char *this, const char *candidate)
 {
 	if (this == NULL || candidate == NULL)
 		return (NULL);
 	return (strcmp(this, candidate) == 0);
 }
 
-bool lstr_intern_match_helper(char *s1, char *s2, int idx1, int idx2)
+bool lstr_intern_match_helper(
+	const char *s1, const char *s2, int idx1, int idx2)
 {
 	while (s1[idx1] != '\0') {
 		if (lstr_intern_match(s1, s2, idx1, idx2 + 1))
@@ -28,7 +29,7 @@ bool lstr_intern_match_helper(char *s1, char *s2, int idx1, int idx2)
 	return (lstr_intern_match(s1, s2, idx1, idx2 + 1));
 }
 
-bool lstr_intern_match(char *s1, char *s2, int idx1, int idx2)
+bool lstr_intern_match(const char *s1, const char *s2, int idx1, int idx2)
 {
 	if (s2[idx2] == '\0')
 		return (s1[idx1] == '\0');
@@ -45,7 +46,7 @@ bool lstr_intern_match(char *s1, char *s2, int idx1, int idx2)
 **
 ** Supports * and ? as wildcards but no escape mechanism.
 */
-bool lstr_match(char *this, char *pattern)
+bool lstr_match(const char *this, const char *pattern)
 {
 	if (this == NULL || pattern == NULL)
 		return (false);
@@ -58,7 +59,7 @@ bool lstr_match(char *this, char *pattern)
 **
 ** Supports * and ? as wildcards but no escape mechanism.
 */
-bool lstr_test(char *this, char *candidate)
+bool lstr_test(const char *this, const char *candidate)
 {
 	if (this == NULL || candidate == NULL)
 		return (false);

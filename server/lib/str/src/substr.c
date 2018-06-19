@@ -12,7 +12,7 @@
 **
 ** Does not modify the original string.
 */
-char *lstr_slice(char *this, size_t start, size_t end)
+char *lstr_slice(const char *this, size_t start, size_t end)
 {
 	char *ret;
 
@@ -29,7 +29,7 @@ char *lstr_slice(char *this, size_t start, size_t end)
 **
 ** Does not modify the original string.
 */
-char *lstr_substr(char *this, size_t start, size_t length)
+char *lstr_substr(const char *this, size_t start, size_t length)
 {
 	char *ret;
 
@@ -72,7 +72,7 @@ static int assign(int *var, int value)
 	return (*var);
 }
 
-char *lstr_replace(char *this, char *old, char *new)
+char *lstr_replace(char *this, const char *old, const char *new)
 {
 	char *ret = 0;
 	int idx = 0;
