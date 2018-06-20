@@ -1,9 +1,9 @@
 # coding = utf-8
 import math
 
-from ia.src.classes.ia_res.Vector import Vector, normalize, vecSize
-from ia.src.classes.com.Controller import Cmd, controller
-from ia.src.classes.ia_res.PathEvents import PointEvent
+from src.classes.ia_res.Vector import Vector, normalize, vecSize
+from src.classes.com.Controller import Cmd, controller
+from src.classes.ia_res.PathEvents import PointEvent
 
 
 class Path(object):

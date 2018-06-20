@@ -1,7 +1,7 @@
 # coding = utf-8
 
-from ia.src.classes.com.HashManager import HashManager
-from ia.src.classes.ia_res.Vector import Vector
+from src.classes.com.HashManager import HashManager
+from src.classes.ia_res.Vector import Vector
 
 class Ant(object):
 

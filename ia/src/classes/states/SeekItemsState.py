@@ -1,8 +1,8 @@
-from ia.src.classes.ia_res.Path import Path, PathManipulator, PositionTracker
-from ia.src.classes.ia_res.PathEvents import TakeEvent, LookEvent, PointEvent
-from ia.src.classes.states.StateMachine import AAIState, statemachine
-from ia.src.classes.com.Controller import controller, Resources
-from ia.src.classes.ia_res.Ant import ant, Vector
+from src.classes.ia_res.Path import Path, PathManipulator, PositionTracker
+from src.classes.ia_res.PathEvents import TakeEvent, LookEvent, PointEvent
+from src.classes.states.StateMachine import AAIState, statemachine
+from src.classes.com.Controller import controller, Resources
+from src.classes.ia_res.Ant import ant, Vector
 
 
 class SeekItemsState(AAIState):

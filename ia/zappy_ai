@@ -3,9 +3,9 @@
 
 import argparse
 import os
-from ia.src.classes.com.Client import init_client
-from ia.src.classes.states.ConnectionState import ConnectionState
-from ia.src.classes.ia_res.Ant import init_ant
+from src.classes.com.Client import init_client
+from src.classes.states.ConnectionState import ConnectionState
+from src.classes.ia_res.Ant import init_ant
 from src import config
 
 
@@ -35,7 +35,7 @@ def parse_arg():
 
 def run(args):
     with init_client(args.h, args.p):
-        from ia.src.classes.states.StateMachine import statemachine
+        from src.classes.states.StateMachine import statemachine
         init_ant(args.n)
         conn_state = ConnectionState()
         statemachine.push(conn_state)

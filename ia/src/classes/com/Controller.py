@@ -1,8 +1,8 @@
 # coding = utf-8
 
 import enum
-import ia.src.classes.com.Client as COM
-from ia.src.classes.ia_res.Ant import ant
+import src.classes.com.Client as COM
+from src.classes.ia_res.Ant import ant
 
 
 class Cmd(enum.Enum):

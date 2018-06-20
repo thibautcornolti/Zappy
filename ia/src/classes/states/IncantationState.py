@@ -1,9 +1,9 @@
 # coding = utf-8
-from ia.src.classes.com.Controller import requirement, Resources, controller
-from ia.src.classes.ia_res.Ant import ant
+from src.classes.com.Controller import requirement, Resources, controller
+from src.classes.ia_res.Ant import ant
 from collections import Counter
-from ia.src.classes.ia_res.PathEvents import TakeEvent, SetEvent
-from ia.src.classes.states.StateMachine import AAIState, statemachine
+from src.classes.ia_res.PathEvents import TakeEvent, SetEvent
+from src.classes.states.StateMachine import AAIState, statemachine
 
 
 # look + inventory chained => take set combo

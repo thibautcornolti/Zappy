@@ -1,8 +1,8 @@
 # coding = utf-8
 
 import select
-import ia.src.classes.com.Client as COM
-from ia.src.classes.com.Controller import controller
+import src.classes.com.Client as COM
+from src.classes.com.Controller import controller
 
 
 class StateException(Exception):
