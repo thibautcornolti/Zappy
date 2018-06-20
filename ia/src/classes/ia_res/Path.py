@@ -1,60 +1,8 @@
 # coding = utf-8
-import math
-from ia.src.classes.ia_res.Ant import Vector
+from ia.src.classes.ia_res.Vector import Vector, normalize, vecSize
 from ia.src.classes.com.Controller import Cmd, controller
+from ia.src.classes.ia_res.PathEvents import PointEvent
 
-
-def vecSize(vector):
-    return math.sqrt(vector.x * vector.x + vector.y * vector.y)
-
-
-def normalize(vector):
-    size = vecSize(vector)
-    if size == 0:
-        return Vector()
-    return Vector(vector.x / size, vector.y / size)
-
-class PointEvent(object):
-
-    def __init__(self, item, nb, time_estimation):
-        self.item = item
-        self.nb = nb
-        self._time_estimation = time_estimation
-        self.position = Vector()
-
-    @property
-    def time_estimation(self):
-        return self._time_estimation
-
-    def execute(self):
-        raise NotImplementedError("execute")
-
-class TakeEvent(PointEvent):
-
-    def __init__(self, item, nb, time_estimation, last, ok, ko):
-        super().__init__(item, nb, time_estimation)
-        self.last = last
-        self.ko = ko
-        self.ok = ok
-
-    def execute(self):
-        print("take execute ", self.item.value)
-        for j in range(self.nb):
-            if j == self.nb - 1:
-                controller.take(self.item, self.last, self.ko)
-            else:
-                controller.take(self.item, self.ok, self.ko)
-
-class SetEvent(PointEvent):
-
-    def __init__(self, item, nb, time_estimation, last, ok, ko):
-        super().__init__(item, nb, time_estimation)
-        self.last = last
-        self.ko = ko
-        self.ok = ok
-
-    def execute(self):
-        raise NotImplementedError("execute")
 
 class Path(object):
 
@@ -186,6 +134,7 @@ class Path(object):
 class PathManipulator(object):
 
     def __init__(self, path):
+        print("CONFIGURE PATH : ", path)
         self.cmds = {
             Cmd.Forward: controller.forward,
             Cmd.Left: controller.left,
@@ -221,10 +170,10 @@ class PathManipulator(object):
                 user_cmd.execute()
 
         self.cmds[first](call)
-        return True, not issubclass(type(self.path[0]), PointEvent)
+        return True, not user_cmd
 
     def stepNextPoint(self, callback=lambda: None):
-        stepped, is_cmd = self.step(callback)
-        while stepped and is_cmd:
-            stepped, is_cmd = self.step(callback)
+        stepped, is_move = self.step(callback)
+        while stepped and is_move:
+            stepped, is_move = self.step(callback)
         return stepped

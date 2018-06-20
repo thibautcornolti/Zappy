@@ -213,7 +213,6 @@ class Controller(object):
     def _applyLook(self, server_answer, cmd_item):
         if server_answer == "ko":
             cmd_item[2]()
-        print(server_answer)
         server_answer = server_answer[1:-1].split(', ')
         while '' in server_answer:
             server_answer.remove('')

@@ -1,18 +1,7 @@
 # coding = utf-8
 
 from ia.src.classes.com.HashManager import HashManager
-
-class Vector(object):
-
-    def __init__(self, x=0, y=None):
-        if y is None:
-            y = x
-        self.x = x
-        self.y = y
-
-    def __repr__(self):
-        return repr("({}, {})".format(self.x, self.y))
-
+from ia.src.classes.ia_res.Vector import Vector
 
 class Ant(object):
 
