@@ -104,6 +104,27 @@ bool append_to_team(control_t *control, client_t *client)
 	return (true);
 }
 
+bool proceed_clients(control_t *ctrl) {
+	bool to_evict;
+	client_t *cl;
+
+	for (int i = 0; i < ctrl->clients->length; ++i) {
+		cl = llist_at(ctrl->clients, (size_t) i);
+		to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
+		if (cl->cmd->length && cl->state == ANONYMOUS)
+			append_to_team(ctrl, cl);
+		else if (cl->cmd->length && cl->state == PLAYER && !to_evict &&
+		         cl->task.type == NONE)
+			proceed_cmd(ctrl, cl);
+		if (cl->task.type != NONE && !to_evict)
+			exec_task(ctrl, cl);
+		if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
+			write_to_client(ctrl, cl);
+		if (to_evict)
+			evict_client(ctrl, cl);
+	}
+}
+
 bool handle_client(control_t *control, client_t *cl, size_t idx)
 {
 	bool to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
@@ -111,17 +132,6 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 	(void)(idx);
 	if (!to_evict && (cl->node->revt & POLLIN))
 		to_evict = !(receive_data(cl) && extract_rbuf_cmd(cl));
-	// if (cl->cmd->length && cl->state == ANONYMOUS)
-	// 	append_to_team(control, cl);
-	// else if (cl->cmd->length && cl->state == PLAYER && !to_evict &&
-	// 	cl->task.type == NONE)
-	// 	proceed_cmd(control, cl);
-	// if (cl->task.type != NONE && !to_evict)
-	// 	exec_task(control, cl);
-	// if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
-	// 	write_to_client(control, cl);
-	// if (to_evict)
-	// 	evict_client(control, cl);
 	return (to_evict == false);
 }
 
@@ -208,6 +218,7 @@ int main(int ac, const char **av)
 	CHECK(poll_add(&ctrl.list, ctrl.fd, POLLIN), == 0, 84);
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
+		proceed_clients(&ctrl);
 		//TODO Exec pending commands : cycle is calibrated and all possible commands are parsed and stored in their corresponding client.
 	}
 	return (0);
