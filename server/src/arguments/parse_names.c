@@ -26,7 +26,7 @@ bool parse_names(size_t ac, const char **av, params_t *params, size_t *i)
 
 	params->nteam = 0;
 	while (1) {
-		if (++s >= ac)
+		if (++s >= ac || lstr_starts_with(av[s], "-"))
 			break;
 		if (check_blacklist(av[s]) == false)
 			return (false);
