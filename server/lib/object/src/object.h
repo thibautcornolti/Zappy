@@ -21,8 +21,9 @@ typedef struct object_s {
 	elem_t **value_table;
 } object_t;
 
-object_t *init_object(void);
-elem_t *init_elem(char *type, void *data);
+object_t *lobj_init(void);
+elem_t *lobj_elem_init(char *type, void *data);
+void lobj_free_elem(elem_t *elem, bool free_payload);
 elem_t *lobj_get(object_t *this, char *key);
 elem_t *lobj_set(object_t *this, char *key, char *type, void *data);
 void lobj_remove(object_t *this, char *key);

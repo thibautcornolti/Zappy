@@ -28,19 +28,6 @@ FILES		=	args				\
 			map				\
 			exec				\
 			resource_gen			\
-			commands/cmd_broadcast		\
-			commands/cmd_connect_nbr	\
-			commands/cmd_eject		\
-			commands/cmd_fork		\
-			commands/cmd_forward		\
-			commands/cmd_incantation	\
-			commands/cmd_incantation_helper	\
-			commands/cmd_inventory		\
-			commands/cmd_left		\
-			commands/cmd_look		\
-			commands/cmd_right		\
-			commands/cmd_set		\
-			commands/cmd_take		\
 			admin/adm_teams			\
 			admin/adm_spawn			\
 			admin/adm_tickrate		\
@@ -54,7 +41,22 @@ FILES		=	args				\
 			arguments/parse_help		\
 			arguments/parse_names		\
 			arguments/parse_port		\
-			arguments/parse_width
+			arguments/parse_width		\
+			commands/cmd_broadcast		\
+			commands/cmd_connect_nbr	\
+			commands/cmd_eject		\
+			commands/cmd_fork		\
+			commands/cmd_forward		\
+			commands/cmd_incantation	\
+			commands/cmd_incantation_helper	\
+			commands/cmd_inventory		\
+			commands/cmd_left		\
+			commands/cmd_look		\
+			commands/cmd_right		\
+			commands/cmd_set		\
+			commands/cmd_take		\
+			serializers/display_object	\
+			serializers/serialize_player
 
 SORTEDFILES	=	$(sort $(FILES))
 SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)
@@ -64,9 +66,10 @@ CFLAGS 		=	-Ilib -Iinclude -W -Wall -Wextra -Wunused -Wuninitialized -D_GNU_SOUR
 LDFLAGS		=	-Llib/socket -lsocket -Llib/poll -lpoll -Llib/json -ljson -Llib/object -lobject
 LDFLAGS		+=	-Llib/list -llist -Llib/str -lstr -lm
 
-DIRS		=	commands		\
+DIRS		=	admin			\
 			arguments		\
-			admin
+			commands		\
+			serializers
 
 SORTEDDIRS	=	$(sort $(DIRS))
 SRCDIRS		=	$(SORTEDDIRS:%=$(SRCDIR)/%)

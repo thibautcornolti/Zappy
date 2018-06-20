@@ -18,7 +18,7 @@ void lobj_for_each(object_t *this, void (*callback)(char *key, elem_t *elem))
 		callback(this->key_table[idx], this->value_table[idx]);
 }
 
-object_t *init_object(void)
+object_t *lobj_init(void)
 {
 	object_t *this = malloc(sizeof(object_t));
 

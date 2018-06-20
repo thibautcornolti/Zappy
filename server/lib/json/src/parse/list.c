@@ -10,7 +10,7 @@
 int ljson_parse_list(char *raw, int idx, void **data)
 {
 	char *type;
-	void *tmp_data;
+	void *tmp;
 	bool hasNext = (raw[idx + 1] && raw[idx + 1] != ']');
 
 	*((list_t **)data) = llist_init();
@@ -20,11 +20,11 @@ int ljson_parse_list(char *raw, int idx, void **data)
 			type = ljson_find_type(raw, idx);
 			if (type == NULL)
 				return (-1);
-			idx = ljson_assign_value(raw, idx, type, &tmp_data);
+			idx = ljson_assign_value(raw, idx, type, &tmp);
 			if (idx == -1)
 				return (-1);
 		}
-		llist_push(*((list_t **)data), 1, init_elem(type, tmp_data));
+		llist_push(*((list_t **)data), 1, lobj_elem_init(type, tmp));
 		hasNext = (raw[idx] == ',');
 		idx += !!hasNext;
 	}

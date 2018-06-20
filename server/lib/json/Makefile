@@ -73,5 +73,5 @@ $(OBJDIR):
 	@mkdir -p $@
 
 $(OBJDIR)/%:
-	@echo -e "[$(RED)MKDIR$(RES)] $(YEL)$<$(RES)"
+	@echo -e "[$(RED)MKDIR$(RES)] $(YEL)$@$(RES)"
 	@mkdir -p $@

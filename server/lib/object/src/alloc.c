@@ -74,15 +74,3 @@ elem_t *lobj_set(object_t *this, char *key, char *type, void *data)
 	else
 		return (internal_lobj_add(this, key, type, data));
 }
-
-elem_t *init_elem(char *type, void *data)
-{
-	elem_t *elem = malloc(sizeof(elem_t));
-	char *type_str = strdup(type);
-
-	if (elem == NULL || type_str == NULL)
-		return (NULL);
-	elem->type = type_str;
-	elem->data = data;
-	return (elem);
-}

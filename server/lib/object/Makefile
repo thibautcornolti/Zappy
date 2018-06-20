@@ -14,6 +14,7 @@ OBJDIR		=	build
 
 FILES		=	alloc		\
 			basics		\
+			elem		\
 			object
 
 SORTEDFILES	=	$(sort $(FILES))
@@ -23,8 +24,7 @@ OBJS		=	$(SORTEDFILES:%=$(OBJDIR)/%.o)
 CFLAGS 		=	-I.. -W -Wall -Wextra -Wunused -Wuninitialized
 LDFLAGS		=
 
-DIRS		=	parse			\
-			serialize
+DIRS		=
 
 SORTEDDIRS	=	$(sort $(DIRS))
 SRCDIRS		=	$(SORTEDDIRS:%=$(SRCDIR)/%)
@@ -64,5 +64,5 @@ $(OBJDIR):
 	@mkdir -p $@
 
 $(OBJDIR)/%:
-	@echo -e "[$(RED)MKDIR$(RES)] $(YEL)$<$(RES)"
+	@echo -e "[$(RED)MKDIR$(RES)] $(YEL)$@$(RES)"
 	@mkdir -p $@

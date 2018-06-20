@@ -8,6 +8,7 @@
 #pragma once
 
 #include "list/src/list.h"
+#include "object/src/object.h"
 #include "poll/src/common.h"
 #include <netinet/in.h>
 #include <stddef.h>
@@ -41,7 +42,7 @@
 
 typedef enum facing_e { NORTH = 0, WEST, SOUTH, EAST } facing_t;
 
-typedef enum state_e { ANONYMOUS = 0, PLAYING } state_t;
+typedef enum state_e { ANONYMOUS = 0, PLAYER, GUI } state_t;
 
 typedef enum task_type_e {
 	NONE = 0,
@@ -161,6 +162,9 @@ typedef struct param_parse_s {
 	bool (*func)(size_t, const char **, params_t *, size_t *);
 } param_parse_t;
 
+/*
+** Command pre-processing
+*/
 void cmd_forward(control_t *, client_t *);
 void cmd_right(control_t *, client_t *);
 void cmd_left(control_t *, client_t *);
@@ -174,6 +178,9 @@ void cmd_take(control_t *, client_t *);
 void cmd_set(control_t *, client_t *);
 void cmd_incantation(control_t *, client_t *);
 
+/*
+** Command execution
+*/
 void exec_forward(control_t *, client_t *);
 void exec_right(control_t *, client_t *);
 void exec_left(control_t *, client_t *);
@@ -187,6 +194,9 @@ void exec_take(control_t *, client_t *);
 void exec_set(control_t *, client_t *);
 void exec_incantation(control_t *, client_t *);
 
+/*
+** Argument parsers
+*/
 bool parse_port(size_t, const char **, params_t *, size_t *);
 bool parse_width(size_t, const char **, params_t *, size_t *);
 bool parse_height(size_t, const char **, params_t *, size_t *);
@@ -194,6 +204,12 @@ bool parse_names(size_t, const char **, params_t *, size_t *);
 bool parse_clients(size_t, const char **, params_t *, size_t *);
 bool parse_freq(size_t, const char **, params_t *, size_t *);
 bool parse_help(size_t, const char **, params_t *, size_t *);
+
+/*
+** Data serializers
+*/
+object_t *serialize_player(client_t *client);
+bool display_object(object_t *obj);
 
 bool extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);

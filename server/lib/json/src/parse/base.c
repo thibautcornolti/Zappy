@@ -34,7 +34,7 @@ elem_t *ljson_init_root(char *raw, int idx)
 
 	if (type == NULL || ljson_assign_value(raw, idx, type, &data) == -1)
 		return (NULL);
-	return (init_elem(type, data));
+	return (lobj_elem_init(type, data));
 }
 
 elem_t *ljson_build_tree(char *raw)

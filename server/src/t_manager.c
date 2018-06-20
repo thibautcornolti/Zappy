@@ -87,7 +87,6 @@ bool team_init(control_t *ctrl)
 	CHECK(ctrl->teams = calloc(ctrl->params.nteam, sizeof(team_t)), == 0,
 		false);
 	for (size_t i = 0; i < ctrl->params.nteam; ++i) {
-		dprintf(2, "Creating team (ID: %lu): '%s'\n", i, ctrl->params.teams[i]);
 		ctrl->teams[i].name = ctrl->params.teams[i];
 		ctrl->teams[i].av = ctrl->params.nclt;
 		CHECK(ctrl->teams[i].cl =

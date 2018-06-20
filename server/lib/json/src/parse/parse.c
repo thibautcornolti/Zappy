@@ -40,7 +40,7 @@ int ljson_parse_object(char *raw, int idx, void **data)
 {
 	bool hasNext;
 
-	*((object_t **)data) = init_object();
+	*((object_t **)data) = lobj_init();
 	if (*((object_t **)data) == NULL)
 		return (-1);
 	idx += 1;
