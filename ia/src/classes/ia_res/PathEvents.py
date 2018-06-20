@@ -6,16 +6,18 @@ from ia.src.classes.ia_res.Vector import Vector
 
 class PointEvent(object):
 
-    def __init__(self, time_estimation):
+    def __init__(self, time_estimation, callback=None):
         self._time_estimation = time_estimation
         self.position = Vector()
+        self.callback = callback
 
     @property
     def time_estimation(self):
         return self._time_estimation
 
     def execute(self):
-        raise NotImplementedError("execute")
+        if self.callback:
+            self.callback()
 
     def __repr__(self):
         return repr(self.position.__repr__())

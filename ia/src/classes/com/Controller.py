@@ -32,7 +32,7 @@ class Resources(enum.Enum):
 
 
 required = {
-    2: (1, {Resources.Linemate: 1, Resources.Food: 10}),
+    2: (1, {Resources.Linemate: 1}),
     # 3: (2, {Resources.Linemate: 1}),
     # 4: (2, {Resources.Linemate: 2}),
     # 5: (4, {Resources.Linemate: 1}),
@@ -213,9 +213,7 @@ class Controller(object):
     def _applyLook(self, server_answer, cmd_item):
         if server_answer == "ko":
             cmd_item[2]()
-        server_answer = server_answer[1:-1].split(', ')
-        while '' in server_answer:
-            server_answer.remove('')
+        server_answer = server_answer[1:-1].split(',')
         for i in range(len(server_answer)):
             server_answer[i] = server_answer[i].split(' ')
             while '' in server_answer[i]:
@@ -244,8 +242,7 @@ class Controller(object):
             return False
 
     def flushCmds(self):
-        print("flush -> ", len(self._writeStack))
-        while len(self._cmdStack) < 10 and len(self._writeStack):
+        while len(self._cmdStack) - len(self._writeStack) < 10 and len(self._writeStack):
             value = self._writeStack.pop(0)
             COM.cli.write(value)
 

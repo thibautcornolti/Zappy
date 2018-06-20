@@ -1,5 +1,5 @@
-from ia.src.classes.ia_res.Path import Path, PathManipulator
-from ia.src.classes.ia_res.PathEvents import TakeEvent, LookEvent
+from ia.src.classes.ia_res.Path import Path, PathManipulator, PositionTracker
+from ia.src.classes.ia_res.PathEvents import TakeEvent, LookEvent, PointEvent
 from ia.src.classes.states.StateMachine import AAIState, statemachine
 from ia.src.classes.com.Controller import controller, Resources
 from ia.src.classes.ia_res.Ant import ant, Vector
@@ -23,26 +23,38 @@ class SeekItemsState(AAIState):
                     path.addConePoint(i, event)
         return found, path
 
+    def goNextPlace(self):
+        path = Path()
+        if self.progress == self.surface:
+            left_dist = ant.lvl // 2
+            path.addPoint(Vector(-left_dist, 0), PointEvent(0, lambda: self.pathHandler.stepNextPoint()))
+            path.addPoint(Vector(-left_dist, -1), LookEvent(self.updateAntLook))
+            move = Vector(-left_dist, -1)
+            self.progress = 0
+        else:
+            path.addPoint(Vector(0, 1), LookEvent(self.updateAntLook))
+            move = Vector(0, 1)
+            self.progress += 1
+        path, look = path.generateOrder(False)
+        self.tracker.addMove(move, look)
+        self.pathHandler = PathManipulator(path, self.updateAntLook)  # TODO estimate ?
+
     def updateAntLook(self, look):
-        import json
-        print(json.dumps(look, indent=4))
         found, path = self.findLooksItems(look)
         if found:
-            self.pathHandler = PathManipulator(path.generateOpti(True)[0])
+            self.pathHandler = PathManipulator(path.generateOpti(True)[0], self.checkEnd) # TODO estimate ?
         else:
-            p = Path()
-            p.addPoint(Vector(0, 1), LookEvent(self.updateAntLook))
-            self.pathHandler = PathManipulator(path.generateOrder(True)[0])
-        self.pathHandler.stepNextPoint(lambda: print(self.pathHandler.isEnded()))
+            self.goNextPlace()
+        self.pathHandler.stepNextPoint()
 
     def take_ko(self, value):
-        print("Failed to take ", value)
-        self.pathHandler.stepNextPoint(lambda: print(self.pathHandler.isEnded()))
+        del value
+        self.pathHandler.stepNextPoint()
 
     def last_take_ok(self, value):
         self.items_dict[Resources(value)] -= 1
         controller.inventory(self.updateAntInventory)
-        self.pathHandler.stepNextPoint(lambda: print(self.pathHandler.isEnded()))
+        self.pathHandler.stepNextPoint()
 
     def take_ok(self, value):
         self.items_dict[Resources(value)] -= 1
@@ -53,7 +65,6 @@ class SeekItemsState(AAIState):
 
     def update(self, cli, inputs):
         super().update(cli, inputs)
-        self.checkEnd()
 
     def updateAntInventory(self, inventory):
         ant.inventory = inventory
@@ -69,13 +80,22 @@ class SeekItemsState(AAIState):
         for k, v in self.items_dict.items():
             if v > 0:
                 check = False
-        if check:
+        if check and not self.rollback:
             statemachine.closure = closurePop
-        return check
+        elif check and self.rollback:
+            self.rollback = False
+            look, path = self.tracker.returnHome()
+            self.pathHandler = PathManipulator(path, self.checkEnd) # TODO estimate ?
+            self.pathHandler.stepNextPoint()
+        else:
+            controller.look(self.updateAntLook)
 
-    def __init__(self, items_dict):
+    def __init__(self, items_dict, rollback=False):
         super().__init__("SeekItems")
+        self.progress = 0
+        self.tracker = PositionTracker()
         self.pathHandler = None
         self.looked = False
         self.surface = max(ant.map_size.x, ant.map_size.y)
         self.items_dict = items_dict
+        self.rollback = rollback

@@ -72,11 +72,11 @@ class StateMachine(object):
         if len(self._stack) == 0:
             raise StateException("All the states ends")
         value = COM.cli.poll()
-        if select.POLLIN & value and not controller.hasBufferizedCmds():
+        if select.POLLIN & value:
             msgs = COM.cli.consult()
             controller.checkEndGame(msgs)
             self._stack[0].update(COM.cli, msgs)
-        elif select.POLLIN & value and controller.hasBufferizedCmds():
+        if controller.hasBufferizedCmds():
             controller.flushCmds()
         if self.closure:
             self.closure()

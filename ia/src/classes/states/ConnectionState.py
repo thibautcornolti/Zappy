@@ -39,11 +39,11 @@ class ConnectionState(AState):
         if self._position:
             raise StateException("Position set twice")
         self._position = True
-        ant.map_size.x = match[0][0]
-        ant.map_size.y = match[0][1]
+        ant.map_size.x = int(match[0][0])
+        ant.map_size.y = int(match[0][1])
 
         def replaceClosure():
-            statemachine.replace(SeekItemsState(required[2][1]))
+            statemachine.replace(SeekItemsState(required[2][1], True))
         statemachine.closure = replaceClosure
 
     def current_nbr(self, cli, value, match):

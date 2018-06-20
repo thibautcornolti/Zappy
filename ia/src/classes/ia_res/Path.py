@@ -139,24 +139,24 @@ class Path(object):
         actions += Path.calcLookTrans(new_look, Vector(0, 1))
         return new_look, actions
 
-    def generateOpti(self, resetPosition=False):
+    def generateOpti(self, reset=False):
         self._generateGoOpti(list(), list(), self.points, Vector(), Vector(0, 1))
         ret = self.path
         look = self.last_look
         self.path = list()
         self.last_look = Vector()
-        if resetPosition:
+        if reset:
             look, new_actions = self.resetPosition(ret[-1].position, look)
             ret += new_actions
         return ret, look
 
-    def generateOrder(self, resetPosition=False):
+    def generateOrder(self, reset=False):
         self._generateGoOrder(self.points, Vector(), Vector(0, 1))
         ret = self.path
         look = self.last_look
         self.path = list()
         self.last_look = Vector()
-        if resetPosition:
+        if reset:
             look, new_actions = self.resetPosition(ret[-1].position, look)
             ret += new_actions
         return ret, look
@@ -164,14 +164,14 @@ class Path(object):
 
 class PathManipulator(object):
 
-    def __init__(self, path):
-        print(path)
+    def __init__(self, path, end):
         self.cmds = {
             Cmd.Forward: controller.forward,
             Cmd.Left: controller.left,
             Cmd.Right: controller.right,
         }
         self.path = path
+        self.end = end
 
     def costEstimation(self, next_point=False):
         cost = 0
@@ -187,7 +187,7 @@ class PathManipulator(object):
     def isEnded(self):
         return len(self.path) == 0
 
-    def step(self, callback=lambda: None):
+    def _step(self, callback=lambda: None):
         user_cmd = None
         if len(self.path) == 0:
             return False, type(user_cmd) == Cmd
@@ -207,7 +207,27 @@ class PathManipulator(object):
         return True, not user_cmd
 
     def stepNextPoint(self, callback=lambda: None):
-        stepped, is_move = self.step(callback)
+        stepped, is_move = self._step(callback)
         while stepped and is_move:
-            stepped, is_move = self.step(callback)
+            stepped, is_move = self._step(callback)
+        if not stepped:
+            self.end()
         return stepped
+
+
+class PositionTracker(object):
+
+    def __init__(self):
+        self.look = Vector(0, 1)
+        self.position = Vector(0, 0)
+
+    def addMove(self, moveVector, look):
+        self.position = Vector(self.position.x + moveVector.x, self.position.y + moveVector.y)
+        angle = math.atan2(-1 * look.x, 1 * look.y) * 180 / math.pi
+        x = math.cos(angle) * self.look.x - math.sin(angle) * self.look.y
+        y = math.sin(angle) * self.look.x + math.cos(angle) * self.look.y
+        self.look = Vector(x, y)
+
+    def returnHome(self):
+        path = Path()
+        return path.resetPosition(self.position, self.look)
