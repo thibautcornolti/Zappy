@@ -26,7 +26,7 @@ class SeekItemsState(AAIState):
     def goNextPlace(self):
         path = Path()
         if self.progress == self.surface:
-            left_dist = ant.lvl // 2
+            left_dist = ant.lvl // 2 # TODO not really ?
             path.addPoint(Vector(-left_dist, 0), PointEvent(0, lambda: self.pathHandler.stepNextPoint()))
             path.addPoint(Vector(-left_dist, -1), LookEvent(self.updateAntLook))
             move = Vector(-left_dist, -1)
@@ -43,7 +43,7 @@ class SeekItemsState(AAIState):
         ant.look = look
         found, path = self.findLooksItems(look)
         if found:
-            self.pathHandler = PathManipulator(path.generateOpti(True)[0], self.checkEnd) # TODO estimate ?
+            self.pathHandler = PathManipulator(path.generateOpti(True)[0], self.checkEnd)  # TODO estimate ?
         else:
             self.goNextPlace()
         self.pathHandler.stepNextPoint()
@@ -96,7 +96,6 @@ class SeekItemsState(AAIState):
         self.progress = 0
         self.tracker = PositionTracker()
         self.pathHandler = None
-        self.looked = False
         self.surface = max(ant.map_size.x, ant.map_size.y)
         self.items_dict = items_dict
         self.rollback = rollback

@@ -37,6 +37,7 @@ class LevelUpHandlingState(AAIState):
 
     def endFarming(self):
         statemachine.push(IncantationState())
+        self.status = Status.Casting
 
     # endregion
 
@@ -56,7 +57,9 @@ class LevelUpHandlingState(AAIState):
             Status.StandBy: transitionError,
             Status.Farming: self.endFarming
         }
-        calls[self.status]()
+        status = self.status
+        self.status = Status.StandBy
+        calls[status]()
 
     def on_pop(self, cli):
         super().on_pop(cli)

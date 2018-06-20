@@ -67,7 +67,7 @@ class SetEvent(PointEvent):
 class LookEvent(PointEvent):
 
     def __init__(self, ok):
-        super().__init__(7)
+        super().__init__(CmdCost.Look.value)
         self.ok = ok
 
     def execute(self):

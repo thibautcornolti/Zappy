@@ -48,9 +48,6 @@ class AAIState(AState):
         for elem in inputs:
             controller.applyTop(elem)
 
-    def __repr__(self):
-        return repr(self._name)
-
 
 class StateMachine(object):
 
