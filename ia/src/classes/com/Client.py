@@ -92,7 +92,7 @@ class Client:
 
     def _read(self):
         msg = os.read(self._sock.fileno(), self._readSize)
-        #print("-> read : ", msg)
+        print("-> read : ", msg)
         if len(msg) == 0:
             self._disconnection()
         self._buffer += msg.decode()

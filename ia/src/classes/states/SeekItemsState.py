@@ -23,37 +23,29 @@ class SeekItemsState(AAIState):
                     path.addConePoint(i, event)
         return found, path
 
-    def updateAntInventory(self, inventory):
-        #print("update inventory")
-        ant.inventory = inventory
-
     def updateAntLook(self, look):
         import json
         print(json.dumps(look, indent=4))
         found, path = self.findLooksItems(look)
         if found:
-            self.pathHandler = PathManipulator(path.generateOpti())
-            self.pathHandler.stepNextPoint()
+            self.pathHandler = PathManipulator(path.generateOpti(True)[0])
         else:
-            print("NEXTTTTTTTT POINT")
             p = Path()
             p.addPoint(Vector(0, 1), LookEvent(self.updateAntLook))
-            self.pathHandler = PathManipulator(path.generateOpti())
-            self.pathHandler.stepNextPoint()
+            self.pathHandler = PathManipulator(path.generateOrder(True)[0])
+        self.pathHandler.stepNextPoint(lambda: print(self.pathHandler.isEnded()))
 
     def take_ko(self, value):
         print("Failed to take ", value)
-        pass
+        self.pathHandler.stepNextPoint(lambda: print(self.pathHandler.isEnded()))
 
     def last_take_ok(self, value):
         self.items_dict[Resources(value)] -= 1
-        #print("last take ", value, "({})".format(self.items_dict[Resources(value)]))
         controller.inventory(self.updateAntInventory)
-        self.pathHandler.stepNextPoint()
+        self.pathHandler.stepNextPoint(lambda: print(self.pathHandler.isEnded()))
 
     def take_ok(self, value):
         self.items_dict[Resources(value)] -= 1
-        #print("take ", value, "({})".format(self.items_dict[Resources(value)]))
 
     def on_push(self, cli):
         super().on_push(cli)
@@ -63,8 +55,13 @@ class SeekItemsState(AAIState):
         super().update(cli, inputs)
         self.checkEnd()
 
+    def updateAntInventory(self, inventory):
+        ant.inventory = inventory
+
     def checkEnd(self):
         check = True
+        if self.pathHandler and not self.pathHandler.isEnded():
+            return False
 
         def closurePop():
             statemachine.pop()
@@ -74,6 +71,7 @@ class SeekItemsState(AAIState):
                 check = False
         if check:
             statemachine.closure = closurePop
+        return check
 
     def __init__(self, items_dict):
         super().__init__("SeekItems")

@@ -244,6 +244,7 @@ class Controller(object):
             return False
 
     def flushCmds(self):
+        print("flush -> ", len(self._writeStack))
         while len(self._cmdStack) < 10 and len(self._writeStack):
             value = self._writeStack.pop(0)
             COM.cli.write(value)

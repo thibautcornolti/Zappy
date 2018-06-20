@@ -76,7 +76,7 @@ class StateMachine(object):
             msgs = COM.cli.consult()
             controller.checkEndGame(msgs)
             self._stack[0].update(COM.cli, msgs)
-        else:
+        elif select.POLLIN & value and controller.hasBufferizedCmds():
             controller.flushCmds()
         if self.closure:
             self.closure()

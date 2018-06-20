@@ -1,5 +1,7 @@
 # coding = utf-8
-from ia.src.classes.ia_res.Vector import Vector, normalize, vecSize
+import math
+
+from ia.src.classes.ia_res.Vector import Vector, normalize, vecSize, dotProduct
 from ia.src.classes.com.Controller import Cmd, controller
 from ia.src.classes.ia_res.PathEvents import PointEvent
 
@@ -8,6 +10,7 @@ class Path(object):
 
     def __init__(self):
         self.path = list()
+        self.last_look = Vector()
 
         self.points = list()
 
@@ -96,6 +99,7 @@ class Path(object):
         if len(points) == 0:
             len_go = len(self.path)
             if len(moves) < len_go or len_go == 0:
+                self.last_look = current_look
                 self.path = moves
             return
         save = list(points)
@@ -117,24 +121,51 @@ class Path(object):
             actions_list += actions + [point[1]]
             current_point = point[0]
         self.path = actions_list
+        self.last_look = current_look
 
-    def generateOpti(self):
+    @staticmethod
+    def calcLookTrans(lookA, lookB):
+        values = {
+            -90: [Cmd.Right],
+            90: [Cmd.Left],
+            0: [],
+            180: [Cmd.Right, Cmd.Right]
+        }
+        angle = math.atan2(lookA.x * lookB.y - lookA.y * lookB.x, lookA.x * lookB.x + lookA.y * lookB.y) * 180 / math.pi
+        return values[angle]
+
+    def resetPosition(self, position, look):
+        new_look, actions = self._calcMove(look, position, Vector())
+        actions += Path.calcLookTrans(new_look, Vector(0, 1))
+        return new_look, actions
+
+    def generateOpti(self, resetPosition=False):
         self._generateGoOpti(list(), list(), self.points, Vector(), Vector(0, 1))
         ret = self.path
+        look = self.last_look
         self.path = list()
-        return ret
+        self.last_look = Vector()
+        if resetPosition:
+            look, new_actions = self.resetPosition(ret[-1].position, look)
+            ret += new_actions
+        return ret, look
 
-    def generateOrder(self):
+    def generateOrder(self, resetPosition=False):
         self._generateGoOrder(self.points, Vector(), Vector(0, 1))
         ret = self.path
+        look = self.last_look
         self.path = list()
-        return ret
+        self.last_look = Vector()
+        if resetPosition:
+            look, new_actions = self.resetPosition(ret[-1].position, look)
+            ret += new_actions
+        return ret, look
 
 
 class PathManipulator(object):
 
     def __init__(self, path):
-        print("CONFIGURE PATH : ", path)
+        print(path)
         self.cmds = {
             Cmd.Forward: controller.forward,
             Cmd.Left: controller.left,
@@ -152,6 +183,9 @@ class PathManipulator(object):
                 if next_point:
                     break
         return cost
+
+    def isEnded(self):
+        return len(self.path) == 0
 
     def step(self, callback=lambda: None):
         user_cmd = None

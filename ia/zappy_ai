@@ -34,7 +34,6 @@ def parse_arg():
 
 
 def run(args):
-
     with init_client(args.h, args.p):
         from ia.src.classes.states.StateMachine import statemachine
         init_ant(args.n)
