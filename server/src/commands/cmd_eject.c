@@ -35,7 +35,7 @@ void exec_eject(control_t *control, client_t *client)
 			asprintf(&str, "eject: %lu",
 				compute_direction(
 					cl->facing, opposite[client->facing]));
-			llist_push(cl->pending, 1, str);
+			add_pending(cl, str);
 		}
 	}
 

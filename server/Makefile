@@ -28,6 +28,7 @@ FILES		=	args				\
 			map				\
 			exec				\
 			resource_gen			\
+			admin/adm_getids		\
 			admin/adm_teams			\
 			admin/adm_spawn			\
 			admin/adm_tickrate		\

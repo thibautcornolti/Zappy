@@ -17,6 +17,12 @@
 #include <time.h>
 #include <unistd.h>
 
+void add_pending(client_t *cl, char *msg)
+{
+	llist_push(cl->pending, 1, msg);
+	cl->node->evt = POLLIN | POLLOUT;
+}
+
 bool add_new_client(control_t *ctrl)
 {
 	client_t *client;
@@ -38,7 +44,7 @@ bool add_new_client(control_t *ctrl)
 	CHECK(client->node =
 			poll_add(&ctrl->list, client->fd, POLLIN | POLLOUT),
 		== 0, false);
-	llist_push(client->pending, 1, strdup(WELCOME_MSG));
+	add_pending(client, strdup(WELCOME_MSG));
 	CHECK(llist_push(ctrl->clients, 1, client), == -1, false);
 	serialize_player(client);
 	return (true);
@@ -78,6 +84,8 @@ bool write_to_client(control_t *control, client_t *cl)
 	if (str)
 		dprintf(cl->fd, "%s\n", str);
 	free(str);
+	if (!cl->pending->length)
+		cl->node->evt = POLLIN;
 	return (true);
 }
 
@@ -88,10 +96,10 @@ bool append_special_client(control_t *control, client_t *client, char *type)
 	else if (lstr_equals(type, "admin"))
 		client->state = ADMIN;
 	else {
-		llist_push(client->pending, 1, strdup(KO_MSG));
+		add_pending(client, strdup(KO_MSG));
 		return (false);
 	}
-	llist_push(client->pending, 1, strdup(OK_MSG));
+	add_pending(client, strdup(OK_MSG));
 	return (true);
 }
 
@@ -108,17 +116,16 @@ bool append_to_team(control_t *control, client_t *client)
 			team_add_client(control, client, cmd->name);
 			str = lstr_concat(strdup(""), 3, LSTR_INT,
 			                  (int)(control->teams[i].av));
-			llist_push(client->pending, 1, str);
+			add_pending(client, str);
 			str = lstr_concat(strdup(""), 3, LSTR_INT,
 			                  (int)(control->params.width), LSTR_CHAR, ' ',
 			                  LSTR_INT, (int)(control->params.height));
-			llist_push(client->pending, 1, str);
+			add_pending(client, str);
 			client->state = PLAYER;
-			printf("Triggered\n");
 			return (true);
 		}
 
-	llist_push(client->pending, 1, strdup(KO_MSG));
+	add_pending(client, strdup(KO_MSG));
 	return (true);
 }
 
@@ -132,7 +139,7 @@ bool proceed_clients(control_t *ctrl)
 		to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
 		if (cl->cmd->length && cl->state == ANONYMOUS)
 			append_to_team(ctrl, cl);
-		else if (cl->cmd->length && cl->state == PLAYER && !to_evict &&
+		else if (cl->cmd->length && cl->state != ANONYMOUS && !to_evict &&
 			cl->task.type == NONE)
 			proceed_cmd(ctrl, cl);
 		if (cl->task.type != NONE && !to_evict)

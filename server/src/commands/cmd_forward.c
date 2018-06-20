@@ -43,7 +43,7 @@ void cmd_forward(control_t *control, client_t *client)
 	(void)(control);
 	client->task.time = 7;
 	client->task.type = FORWARD;
-	llist_push(client->pending, 1, strdup(OK_MSG));
+	add_pending(client, strdup(OK_MSG));
 }
 
 void exec_forward(control_t *control, client_t *client)

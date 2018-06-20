@@ -28,5 +28,5 @@ void exec_look(control_t *control, client_t *client)
 	for (size_t i = 0; i < client->level; ++i) {
 	}
 	client->task.type = NONE;
-	llist_push(client->pending, 1, strdup(OK_MSG));
+	add_pending(client, strdup(OK_MSG));
 }

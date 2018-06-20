@@ -21,6 +21,6 @@ void exec_right(control_t *control, client_t *client)
 		client->facing = EAST;
 	else
 		client->facing -= 1;
-	llist_push(client->pending, 1, strdup(OK_MSG));
+	add_pending(client, strdup(OK_MSG));
 	client->task.type = NONE;
 }

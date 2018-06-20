@@ -13,7 +13,7 @@ void cmd_fork(control_t *control, client_t *client)
 	(void)(control);
 	client->task.time = 42;
 	client->task.type = FORK;
-	llist_push(client->pending, 1, strdup(OK_MSG));
+	add_pending(client, strdup(OK_MSG));
 }
 
 void exec_fork(control_t *control, client_t *client)
