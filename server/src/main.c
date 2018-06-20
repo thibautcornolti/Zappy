@@ -120,21 +120,23 @@ bool append_to_team(control_t *control, client_t *client)
 	return (true);
 }
 
-bool proceed_clients(control_t *ctrl) {
+bool proceed_clients(control_t *ctrl)
+{
 	bool to_evict;
 	client_t *cl;
 
 	for (int i = 0; i < ctrl->clients->length; ++i) {
-		cl = llist_at(ctrl->clients, (size_t) i);
+		cl = llist_at(ctrl->clients, (size_t)i);
 		to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
 		if (cl->cmd->length && cl->state == ANONYMOUS)
 			append_to_team(ctrl, cl);
 		else if (cl->cmd->length && cl->state == PLAYER && !to_evict &&
-		         cl->task.type == NONE)
+			cl->task.type == NONE)
 			proceed_cmd(ctrl, cl);
 		if (cl->task.type != NONE && !to_evict)
 			exec_task(ctrl, cl);
-		if (!to_evict && cl->pending->length && (cl->node->revt & POLLOUT))
+		if (!to_evict && cl->pending->length &&
+			(cl->node->revt & POLLOUT))
 			write_to_client(ctrl, cl);
 		if (to_evict)
 			evict_client(ctrl, cl);
@@ -235,7 +237,7 @@ int main(int ac, const char **av)
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
 		proceed_clients(&ctrl);
-		//TODO Exec pending commands : cycle is calibrated and all possible commands are parsed and stored in their corresponding client.
+		// TODO Exec pending commands : cycle is calibrated and all possible commands are parsed and stored in their corresponding client.
 	}
 	return (0);
 }
