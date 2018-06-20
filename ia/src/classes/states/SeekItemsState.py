@@ -19,7 +19,7 @@ class SeekItemsState(AAIState):
                     if nb < 0:
                         nb = look[i].count(item.value)
                     dup_items[item] -= nb
-                    event = TakeEvent(item, nb, nb * 7, self.last_take_ok, self.take_ok, self.take_ko)
+                    event = TakeEvent(item, nb, self.last_take_ok, self.take_ok, self.take_ko)
                     path.addConePoint(i, event)
         return found, path
 
@@ -40,6 +40,7 @@ class SeekItemsState(AAIState):
         self.pathHandler = PathManipulator(path, self.updateAntLook)  # TODO estimate ?
 
     def updateAntLook(self, look):
+        ant.look = look
         found, path = self.findLooksItems(look)
         if found:
             self.pathHandler = PathManipulator(path.generateOpti(True)[0], self.checkEnd) # TODO estimate ?

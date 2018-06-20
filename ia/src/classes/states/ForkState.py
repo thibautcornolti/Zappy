@@ -1,7 +1,8 @@
 # coding = utf-8
+from ia.src.classes.states.StateMachine import AState
 
 
-class ForkState:
+class ForkState(AState):
 
     def __init__(self):
-        pass
+        super().__init__("Fork")

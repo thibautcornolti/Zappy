@@ -1,6 +1,6 @@
 # coding = utf-8
 
-from ia.src.classes.com.Controller import controller
+from ia.src.classes.com.Controller import controller, CmdCost
 from ia.src.classes.ia_res.Vector import Vector
 
 
@@ -24,8 +24,8 @@ class PointEvent(object):
 
 class TakeEvent(PointEvent):
 
-    def __init__(self, item, nb, time_estimation, last, ok, ko):
-        super().__init__(time_estimation)
+    def __init__(self, item, nb, last, ok, ko):
+        super().__init__(CmdCost.Take.value * nb)
         self.item = item
         self.nb = nb
         self.last = last
@@ -45,8 +45,8 @@ class TakeEvent(PointEvent):
 
 class SetEvent(PointEvent):
 
-    def __init__(self, item, nb, time_estimation, last, ok, ko):
-        super().__init__(time_estimation)
+    def __init__(self, item, nb, last, ok, ko):
+        super().__init__(CmdCost.Set.value * nb)
         self.item = item
         self.nb = nb
         self.last = last

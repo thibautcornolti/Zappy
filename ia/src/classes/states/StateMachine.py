@@ -25,6 +25,12 @@ class AState(object):
     def on_push(self, cli):
         pass
 
+    def pushed_over(self):
+        pass
+
+    def popped_over(self):
+        pass
+
     def on_pop(self, cli):
         pass
 
@@ -55,12 +61,16 @@ class StateMachine(object):
     def push(self, state):
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):
             raise Exception("State is not a valid variable type")
+        if self._stack:
+            self._stack[0].pushed_over()
         self._stack.insert(0, state)
         self._stack[0].on_push(COM.cli)
 
     def pop(self):
         self._stack[0].on_pop(COM.cli)
         self._stack.pop(0)
+        if self._stack:
+            self._stack[0].popped_over()
 
     def replace(self, state):
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):

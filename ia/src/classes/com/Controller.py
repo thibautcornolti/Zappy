@@ -20,6 +20,19 @@ class Cmd(enum.Enum):
     IncantationStart = "Incantation"
     IncantationStop = None
 
+class CmdCost(enum.Enum):
+    Forward = 7
+    Right = 7
+    Left = 7
+    Look = 7
+    Inventory = 1
+    Broadcast = 7
+    Connect_nbr = 0
+    Fork = 42
+    Eject = 7
+    Take = 7
+    Set = 7
+    Incantation = 300
 
 class Resources(enum.Enum):
     Food = "food"
@@ -31,7 +44,7 @@ class Resources(enum.Enum):
     Thystame = "thystame"
 
 
-required = {
+requirement = {
     2: (1, {Resources.Linemate: 1}),
     # 3: (2, {Resources.Linemate: 1}),
     # 4: (2, {Resources.Linemate: 2}),
@@ -40,7 +53,6 @@ required = {
     # 7: (6, {Resources.Linemate: 1}),
     # 8: (6, {Resources.Linemate: 2}),
 }
-
 
 class GameException(Exception):
 
@@ -74,13 +86,13 @@ class Controller(object):
             Cmd.Look: self._applyLook,
             Cmd.Inventory: self._applyInventory,
             Cmd.Broadcast: self._applyDefault,
-            Cmd.Connect_nbr: self._applyArgOK,
+            Cmd.Connect_nbr: self._applyArgCurrentNbr,
             Cmd.Fork: self._applyDefault,
             Cmd.Eject: self._applyDefault,
             Cmd.Take: self._applyTake,
             Cmd.Set: self._applySet,
             Cmd.IncantationStart: self._applyDefault,
-            Cmd.IncantationStop: self._applyArgOK,
+            Cmd.IncantationStop: self._applyArgIncantation,
         }
         self._cmdStack = []
         self._takeQueue = []
@@ -113,7 +125,7 @@ class Controller(object):
 
     def look(self, callback):
         """
-        :param callback: (look list of dict) -> void
+        :param callback: (look list of str) -> void
         :return: void
         """
         cmd = Cmd.Look
@@ -122,7 +134,7 @@ class Controller(object):
 
     def inventory(self, callback):
         """
-        :param callback: (inventory dict) -> void
+        :param callback: (inventory dict: dict(Resources)) -> void
         :return: void
         """
         cmd = Cmd.Inventory
@@ -155,7 +167,7 @@ class Controller(object):
 
     def take(self, object, ok, ko):
         """
-        :param callback: (object) -> void x 2
+        :param callback: (object: str) -> void x 2
         :return:
         """
         if type(object) != Resources:
@@ -167,7 +179,7 @@ class Controller(object):
 
     def set(self, object, ok, ko):
         """
-        :param callback: (object) -> void x 2
+        :param callback: (object: str) -> void x 2
         :return:
         """
         if type(object) != Resources:
@@ -181,7 +193,7 @@ class Controller(object):
         """
         :param ok_start: () -> void
         :param ko_start: () -> void
-        :param ok_end: (lvl) -> void
+        :param ok_end: (lvl: int) -> void
         :param ko_end: () -> void
         :return:
         """
@@ -199,6 +211,16 @@ class Controller(object):
         if server_answer == "ko":
             cmd_item[2]()
         cmd_item[1](server_answer)
+
+    def _applyArgIncantation(self, server_answer, cmd_item):
+        if server_answer == "ko":
+            cmd_item[2]()
+        cmd_item[1](int(server_answer[-1:]))
+
+    def _applyArgCurrentNbr(self, server_answer, cmd_item):
+        if server_answer == "ko":
+            cmd_item[2]()
+        cmd_item[1](int(server_answer))
 
     def _applySet(self, server_answer, cmd_item):
         if server_answer == "ko":
