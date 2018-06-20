@@ -62,6 +62,7 @@ static void extract_found_cmd(client_t *client, char *tmp, int csize)
 	}
 	client->rbuf.start = (client->rbuf.start + csize) % len;
 	((client->state == GUI) ? parse_json : parse_cmd)(cmd);
+	cmd->cmd[strlen(cmd->cmd) - 1] = 0;
 	llist_push(client->cmd, 1, cmd);
 }
 

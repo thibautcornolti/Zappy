@@ -27,6 +27,6 @@ void exec_inventory(control_t *control, client_t *client)
 		client->inventory[DERAUMERE], client->inventory[SIBUR],
 		client->inventory[MENDIANE], client->inventory[PHIRAS],
 		client->inventory[THYSTAME]);
-	llist_push(client->pending, 1, str);
+	add_pending(client, str);
 	client->task.type = NONE;
 }

@@ -51,7 +51,7 @@ static list_t *validate_clients(control_t *control, client_t *client)
 		(void *(*)(void *, void *, void *, size_t))(same_level),
 		client, &ret);
 	if (count->length != required[client->level][0] || ret == false) {
-		llist_push(client->pending, 1, strdup(KO_MSG));
+		add_pending(client, strdup(KO_MSG));
 		llist_destroy(count);
 		return (0);
 	}
@@ -64,7 +64,7 @@ void exec_incantation(control_t *control, client_t *client)
 
 	client->task.type = NONE;
 	if (client->level == 8) {
-		llist_push(client->pending, 1, strdup(KO_MSG));
+		add_pending(client, strdup(KO_MSG));
 		return;
 	}
 	count = validate_clients(control, client);
@@ -73,7 +73,7 @@ void exec_incantation(control_t *control, client_t *client)
 	for (size_t i = 1; i < ITEM_COUNT; ++i)
 		if (count_items(control, client->pos, i) !=
 			required[client->level][i]) {
-			llist_push(client->pending, 1, strdup(KO_MSG));
+			add_pending(client, strdup(KO_MSG));
 			llist_destroy(count);
 			return;
 		}

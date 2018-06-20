@@ -28,7 +28,7 @@ void adm_move(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(?:\/move \d+ \d+ \d+$)";
+	char pattern[] = R"(?:move \d+ \d+ \d+$)";
 	char usage[] = "MOVE: [id] [y] [x]";
 	size_t y, x;
 
@@ -39,9 +39,9 @@ void adm_move(control_t *ctrl, client_t *cl)
 		if (y < ctrl->params.height && x < ctrl->params.width &&
 			move_player(ctrl, cl, y, x)) {
 		}
-		llist_push(cl->pending, 1, "Command [SPAWN] successful");
+		add_pending(cl, "Command [SPAWN] successful");
 	}
 	else
-		llist_push(cl->pending, 1, strdup(usage));
+		add_pending(cl, strdup(usage));
 	regfree(&preg);
 }

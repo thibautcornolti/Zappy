@@ -15,7 +15,7 @@ bool team_add_client(control_t *ctrl, client_t *cl, char *team)
 	for (size_t i = 0; i < ctrl->params.nteam; ++i) {
 		t = &ctrl->teams[i];
 		if (!strcmp(t->name, team) && t->av) {
-			t->cl[ctrl->params.nclt - t->av - 1] = cl;
+			t->cl[ctrl->params.nclt - t->av] = cl;
 			cl->team = t;
 			t->av -= 1;
 			ret = true;
@@ -53,7 +53,7 @@ void team_add(control_t *ctrl, char *str)
 	p->teams = realloc(p->teams, sizeof(char *) * p->nteam);
 	p->teams[p->nteam - 1] = strdup(str);
 	ctrl->teams[p->nteam - 1].name = p->teams[p->nteam - 1];
-	ctrl->teams[p->nteam - 1].cl = calloc(p->nteam, sizeof(team_t));
+	ctrl->teams[p->nteam - 1].cl = calloc(p->nclt, sizeof(client_t *));
 	ctrl->teams[p->nteam - 1].av = p->nclt;
 }
 

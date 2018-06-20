@@ -29,6 +29,7 @@ static tuple_t gui[] = {
 };
 
 static tuple_t admin[] = {
+	{"getids",      &adm_getids},
 	{"cast",        &adm_cast},
 	{"killall",     &adm_killall},
 	{"lvlup",       &adm_lvlup},
@@ -53,7 +54,7 @@ static int cmd_amount[] = {
 static void cmd_unknown(client_t *cl, cmd_t *cmd)
 {
 	dprintf(2, "[%s] Unknown command %s\n", cl->ip, cmd->name);
-	llist_push(cl->pending, 1, strdup(KO_MSG));
+	add_pending(cl, strdup(KO_MSG));
 }
 
 void clear_cmd(cmd_t *cmd)

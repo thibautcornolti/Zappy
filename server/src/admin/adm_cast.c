@@ -24,14 +24,14 @@ void adm_cast(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(?:\/cast \d+$)";
+	char pattern[] = R"(?:cast \d+$)";
 	char usage[] = "CAST: [id]";
 
 	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
 	if (cmd->nparam == 3 && !regexec(&preg, cmd->cmd, 0, NULL, 0) &&
 	    reset_cast(ctrl, cl, strtoul(cmd->param[0], 0, 10)))
-		llist_push(cl->pending, 1, "Command [SPAWN] successful");
+		add_pending(cl, "Command [SPAWN] successful");
 	else
-		llist_push(cl->pending, 1, strdup(usage));
+		add_pending(cl, strdup(usage));
 	regfree(&preg);
 }

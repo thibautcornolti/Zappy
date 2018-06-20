@@ -29,7 +29,7 @@ void adm_spawn(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(?:\/spawn \w+ \d+ \d+$)";
+	char pattern[] = R"(?:spawn \w+ \d+ \d+$)";
 	char usage[] = "SPAWN: [item] [y] [x]";
 	size_t y, x;
 
@@ -39,8 +39,8 @@ void adm_spawn(control_t *ctrl, client_t *cl)
 		x = strtoul(cmd->param[2], 0, 10);
 		if (y < ctrl->params.height && x < ctrl->params.width &&
 		    add_item(ctrl, cl, y, x))
-			llist_push(cl->pending, 1, "Command [SPAWN] successful");
+			add_pending(cl, "Command [SPAWN] successful");
 	} else
-		llist_push(cl->pending, 1, strdup(usage));
+		add_pending(cl, strdup(usage));
 	regfree(&preg);
 }
