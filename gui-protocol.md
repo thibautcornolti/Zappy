@@ -28,14 +28,14 @@ Les commandes reconnus par le serveur sont les suivantes.
 ### Taille de la map
 
 Requête:
-```JSON
+```json
 {
     "command": "map-size"
 }
 ```
 
 Réponse:
-```JSON
+```json
 {
     "type": "response",
     "response-type": "map-size",
@@ -49,14 +49,14 @@ Réponse:
 ### Liste d'entités
 
 Requête:
-```JSON
+```json
 {
     "command": "entities"
 }
 ```
 
 Réponse:
-```JSON
+```json
 {
     "type": "response",
     "response-type": "entities",
@@ -102,7 +102,7 @@ Des événements peuvent surgir à n'importe quel moment et le serveur enverra l
 
 ### Mouvement de joueur
 
-```JSON
+```json
 {
     "type": "event",
     "event-type": "player-move",
@@ -119,7 +119,7 @@ Des événements peuvent surgir à n'importe quel moment et le serveur enverra l
 ### Incantation
 
 Début d'incantation:
-```JSON
+```json
 {
     "type": "event",
     "event-type": "incantation-start",
@@ -131,7 +131,7 @@ Début d'incantation:
 ```
 
 Succés de l'incantation:
-```JSON
+```json
 {
     "type": "event",
     "event-type": "incantation-success",
@@ -143,7 +143,7 @@ Succés de l'incantation:
 ```
 
 Echec de l'incantation:
-```JSON
+```json
 {
     "type": "event",
     "event-type": "incantation-fail",
