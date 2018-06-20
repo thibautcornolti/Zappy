@@ -50,6 +50,7 @@ void proceed_cmd(control_t *ctrl, client_t *cl)
 	cmd_t *cmd = cl->cmd->head->payload;
 
 	(void)(ctrl);
+	//TODO PTR ARRAY SELON LE TYPE DE USER
 	show_cmd(cmd);
 	for (int i = 0; i < CMD_COUNT; ++i)
 		if (!strcasecmp(cmd->name, fcmd[i].cmd)) {

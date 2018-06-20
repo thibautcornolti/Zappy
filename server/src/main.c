@@ -88,18 +88,20 @@ bool append_to_team(control_t *control, client_t *client)
 
 	for (size_t i = 0; i < control->params.nteam; ++i)
 		if (control->teams[i].av &&
-			lstr_equals(control->teams[i].name, cmd->name)) {
+		    lstr_equals(control->teams[i].name, cmd->name)) {
 			team_add_client(control, client, cmd->name);
 			str = lstr_concat(strdup(""), 3, LSTR_INT,
-				(int)(control->teams[i].av));
+			                  (int)(control->teams[i].av));
 			llist_push(client->pending, 1, str);
 			str = lstr_concat(strdup(""), 3, LSTR_INT,
-				(int)(control->params.width), LSTR_CHAR, ' ',
-				LSTR_INT, (int)(control->params.height));
+			                  (int)(control->params.width), LSTR_CHAR, ' ',
+			                  LSTR_INT, (int)(control->params.height));
 			llist_push(client->pending, 1, str);
 			client->state = PLAYER;
+			printf("Triggered\n");
 			return (true);
 		}
+
 	llist_push(client->pending, 1, strdup(KO_MSG));
 	return (true);
 }
@@ -108,7 +110,7 @@ bool proceed_clients(control_t *ctrl) {
 	bool to_evict;
 	client_t *cl;
 
-	for (int i = 0; i < ctrl->clients->length; ++i) {
+	for (size_t i = 0; i < ctrl->clients->length; ++i) {
 		cl = llist_at(ctrl->clients, (size_t) i);
 		to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
 		if (cl->cmd->length && cl->state == ANONYMOUS)
@@ -123,6 +125,7 @@ bool proceed_clients(control_t *ctrl) {
 		if (to_evict)
 			evict_client(ctrl, cl);
 	}
+	return (true);
 }
 
 bool handle_client(control_t *control, client_t *cl, size_t idx)
@@ -195,8 +198,8 @@ static bool cycle_adjustment(control_t *ctrl)
 		if (poll_wait(ctrl->list, (int)ms) > 0)
 			perfom_poll_actions(ctrl);
 		CHECK(gettimeofday(&stop, NULL), == -1, -1);
-		ms = (long)((round(stop.tv_usec - start.tv_usec) / 1e3));
-		ms = (ms < tr) ? tr - ms : 0;
+		ms = tr - (long)((round((stop.tv_sec * 1e6 + stop.tv_usec)
+			- (start.tv_sec * 1e6 + start.tv_usec)) / 1e3));
 	}
 	return (true);
 }
@@ -219,7 +222,6 @@ int main(int ac, const char **av)
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
 		proceed_clients(&ctrl);
-		//TODO Exec pending commands : cycle is calibrated and all possible commands are parsed and stored in their corresponding client.
 	}
 	return (0);
 }

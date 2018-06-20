@@ -20,12 +20,12 @@ static void parse_cmd(cmd_t *item)
 {
 	char *cmd = strdup(item->cmd);
 	char *save = cmd;
-	char *tmp = strsep(&cmd, " ");
+	char *tmp = strsep(&cmd, " \r\n");
 
 	memset(item->name, 0, CMD_SIZE);
 	memcpy(item->name, tmp, strlen(tmp));
 	do {
-		tmp = strsep(&cmd, " ");
+		tmp = strsep(&cmd, " \r\n");
 		if (tmp && tmp[0])
 			add_param(item, tmp);
 	} while (tmp);
