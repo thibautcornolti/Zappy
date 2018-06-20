@@ -53,7 +53,6 @@ static list_t *validate_clients(control_t *control, client_t *client)
 	if (count->length != required[client->level][0] || ret == false) {
 		llist_push(client->pending, 1, strdup(KO_MSG));
 		llist_destroy(count);
-
 		return (0);
 	}
 	return (count);

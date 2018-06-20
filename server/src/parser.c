@@ -32,6 +32,21 @@ static void parse_cmd(cmd_t *item)
 	free(save);
 }
 
+static void parse_json(cmd_t *cmd)
+{
+	elem_t *root = 0;
+	elem_t *req = 0;
+
+	cmd->json = ljson_parse(cmd->cmd);
+	if (cmd->json == 0)
+		return;
+	root = cmd->json->root;
+	if (lstr_equals(root->type, "object"))
+		req = lobj_get(root->data, "command");
+	if (req && lstr_equals(req->type, "string"))
+		strcpy(cmd->name, req->data);
+}
+
 static void extract_found_cmd(client_t *client, char *tmp, int csize)
 {
 	int len = client->rbuf.size;
@@ -46,7 +61,7 @@ static void extract_found_cmd(client_t *client, char *tmp, int csize)
 		rbuf[(client->rbuf.start + i) % len] = 0;
 	}
 	client->rbuf.start = (client->rbuf.start + csize) % len;
-	parse_cmd(cmd);
+	((client->state == GUI) ? parse_json : parse_cmd)(cmd);
 	llist_push(client->cmd, 1, cmd);
 }
 

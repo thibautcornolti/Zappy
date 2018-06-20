@@ -96,6 +96,45 @@ Réponse:
 }
 ```
 
+### Contenu d'une case
+
+Requête:
+```json
+{
+    "command": "tile",
+    "pos": {
+        "x": 4,
+        "y": 10
+    }
+}
+```
+
+Réponse:
+```json
+{
+    "type": "response",
+    "response-type": "tile",
+    "pos": {
+        "x": 4,
+        "y": 10
+    },
+    "data": [
+        {
+            "type": "food",
+            "amount": 4
+        },
+        {
+            "type": "sibur",
+            "amount": 10
+        },
+        {
+            "type": "player",
+            "ids": [ 4, 5, 6 ]
+        }
+    ]
+}
+```
+
 ## Événements
 
 Des événements peuvent surgir à n'importe quel moment et le serveur enverra les informations liés à ces événements à tous les GUIs connectés.

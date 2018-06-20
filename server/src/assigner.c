@@ -78,11 +78,10 @@ void proceed_cmd(control_t *ctrl, client_t *cl)
 	cmd_t *cmd = cl->cmd->head->payload;
 
 	(void)(ctrl);
-
 	show_cmd(cmd);
 	for (int i = 0; i < cmd_amount[cl->state]; ++i)
-		if (!strcasecmp(cmd->name, commands[cl->state]->cmd)) {
-			commands[cl->state]->func(ctrl, cl);
+		if (!strcasecmp(cmd->name, commands[cl->state][i].cmd)) {
+			commands[cl->state][i].func(ctrl, cl);
 			break;
 		} else if (i + 1 == cmd_amount[cl->state])
 			cmd_unknown(cl, cmd);

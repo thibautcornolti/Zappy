@@ -6,7 +6,6 @@
 */
 
 #include "server.h"
-#include "json/src/json.h"
 
 bool display_object(object_t *obj)
 {

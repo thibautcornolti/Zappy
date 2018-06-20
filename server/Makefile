@@ -59,6 +59,9 @@ FILES		=	args				\
 			commands/cmd_set		\
 			commands/cmd_take		\
 			serializers/display_object	\
+			serializers/free_list		\
+			serializers/free_object		\
+			serializers/free_json		\
 			serializers/serialize_player
 
 SORTEDFILES	=	$(sort $(FILES))

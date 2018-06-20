@@ -17,7 +17,8 @@ static void intern_lobj_delete_helper(
 			nkeys[idx2] = this->key_table[idx1];
 			nvals[idx2] = this->value_table[idx1];
 			idx2++;
-		} else {
+		}
+		else {
 			free(this->value_table[idx1]->type);
 			free(this->value_table[idx1]);
 			free(this->key_table[idx1]);
@@ -64,12 +65,11 @@ elem_t **lobj_values(object_t *this)
 void lobj_destroy(object_t *this)
 {
 	if (this) {
-		if (this->length)
-			for (int i = 0; i < this->length; i++) {
-				free(this->key_table[i]);
-				free(this->value_table[i]->type);
-				free(this->value_table[i]);
-			}
+		for (int i = 0; i < this->length; i++) {
+			free(this->key_table[i]);
+			free(this->value_table[i]->type);
+			free(this->value_table[i]);
+		}
 		free(this->key_table);
 		free(this->value_table);
 	}

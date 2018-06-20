@@ -7,15 +7,18 @@
 
 #include "object.h"
 
-void lobj_for_each(object_t *this, void (*callback)(char *key, elem_t *elem))
+void lobj_for_each(object_t *this,
+	void (*callback)(void *context, char *key, elem_t *elem),
+	void *context)
 {
-	int idx;
+	int idx = -1;
+	char **keys = this->key_table;
+	elem_t **values = this->value_table;
 
 	if (this == NULL || callback == NULL)
 		return;
-	idx = -1;
 	while (++idx < this->length)
-		callback(this->key_table[idx], this->value_table[idx]);
+		callback(context, keys[idx], values[idx]);
 }
 
 object_t *lobj_init(void)

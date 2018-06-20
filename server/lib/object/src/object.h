@@ -30,6 +30,8 @@ void lobj_remove(object_t *this, char *key);
 char **lobj_keys(object_t *this);
 elem_t **lobj_values(object_t *this);
 void lobj_destroy(object_t *this);
-void lobj_for_each(object_t *this, void (*callback)(char *key, elem_t *elem));
+void lobj_for_each(object_t *this,
+	void (*callback)(void *context, char *key, elem_t *elem),
+	void *context);
 
 #endif /* !LIBOBJECT_H_ */

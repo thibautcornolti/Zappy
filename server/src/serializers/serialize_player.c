@@ -5,8 +5,6 @@
 ** serialize_player
 */
 
-#include "object/src/object.h"
-#include "json/src/json.h"
 #include "server.h"
 
 void *double_to_void_ptr(double d)

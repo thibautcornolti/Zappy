@@ -104,20 +104,19 @@ bool append_to_team(control_t *control, client_t *client)
 		return (append_special_client(control, client, cmd->name));
 	for (size_t i = 0; i < control->params.nteam; ++i)
 		if (control->teams[i].av &&
-		    lstr_equals(control->teams[i].name, cmd->name)) {
+			lstr_equals(control->teams[i].name, cmd->name)) {
 			team_add_client(control, client, cmd->name);
-			str = lstr_concat(strdup(""), 3, LSTR_INT,
-			                  (int)(control->teams[i].av));
+			str = lstr_concat(strdup(""), 1, LSTR_INT,
+				(int)(control->teams[i].av));
 			llist_push(client->pending, 1, str);
 			str = lstr_concat(strdup(""), 3, LSTR_INT,
-			                  (int)(control->params.width), LSTR_CHAR, ' ',
-			                  LSTR_INT, (int)(control->params.height));
+				(int)(control->params.width), LSTR_CHAR, ' ',
+				LSTR_INT, (int)(control->params.height));
 			llist_push(client->pending, 1, str);
 			client->state = PLAYER;
 			printf("Triggered\n");
 			return (true);
 		}
-
 	llist_push(client->pending, 1, strdup(KO_MSG));
 	return (true);
 }
@@ -128,12 +127,12 @@ bool proceed_clients(control_t *ctrl)
 	client_t *cl;
 
 	for (size_t i = 0; i < ctrl->clients->length; ++i) {
-		cl = llist_at(ctrl->clients, (size_t) i);
+		cl = llist_at(ctrl->clients, (size_t)i);
 		to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
 		if (cl->cmd->length && cl->state == ANONYMOUS)
 			append_to_team(ctrl, cl);
-		else if (cl->cmd->length && cl->state == PLAYER && !to_evict &&
-			cl->task.type == NONE)
+		else if (cl->cmd->length && cl->state != ANONYMOUS &&
+			!to_evict && cl->task.type == NONE)
 			proceed_cmd(ctrl, cl);
 		if (cl->task.type != NONE && !to_evict)
 			exec_task(ctrl, cl);
@@ -210,14 +209,17 @@ static bool cycle_adjustment(control_t *ctrl)
 	struct timeval stop, start;
 	long tr = (long)(round(1 * 1e3 / ctrl->params.tickrate));
 	long ms = tr;
+	double i1;
+	double i2;
 
 	CHECK(gettimeofday(&start, NULL), == -1, -1);
 	while (ms > 0) {
 		if (poll_wait(ctrl->list, (int)ms) > 0)
 			perfom_poll_actions(ctrl);
 		CHECK(gettimeofday(&stop, NULL), == -1, -1);
-		ms = tr - (long)((round((stop.tv_sec * 1e6 + stop.tv_usec)
-			- (start.tv_sec * 1e6 + start.tv_usec)) / 1e3));
+		i1 = stop.tv_sec * 1e6 + stop.tv_usec;
+		i2 = start.tv_sec * 1e6 + start.tv_usec;
+		ms = tr - (long)((round(i1 - i2) / 1e3));
 	}
 	return (true);
 }

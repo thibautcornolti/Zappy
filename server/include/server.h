@@ -9,6 +9,7 @@
 
 #include "list/src/list.h"
 #include "object/src/object.h"
+#include "json/src/json.h"
 #include "poll/src/common.h"
 #include <netinet/in.h>
 #include <stddef.h>
@@ -91,6 +92,7 @@ typedef struct cmd_s {
 	char name[CMD_SIZE];
 	char **param;
 	int nparam;
+	json_t *json;
 } cmd_t;
 
 typedef struct params_s {
@@ -208,11 +210,23 @@ bool parse_freq(size_t, const char **, params_t *, size_t *);
 bool parse_help(size_t, const char **, params_t *, size_t *);
 
 /*
+** JSON free utilities
+*/
+void free_elem_str(char *value);
+void free_list(void *ctx, elem_t *elem, size_t idx);
+void free_elem_list(list_t *value);
+void free_object(void *ctx, char *key, elem_t *value);
+void free_elem_obj(object_t *value);
+void free_elem(elem_t *elem, bool free_only_data);
+void free_json(json_t *json);
+
+/*
 ** Data serializers
 */
 object_t *serialize_player(client_t *client);
-bool display_object(object_t *obj);
 
+bool display_object(object_t *obj);
+void *double_to_void_ptr(double d);
 bool extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);
 bool exec_task(control_t *, client_t *);
