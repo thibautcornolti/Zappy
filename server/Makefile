@@ -35,6 +35,9 @@ FILES		=	args				\
 			admin/adm_cast			\
 			admin/adm_killall		\
 			admin/adm_lvlup			\
+			gui/gui_entities		\
+			gui/gui_map_size		\
+			gui/gui_tile			\
 			arguments/parse_clients		\
 			arguments/parse_freq		\
 			arguments/parse_height		\
@@ -69,6 +72,7 @@ LDFLAGS		+=	-Llib/list -llist -Llib/str -lstr -lm
 DIRS		=	admin			\
 			arguments		\
 			commands		\
+			gui			\
 			serializers
 
 SORTEDDIRS	=	$(sort $(DIRS))

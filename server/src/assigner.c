@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-static tuple_t fcmd[] = {
+static tuple_t player[] = {
 	{"forward",     &cmd_forward},
 	{"right",       &cmd_right},
 	{"left",        &cmd_left},
@@ -20,6 +20,34 @@ static tuple_t fcmd[] = {
 	{"take",        &cmd_take},
 	{"set",         &cmd_set},
 	{"incantation", &cmd_incantation}
+};
+
+static tuple_t gui[] = {
+	{"map-size",    &gui_map_size},
+	{"entities",    &gui_entities},
+	{"tile",        &gui_tile}
+};
+
+static tuple_t admin[] = {
+	{"cast",        &adm_cast},
+	{"killall",     &adm_killall},
+	{"lvlup",       &adm_lvlup},
+	{"move",        &adm_move},
+	{"spawn",       &adm_spawn},
+	{"teams",       &adm_teams},
+	{"tickrate",    &adm_tickrate}
+};
+
+static tuple_t *commands[] = {
+	[PLAYER] = player,
+	[GUI] = gui,
+	[ADMIN] = admin
+};
+
+static int cmd_amount[] = {
+	[PLAYER] = PLAYER_CMD_COUNT,
+	[GUI] = GUI_CMD_COUNT,
+	[ADMIN] = ADMIN_CMD_COUNT
 };
 
 static void cmd_unknown(client_t *cl, cmd_t *cmd)
@@ -50,13 +78,13 @@ void proceed_cmd(control_t *ctrl, client_t *cl)
 	cmd_t *cmd = cl->cmd->head->payload;
 
 	(void)(ctrl);
-	//TODO PTR ARRAY SELON LE TYPE DE USER
+
 	show_cmd(cmd);
-	for (int i = 0; i < CMD_COUNT; ++i)
-		if (!strcasecmp(cmd->name, fcmd[i].cmd)) {
-			fcmd[i].func(ctrl, cl);
+	for (int i = 0; i < cmd_amount[cl->state]; ++i)
+		if (!strcasecmp(cmd->name, commands[cl->state]->cmd)) {
+			commands[cl->state]->func(ctrl, cl);
 			break;
-		} else if (i + 1 == CMD_COUNT)
+		} else if (i + 1 == cmd_amount[cl->state])
 			cmd_unknown(cl, cmd);
 	clear_cmd(llist_remove(cl->cmd, 0));
 }

@@ -15,7 +15,9 @@
 
 #define RBUFFER_SIZE 4096
 #define CMD_SIZE 2048
-#define CMD_COUNT 12
+#define PLAYER_CMD_COUNT 12
+#define GUI_CMD_COUNT 3
+#define ADMIN_CMD_COUNT 7
 #define FOOD_DELAY 126
 
 #define OK_MSG "ok"
@@ -262,7 +264,14 @@ bool place_resources(control_t *);
 void adm_teams(control_t *, client_t *);
 void adm_spawn(control_t *, client_t *);
 void adm_tickrate(control_t *, client_t *);
-void adm_move(control_t *, client_t *);
+void adm_lvlup(control_t *, client_t *);
 void adm_cast(control_t *, client_t *);
 void adm_killall(control_t *, client_t *);
 void adm_move(control_t *, client_t *);
+
+/*
+ * GUI commands
+ */
+void gui_map_size(control_t *, client_t *);
+void gui_entities(control_t *, client_t *);
+void gui_tile(control_t *, client_t *);
