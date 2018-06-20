@@ -42,7 +42,7 @@
 
 typedef enum facing_e { NORTH = 0, WEST, SOUTH, EAST } facing_t;
 
-typedef enum state_e { ANONYMOUS = 0, PLAYER, GUI } state_t;
+typedef enum state_e { ANONYMOUS = 0, PLAYER, GUI, ADMIN } state_t;
 
 typedef enum task_type_e {
 	NONE = 0,

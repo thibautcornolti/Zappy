@@ -81,11 +81,27 @@ bool write_to_client(control_t *control, client_t *cl)
 	return (true);
 }
 
+bool append_special_client(control_t *control, client_t *client, char *type)
+{
+	if (lstr_equals(type, "gui"))
+		client->state = GUI;
+	else if (lstr_equals(type, "admin"))
+		client->state = ADMIN;
+	else {
+		llist_push(client->pending, 1, strdup(KO_MSG));
+		return (false);
+	}
+	llist_push(client->pending, 1, strdup(OK_MSG));
+	return (true);
+}
+
 bool append_to_team(control_t *control, client_t *client)
 {
 	cmd_t *cmd = llist_remove(client->cmd, 0);
 	char *str;
 
+	if (lstr_equals(cmd->name, "gui") || lstr_equals(cmd->name, "admin"))
+		return (append_special_client(control, client, cmd->name));
 	for (size_t i = 0; i < control->params.nteam; ++i)
 		if (control->teams[i].av &&
 			lstr_equals(control->teams[i].name, cmd->name)) {
