@@ -31,6 +31,12 @@ module.exports = {
         ]
     },
     externals: {
-        "socket.io-client": "io"
+        "socket.io-client": "io",
+        "three": "THREE",
+        "obj-loader": "THREE.OBJLoader",
+        "mtl-loader": "THREE.MTLLoader",
+        "gltf-loader": "THREE.GLTFLoader",
+        "draco-loader": "THREE.DRACOLoader",
+        // "three-obj-mtl-loader": "three-obj-mtl-loader"
     }
 };

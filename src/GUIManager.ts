@@ -23,7 +23,6 @@ export default class GUIManagger {
     }
 
     private onWindowResize : EventListenerOrEventListenerObject = () => {
-        // console.log('ok');
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);

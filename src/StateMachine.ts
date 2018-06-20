@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import IState from "./States/IState"
 import StateShare from "./States/StateShare";
 import GUIManager from "./GUIManager";
@@ -6,6 +7,7 @@ function animate() {
     let manager = GUIManager.getInstance();
 
     requestAnimationFrame(animate);
+
     manager.getRenderer().render(manager.getScene(), manager.getCamera());
 }
 

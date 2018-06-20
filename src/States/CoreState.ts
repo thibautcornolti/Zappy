@@ -23,8 +23,7 @@ export default class CoreState implements IState {
     public init() {
         this.mainMap.generate();
         this.camPos = Object.assign({}, this.manager.getCamera().position);
-        this.state.getSocket().setOnData(this.onSocketData);
-        console.log("core");
+        // this.state.getSocket().setOnData(this.onSocketData);
     }
 
     private onSocketData(resp: string) {
@@ -38,6 +37,7 @@ export default class CoreState implements IState {
             this.inc = 0;
         let camPos = Object.assign({}, this.camPos);
         camPos.y += Math.sin(scale * this.inc) * 2;
+        this.manager.getCamera().lookAt(10, 0, 10);
         this.manager.getCamera().position.set(camPos.x, camPos.y, camPos.z);
     }
 

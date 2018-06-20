@@ -50,17 +50,47 @@ export default class InitState implements IState {
         }));
     }
 
+    public getTextureSkyBox() {
+        let path = "textures/skybox/";
+        let format = '.png';
+        let urls = [
+            path + 'right' + format,
+            path + 'left' + format,
+            path + 'top' + format,
+            path + 'bottom' + format,
+            path + 'back' + format,
+            path + 'front' + format
+        ];
+
+        return urls;
+    }
+
+    public initAssets() {
+        let loader = [
+            this.share.getAssetsPool().loadGlTFProm('map', 'models/map/map.gltf', (obj) => {
+                obj.scene.position.set(0, -3.75, 0);
+            }, (evt) => {
+                this.loading.setPercentage((evt.loaded / evt.total) * 100);
+            }),
+            this.share.getAssetsPool().loadGlTFProm('chicken', 'models/chicken/chicken.gltf', (obj) => {
+                obj.scene.scale.set(0.7, 0.7, 0.7);
+            }),
+            this.share.getAssetsPool().loadCubeTextureProm('skybox', this.getTextureSkyBox())
+        ];
+
+        Promise.all(loader).then(() => {
+            this.isMapLoaded = true;
+        }, () => {
+            this.loading.setError("Erreur lors du chargement des assets");
+        });
+    }
+
     public init() {
         this.loading.show();
         this.isSocketConnected = true;
         // this.initSocket();
-        this.share.getAssetsPool().loadAssets("map", "models/map/map.obj", "models/map/map.mtl", (evt) => {
-            this.loading.setPercentage((evt.loaded / evt.total) * 100);
-        }, () => {
-            this.isMapLoaded = true;
-        }, () => {
-            alert("Impossible de charger la map");
-        });
+        this.initAssets();
+
         // this.loadMusic();
     }
 
