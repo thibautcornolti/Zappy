@@ -153,3 +153,25 @@ Echec de l'incantation:
     }
 }
 ```
+
+## Erreurs
+
+Lors d'une erreur, une réponse spéciale sera renvoyé au client par le serveur.
+
+### Erreur de syntaxe
+
+```json
+{
+    "type": "error",
+    "error-type": "syntax-error"
+}
+```
+
+### Erreur de commande
+
+```json
+{
+    "type": "error",
+    "error-type": "command-error"
+}
+```
