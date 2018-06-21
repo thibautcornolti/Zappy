@@ -135,19 +135,19 @@ class Controller(object):
             COM.cli.write(value)
 
     def forward(self, callback):
-        print("forward")
+        print("Forward")
         cmd = Cmd.Forward
         self._write(cmd.value)
         self._cmdStack.append((cmd, callback, defaultError))
 
     def right(self, callback):
-        print("right")
+        print("Right")
         cmd = Cmd.Right
         self._write(cmd.value)
         self._cmdStack.append((cmd, callback, defaultError))
 
     def left(self, callback):
-        print("left")
+        print("Left")
         cmd = Cmd.Left
         self._write(cmd.value)
         self._cmdStack.append((cmd, callback, defaultError))
@@ -155,7 +155,7 @@ class Controller(object):
     def look(self, callback):
         """
         :param callback: (look list of str) -> void
-        :return: void
+            :return: void
         """
         cmd = Cmd.Look
         self._write(cmd.value)
@@ -233,37 +233,37 @@ class Controller(object):
 
     def _applyDefault(self, server_answer, cmd_item):
         if server_answer == "ko":
-            cmd_item[2]()
+            return cmd_item[2]()
         cmd_item[1]()
 
     def _applyArgOK(self, server_answer, cmd_item):
         if server_answer == "ko":
-            cmd_item[2]()
+            return cmd_item[2]()
         cmd_item[1](server_answer)
 
     def _applyArgIncantation(self, server_answer, cmd_item):
         if server_answer == "ko":
-            cmd_item[2]()
+            return cmd_item[2]()
         cmd_item[1](int(server_answer[-1:]))
 
     def _applyArgCurrentNbr(self, server_answer, cmd_item):
         if server_answer == "ko":
-            cmd_item[2]()
+            return cmd_item[2]()
         cmd_item[1](int(server_answer))
 
     def _applySet(self, server_answer, cmd_item):
         if server_answer == "ko":
-            cmd_item[2](self._setQueue.pop(0))
+            return cmd_item[2](self._setQueue.pop(0))
         cmd_item[1](self._setQueue.pop(0))
 
     def _applyTake(self, server_answer, cmd_item):
         if server_answer == "ko":
-            cmd_item[2](self._takeQueue.pop(0))
+            return cmd_item[2](self._takeQueue.pop(0))
         cmd_item[1](self._takeQueue.pop(0))
 
     def _applyLook(self, server_answer, cmd_item):
         if server_answer == "ko":
-            cmd_item[2]()
+            return cmd_item[2]()
         server_answer = server_answer[1:-1].split(',')
         for i in range(len(server_answer)):
             server_answer[i] = server_answer[i].split(' ')
@@ -273,7 +273,7 @@ class Controller(object):
 
     def _applyInventory(self, server_answer, cmd_item):
         if server_answer == "ko":
-            cmd_item[2]()
+            return cmd_item[2]()
         server_answer = server_answer[1:-1].split(', ')
         while '' in server_answer:
             server_answer.remove('')

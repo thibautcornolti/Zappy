@@ -26,7 +26,7 @@ class SeekItemsState(AAIState):
     def goNextPlace(self):
         path = Path()
         if self.progress == self.surface:
-            left_dist = ant.lvl // 2  # FIXME not really ?
+            left_dist = ant.lvl - 1
             path.addPoint(Vector(-left_dist, 0), PointEvent(0, lambda: self.pathHandler.stepNextPoint()))
             path.addPoint(Vector(-left_dist, -1), LookEvent(self.updateAntLook))
             move = Vector(-left_dist, -1)
@@ -49,6 +49,7 @@ class SeekItemsState(AAIState):
         self.pathHandler.stepNextPoint()
 
     def take_ko(self, value):
+        print("TAKE FAILED ", value)
         del value
         self.pathHandler.stepNextPoint()
 
@@ -57,6 +58,7 @@ class SeekItemsState(AAIState):
         self.pathHandler.stepNextPoint()
 
     def take_ok(self, value):
+        print("TAKE OK ", value)
         self.items_dict[Resources(value)] -= 1
 
     def on_push(self, cli):
