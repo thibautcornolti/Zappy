@@ -1,6 +1,6 @@
 # coding = utf-8
 import enum
-from ia.src.classes.com.Controller import requirement, controller, defaultError
+from ia.src.classes.com.Controller import requirement, controller
 from ia.src.classes.ia_res.Ant import ant
 from ia.src.classes.states.IncantationState import IncantationState
 from ia.src.classes.states.SeekItemsState import SeekItemsState

@@ -1,8 +1,11 @@
 # coding = utf-8
 
 import enum
+import re
+
 import ia.src.classes.com.Client as COM
 from ia.src.classes.ia_res.Ant import ant
+from ia.src.classes.ia_res.Vector import Vector
 
 
 class Cmd(enum.Enum):
@@ -72,6 +75,24 @@ def defaultOk():
 def defaultConnectNbr(nbr):
     ant.current_nbr = int(nbr)
 
+class Message(object):
+
+    def __init__(self, dir_nbr, text):
+        dir_conv = {
+            1: Vector(0, 1),
+            2: Vector(-1, 1),
+            3: Vector(-1, 0),
+            4: Vector(-1, -1),
+            5: Vector(0, -1),
+            6: Vector(1, -1),
+            7: Vector(1, 0),
+            8: Vector(1, 1)
+        }
+        self.text = text
+        self.dir = dir_conv[dir_nbr]
+
+    def __repr__(self):
+        return repr(self.dir.__repr__() + " : " + self.text)
 
 class Controller(object):
     """
@@ -98,6 +119,7 @@ class Controller(object):
         self._takeQueue = []
         self._setQueue = []
         self._writeStack = []
+        self._msgQueue = []
 
     def _write(self, value):
         if len(self._cmdStack) >= 10:
@@ -258,7 +280,13 @@ class Controller(object):
     def applyTop(self, server_answer):
         try:
             value = self._cmdStack.pop(0)
-            self._answersCallers[value[0]](server_answer, value)
+            match = re.findall("^message\s+(\d),\s+(.*)$", server_answer)
+            if match:
+                match = match[0]
+                self._msgQueue.append(Message(int(match[0]), match[1]))
+                print(self._msgQueue)
+            else:
+                self._answersCallers[value[0]](server_answer, value)
             return True
         except IndexError:
             return False
