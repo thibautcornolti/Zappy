@@ -37,6 +37,7 @@ static void parse_json(cmd_t *cmd)
 	elem_t *root = 0;
 	elem_t *req = 0;
 
+	memset(cmd->name, 0, sizeof(cmd->name));
 	cmd->json = ljson_parse(cmd->cmd);
 	if (cmd->json == 0)
 		return;

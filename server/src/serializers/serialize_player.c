@@ -7,6 +7,13 @@
 
 #include "server.h"
 
+static const char *facings[] = {
+	[NORTH] = "N",
+	[SOUTH] = "S",
+	[WEST] = "W",
+	[EAST] = "E"
+};
+
 void *double_to_void_ptr(double d)
 {
 	return *(void **)(&d);
@@ -15,12 +22,9 @@ void *double_to_void_ptr(double d)
 object_t *serialize_player(client_t *client)
 {
 	object_t *ret = lobj_init();
-	object_t *pos = lobj_init();
 
 	lobj_set(ret, "type", "string", strdup("player"));
 	lobj_set(ret, "id", "number", double_to_void_ptr(client->fd));
-	lobj_set(pos, "x", "number", double_to_void_ptr(client->pos.x));
-	lobj_set(pos, "y", "number", double_to_void_ptr(client->pos.y));
-	lobj_set(ret, "pos", "object", pos);
+	lobj_set(ret, "pos", "object", serialize_position(client->pos));
 	return (ret);
 }

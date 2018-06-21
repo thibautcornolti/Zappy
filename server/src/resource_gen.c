@@ -10,13 +10,14 @@
 bool place_resource(control_t *control, size_t x, size_t y)
 {
 	list_t *items;
+	size_t count;
 
-	if (rand() % 2)
-		return (true);
 	items = control->map[x + y * control->params.width].items;
-	if (rand() % 2)
+	count = rand() % 20;
+	for (size_t i = 0; i < count; ++i)
 		llist_push(items, 1, FOOD);
-	else
+	count = rand() % 10;
+	for (size_t i = 0; i < count; ++i)
 		llist_push(items, 1, rand() % 6 + 1);
 	return (true);
 }

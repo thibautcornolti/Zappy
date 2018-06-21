@@ -39,6 +39,7 @@ FILES		=	args				\
 			gui/gui_entities		\
 			gui/gui_map_size		\
 			gui/gui_tile			\
+			gui/gui_tile_helper		\
 			arguments/parse_clients		\
 			arguments/parse_freq		\
 			arguments/parse_height		\
@@ -60,10 +61,13 @@ FILES		=	args				\
 			commands/cmd_set		\
 			commands/cmd_take		\
 			serializers/display_object	\
+			serializers/errors		\
+			serializers/finalize_json	\
 			serializers/free_list		\
 			serializers/free_object		\
 			serializers/free_json		\
-			serializers/serialize_player
+			serializers/serialize_player	\
+			serializers/serialize_position
 
 SORTEDFILES	=	$(sort $(FILES))
 SRCS		=	$(SORTEDFILES:%=$(SRCDIR)/%.c)

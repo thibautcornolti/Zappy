@@ -44,7 +44,7 @@ static void incantation_success(
 
 static list_t *validate_clients(control_t *control, client_t *client)
 {
-	list_t *count = count_clients(control, client);
+	list_t *count = count_clients(control, client->pos);
 	bool ret = true;
 
 	llist_reduce(count,

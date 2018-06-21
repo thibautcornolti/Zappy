@@ -37,6 +37,7 @@ bool add_new_client(control_t *ctrl)
 	client->state = ANONYMOUS;
 	client->pos.x = rand() % ctrl->params.width;
 	client->pos.y = rand() % ctrl->params.height;
+	dprintf(2, "spawn position: (%lu,%lu)\n", client->pos.x, client->pos.y);
 	CHECK(client->fd = accept(ctrl->fd, (struct sockaddr *)&addr, &size),
 		== -1, false);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
@@ -84,7 +85,7 @@ bool write_to_client(control_t *control, client_t *cl)
 	if (str)
 		dprintf(cl->fd, "%s\n", str);
 	free(str);
-	if (!cl->pending->length)
+	if (cl->pending->length == 0)
 		cl->node->evt = POLLIN;
 	return (true);
 }
@@ -116,7 +117,7 @@ bool append_to_team(control_t *control, client_t *client)
 			team_add_client(control, client, cmd->name);
 			str = lstr_concat(strdup(""), 1, LSTR_INT,
 				(int)(control->teams[i].av));
-			llist_push(client->pending, 1, str);
+			add_pending(client, str);
 			str = lstr_concat(strdup(""), 3, LSTR_INT,
 				(int)(control->params.width), LSTR_CHAR, ' ',
 				LSTR_INT, (int)(control->params.height));

@@ -229,6 +229,7 @@ void free_json(json_t *json);
 ** Data serializers
 */
 object_t *serialize_player(client_t *client);
+object_t *serialize_position(vec2_t pos);
 
 bool display_object(object_t *obj);
 void *double_to_void_ptr(double d);
@@ -236,6 +237,10 @@ bool extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);
 bool exec_task(control_t *, client_t *);
 bool place_resources(control_t *);
+void finalize_json(client_t *, object_t *, cmd_t *);
+object_t *emit_command_error(void);
+object_t *emit_syntax_error(void);
+list_t *create_tile_data(control_t *control, vec2_t pos);
 
 /*
 ** Teams
@@ -268,7 +273,7 @@ void move_directed(control_t *, client_t *, facing_t);
 /*
 ** Incantation
 */
-list_t *count_clients(control_t *, client_t *);
+list_t *count_clients(control_t *, vec2_t);
 size_t count_items(control_t *, vec2_t, item_t);
 void upgrade_level(control_t *, client_t *, size_t);
 
