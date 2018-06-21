@@ -51,6 +51,6 @@ export default class SocketCom {
     }
 
     public send(str: String) {
-        this.sock.emit('data', str);
+        this.sock.emit('my_data', str);
     }
 }

@@ -46,7 +46,7 @@ io.on('connection', function (sock) {
         sock.emit('my_error', {code: "DISCONNECTED"});
     });
 
-    sock.on('data', (msg) => {
+    sock.on('my_data', (msg) => {
         if (cli && isConnected) {
             cli.write(msg);
         } else {

@@ -23,7 +23,7 @@ export default class CoreState implements IState {
     public init() {
         this.mainMap.generate();
         this.camPos = Object.assign({}, this.manager.getCamera().position);
-        // this.state.getSocket().setOnData(this.onSocketData);
+        console.log(this.state.getKey('mapSize'));
     }
 
     private onSocketData(resp: string) {

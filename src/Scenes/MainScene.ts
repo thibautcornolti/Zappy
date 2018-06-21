@@ -23,7 +23,7 @@ export default class MainScene {
     }
 
     private setLight() {
-        let intensity = 0.8;
+        let intensity = 0.7;
         let light;
         light = new THREE.DirectionalLight(0xffffff, intensity);
         light.position.set(0, 1, 0);

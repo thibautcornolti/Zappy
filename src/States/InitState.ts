@@ -6,6 +6,7 @@ import StateMachine from "../StateMachine";
 import CoreState from "./CoreState";
 import GUIManagger from "../GUIManager";
 import LoadingBar from "../LoadingBar";
+import {IMapSize} from "../ICom";
 
 export default class InitState implements IState {
     private share: StateShare;
@@ -13,8 +14,7 @@ export default class InitState implements IState {
     private isMapLoaded: boolean;
     private isSocketConnected: boolean;
     private loading: LoadingBar;
-    // private progressB : HTMLElementTagNameMap["div"];
-    // private progressW : HTMLElementTagNameMap["div"];
+    private socket: SocketCom | null;
 
     constructor(share: StateShare) {
         this.loadCore = false;
@@ -22,12 +22,7 @@ export default class InitState implements IState {
         this.isSocketConnected = false;
         this.share = share;
         this.loading = new LoadingBar();
-
-        // this.progressW = document.createElement('div');
-        // this.progressB = document.createElement('div');
-        // this.progressB.classList.add("progress-bar");
-        // this.progressW.classList.add("progress-wrap");
-        // this.progressW.appendChild(this.progressB);
+        this.socket = null;
     }
 
     private loadMusic() {
@@ -35,19 +30,52 @@ export default class InitState implements IState {
         let audioLoader = new THREE.AudioLoader();
         audioLoader.load('sounds/music.ogg', function(buffer: THREE.AudioBuffer) {
             sound.setBuffer(buffer);
-            sound.setLoop( true );
-            sound.setVolume( 0.5 );
+            sound.setLoop(true);
+            sound.setVolume(0.5);
             sound.play();
         }, () => {}, () => {});
     }
 
+    private onData(data: string) {
+        if (!this.socket) {
+            console.warn("Socket not initialized");
+            return;
+        }
+        if (data === "WELCOME\n") {
+            this.loading.setPercentage(80);
+            this.socket.send("gui\n");
+        } else if (data === "ok\n") {
+            this.loading.setPercentage(90);
+            this.socket.send(JSON.stringify({command: "map-size"}) + "\n");
+        } else {
+            this.loading.setPercentage(100);
+            let obj : IMapSize;
+            try {
+                obj = JSON.parse(data);
+            } catch (e) {
+                console.warn("Invalid response from server: " + data);
+                this.loading.setError("Impossible de se connecter au serveur Zappy");
+                return;
+            }
+            if (obj['response-type'] === "map-size") {
+                this.share.addKey("mapSize", obj.size);
+                this.isSocketConnected = true;
+            } else {
+                this.loading.setError("Impossible de se connecter au serveur Zappy");
+                console.warn("Unknown response from server: " + obj['response-type']);
+            }
+        }
+    }
+
     private initSocket() {
-        this.share.addKey("socket", new SocketCom(33333, "127.0.0.1", () => {
-            this.isSocketConnected = true;
+        this.socket = new SocketCom(33333, "127.0.0.1", () => {
+            this.loading.setPercentage(75);
         }, () => {
             this.loading.setError("Impossible de se connecter au serveur Zappy");
-            // alert("Impossible de se connecter au serveur Zappy");
-        }));
+        }, (data) => {
+            this.onData(data);
+        });
+        this.share.addKey("socket", this.socket);
     }
 
     public getTextureSkyBox() {
@@ -61,7 +89,6 @@ export default class InitState implements IState {
             path + 'back' + format,
             path + 'front' + format
         ];
-
         return urls;
     }
 
@@ -69,8 +96,9 @@ export default class InitState implements IState {
         let loader = [
             this.share.getAssetsPool().loadGlTFProm('map', 'models/map/map.gltf', (obj) => {
                 obj.scene.position.set(0, -3.75, 0);
+                this.initSocket();
             }, (evt) => {
-                this.loading.setPercentage((evt.loaded / evt.total) * 100);
+                this.loading.setPercentage((((evt.loaded / evt.total) * 100) * 70) / 100);
             }),
             this.share.getAssetsPool().loadGlTFProm('chicken', 'models/chicken/chicken.gltf', (obj) => {
                 obj.scene.scale.set(0.7, 0.7, 0.7);
@@ -87,7 +115,7 @@ export default class InitState implements IState {
 
     public init() {
         this.loading.show();
-        this.isSocketConnected = true;
+        // this.isSocketConnected = true;
         // this.initSocket();
         this.initAssets();
 
