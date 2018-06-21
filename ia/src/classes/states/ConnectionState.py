@@ -1,9 +1,9 @@
 # coding = utf-8
 import re
 
-from ia.src.classes.states.LevelUpHandlingState import LevelUpHandlingState
+from src.classes.states.LevelUpHandlingState import LevelUpHandlingState
 from .StateMachine import AState, StateException, statemachine
-from ia.src.classes.ia_res.Ant import ant
+from src.classes.ia_res.Ant import ant
 
 
 class ConnectionState(AState):

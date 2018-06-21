@@ -1,7 +1,7 @@
 # coding = utf-8
 
 import enum
-from ia.src.classes.com.HashManager import HashManager
+from src.classes.com.HashManager import HashManager
 
 
 class Roles(enum.Enum):

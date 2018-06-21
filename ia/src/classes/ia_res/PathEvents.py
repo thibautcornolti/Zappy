@@ -1,7 +1,7 @@
 # coding = utf-8
 
-from ia.src.classes.com.Controller import controller, CmdCost
-from ia.src.classes.ia_res.Vector import Vector
+from src.classes.com.Controller import controller, CmdCost
+from src.classes.ia_res.Vector import Vector
 
 
 class PointEvent(object):
