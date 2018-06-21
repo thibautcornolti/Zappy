@@ -63,15 +63,18 @@ class IncantationState(AAIState):
 
     def incantationEndFail(self):
         print("Failed to end Incantation")  # TODO ???
+        statemachine.closure = lambda: statemachine.pop()
 
     def incantationEndOK(self, value):
         print("Incantation end successfully")  # TODO ???
         print(value)
+        statemachine.closure = lambda: statemachine.pop()
 
     # endregion incantation callbacks
 
     def castIncantation(self):
-        controller.incantation(self.incantationStartOK, self.incantationStartFail, self.incantationEndOK, self.incantationEndFail)
+        controller.incantation(self.incantationStartOK, self.incantationStartFail, self.incantationEndOK,
+                               self.incantationEndFail)
 
     def add_usefull_items(self):
         add_something = False
@@ -79,7 +82,8 @@ class IncantationState(AAIState):
             if k not in self.require:
                 continue
             if k in self.look and self.look[k] < self.require[k]:
-                event = SetEvent(Resources(k), self.require[k] - self.look[k], self.putLastRes, self.putRes, self.putResFail)
+                event = SetEvent(Resources(k), self.require[k] - self.look[k], self.putLastRes, self.putRes,
+                                 self.putResFail)
                 self.addingItems.append(k)
                 add_something = True
                 event.execute()

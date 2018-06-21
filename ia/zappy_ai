@@ -45,7 +45,7 @@ def run(args):
 
 def main():
     args = parse_arg()
-    run(args)
+    run(args) #TODO remove
     try:
         run(args)
     except Exception as e:

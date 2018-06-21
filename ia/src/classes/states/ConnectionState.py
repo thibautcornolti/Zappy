@@ -43,6 +43,7 @@ class ConnectionState(AState):
 
         def replaceClosure():
             statemachine.replace(LevelUpHandlingState())
+
         statemachine.closure = replaceClosure
 
     def current_nbr(self, cli, value, match):
@@ -58,4 +59,3 @@ class ConnectionState(AState):
                 match = re.findall(k, elem)
                 if match:
                     v(cli, elem, match)
-

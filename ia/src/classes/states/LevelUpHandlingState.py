@@ -8,12 +8,14 @@ from src.classes.states.StateMachine import AAIState, statemachine
 
 
 def transitionError():
-    raise Exception("An unexpected transition occured")
+    pass
+
 
 class Status(enum.Enum):
     StandBy = 0
     Farming = 1
     Casting = 2
+
 
 class LevelUpHandlingState(AAIState):
 
@@ -31,6 +33,7 @@ class LevelUpHandlingState(AAIState):
 
     def teamLvl(self):
         pass
+
     # endregion
 
     # region transition events
@@ -38,6 +41,11 @@ class LevelUpHandlingState(AAIState):
     def endFarming(self):
         statemachine.push(IncantationState())
         self.status = Status.Casting
+
+    def endCasting(self, look=None):
+        if look:
+            ant.look = look
+        controller.look(self.endCasting)
 
     # endregion
 
@@ -53,9 +61,11 @@ class LevelUpHandlingState(AAIState):
 
     def popped_over(self):
         super().popped_over()
+        print("TRANSITION")
         calls = {
             Status.StandBy: transitionError,
-            Status.Farming: self.endFarming
+            Status.Farming: self.endFarming,
+            Status.Casting: self.endCasting
         }
         status = self.status
         self.status = Status.StandBy

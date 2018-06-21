@@ -23,6 +23,7 @@ class Cmd(enum.Enum):
     IncantationStart = "Incantation"
     IncantationStop = None
 
+
 class CmdCost(enum.Enum):
     Forward = 7
     Right = 7
@@ -36,6 +37,7 @@ class CmdCost(enum.Enum):
     Take = 7
     Set = 7
     Incantation = 300
+
 
 class Resources(enum.Enum):
     Food = "food"
@@ -57,6 +59,7 @@ requirement = {
     # 8: (6, {Resources.Linemate: 2}),
 }
 
+
 class GameException(Exception):
 
     def __init__(self, value):
@@ -69,11 +72,14 @@ class GameException(Exception):
 def defaultError():
     raise GameException("An unexpected result come from a safe call")
 
+
 def defaultOk():
     raise GameException("An unexpected result come from a safe call")
 
+
 def defaultConnectNbr(nbr):
     ant.current_nbr = int(nbr)
+
 
 class Message(object):
 
@@ -93,6 +99,7 @@ class Message(object):
 
     def __repr__(self):
         return repr(self.dir.__repr__() + " : " + self.text)
+
 
 class Controller(object):
     """
@@ -282,14 +289,12 @@ class Controller(object):
             value = self._cmdStack.pop(0)
             match = re.findall("^message\s+(\d),\s+(.*)$", server_answer)
             if match:
-                match = match[0]
-                self._msgQueue.append(Message(int(match[0]), match[1]))
-                print(self._msgQueue)
+                self._msgQueue.append(Message(int(match[0][0]), match[1]))
             else:
                 self._answersCallers[value[0]](server_answer, value)
-            return True
+            return True, len(match) > 0
         except IndexError:
-            return False
+            return False, False
 
     def flushCmds(self):
         while len(self._cmdStack) - len(self._writeStack) < 10 and len(self._writeStack):

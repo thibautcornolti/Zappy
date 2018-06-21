@@ -3,6 +3,7 @@
 from src.classes.com.HashManager import HashManager
 from src.classes.ia_res.Vector import Vector
 
+
 class Ant(object):
 
     def __init__(self, team):

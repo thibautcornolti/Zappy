@@ -22,6 +22,7 @@ class PointEvent(object):
     def __repr__(self):
         return repr(self.position.__repr__())
 
+
 class TakeEvent(PointEvent):
 
     def __init__(self, item, nb, last, ok, ko):
@@ -43,6 +44,7 @@ class TakeEvent(PointEvent):
     def __repr__(self):
         return repr(self.position.__repr__() + " -> Take " + self.item.value + " x " + str(self.nb))
 
+
 class SetEvent(PointEvent):
 
     def __init__(self, item, nb, last, ok, ko):
@@ -63,6 +65,7 @@ class SetEvent(PointEvent):
 
     def __repr__(self):
         return repr(self.position.__repr__() + " -> Set " + self.item.value + " x " + str(self.nb))
+
 
 class LookEvent(PointEvent):
 

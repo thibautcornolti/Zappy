@@ -26,7 +26,7 @@ class SeekItemsState(AAIState):
     def goNextPlace(self):
         path = Path()
         if self.progress == self.surface:
-            left_dist = ant.lvl // 2 # TODO not really ?
+            left_dist = ant.lvl // 2  # FIXME not really ?
             path.addPoint(Vector(-left_dist, 0), PointEvent(0, lambda: self.pathHandler.stepNextPoint()))
             path.addPoint(Vector(-left_dist, -1), LookEvent(self.updateAntLook))
             move = Vector(-left_dist, -1)
@@ -54,7 +54,6 @@ class SeekItemsState(AAIState):
 
     def last_take_ok(self, value):
         self.items_dict[Resources(value)] -= 1
-        controller.inventory(self.updateAntInventory)
         self.pathHandler.stepNextPoint()
 
     def take_ok(self, value):
@@ -66,9 +65,6 @@ class SeekItemsState(AAIState):
 
     def update(self, cli, inputs):
         super().update(cli, inputs)
-
-    def updateAntInventory(self, inventory):
-        ant.inventory = inventory
 
     def checkEnd(self):
         check = True
@@ -86,7 +82,7 @@ class SeekItemsState(AAIState):
         elif check and self.rollback:
             self.rollback = False
             look, path = self.tracker.returnHome()
-            self.pathHandler = PathManipulator(path, self.checkEnd) # TODO estimate ?
+            self.pathHandler = PathManipulator(path, self.checkEnd)  # TODO estimate ?
             self.pathHandler.stepNextPoint()
         else:
             controller.look(self.updateAntLook)

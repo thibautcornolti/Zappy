@@ -2,7 +2,8 @@
 
 import select
 import src.classes.com.Client as COM
-from src.classes.com.Controller import controller
+from src.classes.com.Controller import controller, Resources
+from src.classes.ia_res.Ant import ant
 
 
 class StateException(Exception):
@@ -42,11 +43,33 @@ class AAIState(AState):
 
     def __init__(self, name):
         super().__init__(name)
+        self.min_food = 10
+        self.need_food = 30
+        self.actions = 0
+        self.actions_max = 7
+        self.emergency = False
+
+    def updateInventory(self, inventory):
+        from src.classes.states.SeekItemsState import SeekItemsState
+        ant.inventory = inventory
+        if inventory[Resources.Food] < self.min_food and self.emergency == False:
+            statemachine.closure = lambda: statemachine.push(SeekItemsState({Resources.Food: self.need_food - inventory[Resources.Food]}, True))
+            self.emergency = True
+
+    def popped_over(self):
+        super().popped_over()
+        if self.emergency:
+            self.emergency = False
 
     def update(self, cli, inputs):
         del cli
         for elem in inputs:
-            controller.applyTop(elem)
+            oui = controller.applyTop(elem)
+            if oui == (True, False):
+                self.actions += 1
+        if self.actions > self.actions_max:
+            controller.inventory(self.updateInventory)
+            self.actions = 0
 
 
 class StateMachine(object):
