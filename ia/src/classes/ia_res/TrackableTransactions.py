@@ -5,10 +5,10 @@ from ia.src.classes.com.Transaction import TrackableTransaction
 from ia.src.classes.ia_res.Vector import Vector
 
 
-class CheckTransaction(TrackableTransaction):
+class EmptyPathTransaction(TrackableTransaction):
 
     def __init__(self, pos=Vector()):
-        super().__init__(0, lambda: None, pos)
+        super().__init__(0, lambda ok=print("end"): None, pos)
 
     def execute(self):
         pass
@@ -40,8 +40,7 @@ class TakeTransaction(TrackableTransaction):
                 controller.take(self.item, self.ok, self.ko)
 
     def __repr__(self):
-        return repr(
-            super().__repr__() + " " + self.position.__repr__() + " -> Take " + self.item.value + " x " + str(self.nb))
+        return repr(super().__repr__() + " -> Take " + self.item.value + " x " + str(self.nb))
 
 
 class SetTransaction(TrackableTransaction):
@@ -70,7 +69,7 @@ class SetTransaction(TrackableTransaction):
                 controller.set(self.item, self.ok, self.ko)
 
     def __repr__(self):
-        return repr(self.position.__repr__() + " -> Set " + self.item.value + " x " + str(self.nb))
+        return repr(super().__repr__() + " -> Set " + self.item.value + " x " + str(self.nb))
 
 
 class LookTransaction(TrackableTransaction):
@@ -82,7 +81,7 @@ class LookTransaction(TrackableTransaction):
         controller.look(self.end)
 
     def __repr__(self):
-        return repr(self.position.__repr__() + " -> Look")
+        return repr(super().__repr__() + " -> Look")
 
 
 class LeftTransaction(TrackableTransaction):
@@ -94,7 +93,7 @@ class LeftTransaction(TrackableTransaction):
         controller.left(self.end)
 
     def __repr__(self):
-        return repr(self.position.__repr__() + " -> Left")
+        return repr(super().__repr__() + " -> Left")
 
 
 class RightTransaction(TrackableTransaction):
@@ -106,7 +105,7 @@ class RightTransaction(TrackableTransaction):
         controller.right(self.end)
 
     def __repr__(self):
-        return repr(self.position.__repr__() + " -> Right")
+        return repr(super().__repr__() + " -> Right")
 
 
 class ForwardTransaction(TrackableTransaction):
@@ -118,7 +117,7 @@ class ForwardTransaction(TrackableTransaction):
         controller.forward(self.end)
 
     def __repr__(self):
-        return repr(self.position.__repr__() + " -> Forward")
+        return repr(super().__repr__() + " -> Forward")
 
 
 class InventoryTransaction(TrackableTransaction):
@@ -130,7 +129,7 @@ class InventoryTransaction(TrackableTransaction):
         controller.inventory(self.end)
 
     def __repr__(self):
-        return repr(self.position.__repr__() + " -> Inventory")
+        return repr(super().__repr__() + " -> Inventory")
 
 
 class PackedTransaction(TrackableTransaction):
@@ -153,6 +152,10 @@ class PackedTransaction(TrackableTransaction):
         super().__init__(0, end, pos)
         self.transactions = list()
 
+    def __repr__(self):
+        return repr(super().__repr__() + " -> PackedTransaction")
+
+
 class IncantationTransaction(TrackableTransaction):
 
     def execute(self):
@@ -172,3 +175,19 @@ class IncantationTransaction(TrackableTransaction):
         self.sko = sko
         self.eok = eok
         self.eko = eko
+
+    def __repr__(self):
+        return repr(super().__repr__() + " -> Incantation")
+
+
+class ForkTransaction(TrackableTransaction):
+
+    def __init__(self, end, pos=Vector()):
+        super().__init__(CmdCost.Fork.value, end, pos)
+
+    def execute(self):
+        controller.fork(self.end)
+
+    def __repr__(self):
+        return repr(super().__repr__() + " -> Fork")
+

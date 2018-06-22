@@ -1,5 +1,6 @@
+from ia.src.classes.com.SafeController import safe_controller
 from ia.src.classes.ia_res.Path import Path, PathManipulator, PositionTracker
-from ia.src.classes.ia_res.TrackableTransactions import TakeTransaction, LookTransaction, CheckTransaction
+from ia.src.classes.ia_res.TrackableTransactions import TakeTransaction, LookTransaction, EmptyPathTransaction
 from ia.src.classes.states.StateMachine import AAIState, statemachine
 from ia.src.classes.com.Controller import Resources
 from ia.src.classes.ia_res.Ant import ant
@@ -28,25 +29,30 @@ class SeekItemsState(AAIState):
         path = Path()
         if self.progress == self.surface:
             left_dist = ant.lvl - 1
-            path.addPoint(Vector(-left_dist, 0), CheckTransaction())
+            print("TURN")
+            path.addPoint(Vector(-left_dist, 0), EmptyPathTransaction())
             path.addPoint(Vector(-left_dist, -1), LookTransaction(lambda value: None))
             move = Vector(-left_dist, -1)
             self.progress = 0
         else:
+            print("GO FORWARD")
             path.addPoint(Vector(0, 1), LookTransaction(lambda value: None))
             move = Vector(0, 1)
             self.progress += 1
+
         path, look = path.generateOrder(False)
         self.tracker.addMove(move, look)
         self.pathHandler = PathManipulator(path, self.updateAntLook)  # TODO estimate ?
-        self.pathHandler.execute()
+        print("NEXT LOCATION")
+        safe_controller.execute(self.pathHandler)
 
     def updateAntLook(self, look):
         ant.look = look
         found, path = self.findLooksItems(look)
         if found:
             self.pathHandler = PathManipulator(path.generateOpti(True)[0], self.checkEnd)  # TODO estimate ?
-            self.pathHandler.execute()
+            print("FOUND TRANSACTION")
+            safe_controller.execute(self.pathHandler)
         else:
             self.goNextPlace()
 
@@ -60,7 +66,8 @@ class SeekItemsState(AAIState):
 
     def on_push(self, cli):
         super().on_push(cli)
-        LookTransaction(self.updateAntLook).execute()
+        print("START ALGO SEEKING")
+        safe_controller.execute(LookTransaction(self.updateAntLook))
 
     def update(self, cli, inputs):
         super().update(cli, inputs)
@@ -75,15 +82,17 @@ class SeekItemsState(AAIState):
         for k, v in self.items_dict.items():
             if v > 0:
                 check = False
-        if check and not self.rollback:
+        if check and (not self.rollback or self.tracker.stayed()):
             statemachine.closure = closurePop
         elif check and self.rollback:
             self.rollback = False
             look, path = self.tracker.returnHome()
-            self.pathHandler = PathManipulator(path, self.checkEnd)  # TODO estimate ?
-            self.pathHandler.execute()
+            self.pathHandler = PathManipulator(path, self.checkEnd)
+            print("ROLLBACK")
+            safe_controller.execute(self.pathHandler)
         else:
-            LookTransaction(self.updateAntLook).execute()
+            print("CONTINUE SEEKING")
+            safe_controller.execute(LookTransaction(self.updateAntLook))
 
     def __init__(self, items_dict, rollback=False):
         super().__init__("SeekItems")

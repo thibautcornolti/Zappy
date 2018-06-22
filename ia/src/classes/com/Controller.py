@@ -50,7 +50,7 @@ class Resources(enum.Enum):
 
 
 requirement = {
-    2: (1, {Resources.Linemate: 1}),
+    2: (1, {Resources.Linemate: 1000}),
     # 3: (2, {Resources.Linemate: 1}),
     # 4: (2, {Resources.Linemate: 2}),
     # 5: (4, {Resources.Linemate: 1}),

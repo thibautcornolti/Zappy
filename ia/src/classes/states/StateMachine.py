@@ -48,20 +48,10 @@ class AAIState(AState):
         self.actions = 0
         self.actions_max = 7
 
-    def updateInventory(self, inventory):
-        ant.inventory = inventory
-        print("Food lvl : ", inventory[Resources.Food])
-
     def update(self, cli, inputs):
         del cli
         for elem in inputs:
-            oui = controller.applyTop(elem)
-            if oui == (True, False):
-                self.actions += 1
-        if self.actions > self.actions_max:
-            controller.inventory(self.updateInventory)
-            self.actions = 0
-
+            controller.applyTop(elem)
 
 class StateMachine(object):
 

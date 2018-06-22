@@ -4,7 +4,8 @@ import math
 from ia.src.classes.ia_res.Vector import Vector, normalize, vecSize
 from ia.src.classes.com.Controller import Cmd
 from ia.src.classes.com.Transaction import Transaction
-from ia.src.classes.ia_res.TrackableTransactions import LeftTransaction, ForwardTransaction, RightTransaction
+from ia.src.classes.ia_res.TrackableTransactions import LeftTransaction, ForwardTransaction, RightTransaction, \
+    EmptyPathTransaction
 
 
 class Path(object):
@@ -169,35 +170,42 @@ class PathManipulator(Transaction):
         for elem in self.path:
             elem.execute()
 
-    def end(self, *args, **kwargs):
-        self.path.pop(0)._end(*args, **kwargs)
+    def removeItem(self, *args, **kwargs):
+        ok = self.path.pop(0)
+        ok._end(*args, **kwargs)
         if len(self.path) == 0:
-            super().end(*args, **kwargs)
+            self.end(*args, **kwargs)
 
     def __init__(self, path, end):
         cmds = {
-            Cmd.Forward: ForwardTransaction(lambda: None),
-            Cmd.Left: LeftTransaction(lambda: None),
-            Cmd.Right: RightTransaction(lambda: None),
+            Cmd.Forward: ForwardTransaction(lambda ok=None: None),
+            Cmd.Left: LeftTransaction(lambda ok=None: None),
+            Cmd.Right: RightTransaction(lambda ok=None: None),
         }
         self.path = list()
         for elem in path:
             if issubclass(type(elem), Cmd):
                 self.path.append(cmds[elem])
-            else:
+            elif type(elem) != EmptyPathTransaction:
                 self.path.append(elem)
         sum = 0
         for elem in self.path:
             sum += elem.get_estimated_time()
         super().__init__(sum, end)
         for elem in self.path:
-            elem.end = self.end
+            elem.end = self.removeItem
+
+    def __repr__(self):
+        return repr(super().__repr__() + " -> PathManipulator")
 
 class PositionTracker(object):
 
     def __init__(self):
         self.look = Vector(0, 1)
         self.position = Vector(0, 0)
+
+    def stayed(self):
+        return self.look.x == 0 and self.look.y == 1 and self.position.x == 0 and self.position.y == 0
 
     def addMove(self, moveVector, look):
         self.position = Vector(self.position.x + moveVector.x, self.position.y + moveVector.y)

@@ -1,5 +1,6 @@
 # coding = utf-8
 from ia.src.classes.com.Controller import requirement, Resources
+from ia.src.classes.com.SafeController import safe_controller
 from ia.src.classes.ia_res.Ant import ant
 from collections import Counter
 from ia.src.classes.ia_res.TrackableTransactions import TakeTransaction, SetTransaction, InventoryTransaction, \
@@ -38,7 +39,7 @@ class IncantationState(AAIState):
     def castIncantation(self, incantation):
         incant = IncantationTransaction(self.incantationStart, self.incantationStart, self.incantationEnd, self.incantationEnd, self.endIncantationState)
         incantation.addTransaction(incant)
-        incantation.execute()
+        safe_controller.execute(incantation)
 
     def add_usefull_items(self, transactions):
         for k in self.inventory:
@@ -104,6 +105,6 @@ class IncantationState(AAIState):
         transactions = PackedTransaction(self.execute_incantation)
         transactions.addTransaction(LookTransaction(self.store_look))
         transactions.addTransaction(InventoryTransaction(self.store_inventory))
-        transactions.execute()
+        safe_controller.execute(transactions)
 
     # endregion inherit

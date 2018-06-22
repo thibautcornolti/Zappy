@@ -18,7 +18,7 @@ class Transaction:
         return self.estimated_time
 
     def __repr__(self):
-        return repr("TransactionTime: %d" % self.estimated_time)
+        return repr("Transaction %d " % self.estimated_time)
 
 
 class TrackableTransaction(Transaction):
@@ -29,3 +29,6 @@ class TrackableTransaction(Transaction):
     def __init__(self, estimated_time, end, position):
         super().__init__(estimated_time, end)
         self.position = position
+
+    def __repr__(self):
+        return repr(super().__repr__() + " " + self.position.__repr__() + " ")
