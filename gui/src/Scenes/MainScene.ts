@@ -1,15 +1,18 @@
 import * as THREE from "three"
 import StateShare from "../States/StateShare"
 import GUIManagger from "../GUIManager"
-import {ColorKeywords} from "three";
-import rosybrown = ColorKeywords.rosybrown;
+import {Vector2, Vector3} from "three";
+import {ITileResp} from "../ICom";
+import MapEntity from "../Entity/MapEntity";
 
 export default class MainScene {
+    private map: MapEntity;
     private state: StateShare;
     private manager: GUIManagger;
 
     constructor(state: StateShare) {
         this.state = state;
+        this.map = new MapEntity(this.state.getAssetsPool(), this.state.getMapSize());
         this.manager = GUIManagger.getInstance();
     }
 
@@ -17,9 +20,9 @@ export default class MainScene {
         let camera = this.manager.getCamera();
 
         camera.position.x = 10;
-        camera.position.y = 30;
+        camera.position.y = 20;
         camera.position.z = 30;
-        camera.lookAt(10, 0, 10);
+        camera.lookAt(10, 0, 50);
     }
 
     private setLight() {
@@ -81,18 +84,34 @@ export default class MainScene {
         this.manager.getScene().add(mesh);
     }
 
+    public update() {
+        this.map.update();
+    }
+
     public generate() {
-        let chicken1 = this.state.getAssetsPool().getGltfAssets("chicken").scene.clone();
-        let chicken2 = this.state.getAssetsPool().getGltfAssets("chicken").scene.clone();
+        // let chicken1 = this.state.getAssetsPool().getGltfAssets("chicken").scene.clone();
+        // let chicken2 = this.state.getAssetsPool().getGltfAssets("chicken").scene.clone();
 
-        chicken1.position.set(10, 0, 10);
-        chicken1.rotateY(-Math.PI / 2);
-        this.manager.getScene().add(chicken1);
-        this.manager.getScene().add(chicken2);
+        // chicken1.position.set(10, 0, 10);
+        // chicken1.rotateY(-Math.PI / 2);
+        // this.manager.getScene().add(chicken1);
+        // this.manager.getScene().add(chicken2);
 
-        this.setMap();
+        // this.setMap();
         this.setCamera();
         this.setLight();
         this.generateSkyBox();
+    }
+
+    public setTile(data: ITileResp) {
+        let pos = new Vector2(data.pos.x, data.pos.y);
+        let mapSize = new Vector2(this.state.getMapSize().x, this.state.getMapSize().y);
+        let ratio = new Vector2(this.map.getPosEnd().x - this.map.getPosStart().x, this.map.getPosEnd().y - this.map.getPosStart().y);
+        let scale = new Vector2(ratio.x / mapSize.x, ratio.y / mapSize.y);
+
+        this.map.setTile(data,
+            new Vector2(pos.x * scale.x + this.map.getPosStart().x, pos.y * scale.y + this.map.getPosStart().y),
+            new Vector2((pos.x + 1) * scale.x + this.map.getPosStart().x, (pos.y + 1) * scale.y + this.map.getPosStart().y)
+        );
     }
 }

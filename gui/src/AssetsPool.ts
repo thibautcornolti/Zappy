@@ -6,7 +6,7 @@ import "obj-loader";
 import "mtl-loader";
 import "gltf-loader";
 import "draco-loader";
-import {CubeTexture, MaterialCreator, Vector3} from "three";
+import {CubeTexture, MaterialCreator, Side, Vector3} from "three";
 
 
 interface IAssets {
@@ -20,9 +20,9 @@ export default class AssetsPool {
         this.assets = {};
     }
 
-    public loadGlTFProm(key: string, pathGlTF: string, onLoad?: (obj: GLTF) => void, onProgress?: (evt: ProgressEvent) => void, onError?: (err: ErrorEvent) => void) {
+    public loadGlTFProm(key: string, pathGlTF: string, backface: Side, onLoad?: (obj: GLTF) => void, onProgress?: (evt: ProgressEvent) => void, onError?: (err: ErrorEvent) => void) {
         return new Promise((resolve, reject) => {
-            this.loadGlTF(key, pathGlTF, (obj) => {
+            this.loadGlTF(key, pathGlTF, backface, (obj) => {
                 if (onLoad)
                     onLoad(obj);
                 resolve();
@@ -34,12 +34,17 @@ export default class AssetsPool {
         })
     }
 
-    public loadGlTF(key: string, pathGlTF: string, onLoad?: (obj: GLTF) => void, onProgress?: (evt: ProgressEvent) => void, onError?: (err: ErrorEvent) => void) {
+    public loadGlTF(key: string, pathGlTF: string, backface: Side, onLoad?: (obj: GLTF) => void, onProgress?: (evt: ProgressEvent) => void, onError?: (err: ErrorEvent) => void) {
         let gltfloader = (new (THREE as any).GLTFLoader() as GLTFLoaderlol);
         gltfloader.load(pathGlTF, (gltf) => {
             if (onLoad)
                 onLoad(gltf);
             this.assets[key] = gltf;
+            gltf.scene.traverse((node) => {
+                if ((node as any).isMesh) {
+                    (node as any).material.side = backface;
+                }
+            });
         }, onProgress, onError);
     }
 

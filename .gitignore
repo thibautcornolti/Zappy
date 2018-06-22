@@ -1,5 +1,5 @@
-node_modules
+gui/node_modules
 .idea
-gulpfile.js
-main.ts.BAK
-public/dist/
+gui/gulpfile.js
+gui/main.ts.BAK
+gui/public/dist/

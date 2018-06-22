@@ -10,8 +10,10 @@ export default class GUIManagger {
 
     private constructor() {
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        this.renderer = new THREE.WebGLRenderer();
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: false,
+        });
         this.audio = new THREE.AudioListener();
 
         this.camera.add(this.audio);

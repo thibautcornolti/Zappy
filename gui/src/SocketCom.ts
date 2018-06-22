@@ -1,4 +1,5 @@
 import * as io from "socket.io-client"
+import {ITileCommand} from "./ICom";
 
 interface Error {
     code: string
@@ -51,6 +52,11 @@ export default class SocketCom {
     }
 
     public send(str: String) {
+        this.sock.emit('my_data', str);
+    }
+
+    public sendJSON(json: ITileCommand) {
+        let str = JSON.stringify(json) + '\r\n';
         this.sock.emit('my_data', str);
     }
 }

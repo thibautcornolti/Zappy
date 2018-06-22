@@ -1,5 +1,6 @@
 import AssetsPool from "../AssetsPool";
 import SocketCom from "../SocketCom";
+import {Vector2} from "three";
 
 interface Value {
     [name: string]: any
@@ -30,5 +31,13 @@ export default class StateShare {
 
     getAssetsPool() : AssetsPool {
         return this.values["assetsPool"];
+    }
+
+    getMapSize() : Vector2 {
+        let vect = new Vector2();
+
+        vect.x = this.values["mapSize"].width;
+        vect.y = this.values["mapSize"].height;
+        return vect;
     }
 }
