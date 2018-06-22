@@ -75,13 +75,14 @@ static bool retrieve_cmd(client_t *client)
 	int len = client->rbuf.size;
 	int spos = client->rbuf.start;
 	char *rbuf = client->rbuf.buffer;
-	char tmp[RBUFFER_SIZE] = {0};
+	static char tmp[RBUFFER_SIZE];
 
 	for (; !loop && spos != epos; spos = (spos + 1) % len) {
 		tmp[csize] = rbuf[spos];
 		csize += 1;
 		loop = (rbuf[spos] == '\n');
 	}
+	tmp[csize] = 0;
 	if (loop && client->cmd && llist_size(client->cmd) < 10)
 		extract_found_cmd(client, tmp, csize);
 	return (loop);

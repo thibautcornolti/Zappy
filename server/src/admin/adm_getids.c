@@ -25,8 +25,16 @@ void adm_getids(control_t *ctrl, client_t *cl)
 	char *str;
 	client_t *client;
 
-	printf("[%s]\n", cmd->cmd);
-	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
+	//regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
+	char buf[2048];
+	int ret = regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
+	regerror(ret, &preg, buf, 2048);
+	printf("%s\n", buf);
+	ret = regexec(&preg, cmd->cmd, 0, NULL, 0);
+	regerror(ret, &preg, buf, 2048);
+	printf("%s\n", buf);
+
+
 	if (!cmd->nparam && !regexec(&preg, cmd->cmd, 0, NULL, 0)) {
 		str = lstr_concat(strdup(""), 1, LSTR_STR, "ids: ");
 		for (size_t i = 0; i < ctrl->clients->length; ++i) {

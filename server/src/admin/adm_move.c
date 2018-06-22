@@ -28,11 +28,19 @@ void adm_move(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(?:move \d+ \d+ \d+$)";
+	char pattern[] = R"(move \d+ \d+ \d+)";
 	char usage[] = "MOVE: [id] [y] [x]";
 	size_t y, x;
 
-	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
+	char buf[2048];
+	int ret = regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
+	regerror(ret, &preg, buf, 2048);
+	printf("%s\n", buf);
+	ret = regexec(&preg, cmd->cmd, 0, NULL, 0);
+	regerror(ret, &preg, buf, 2048);
+	printf("%s\n", buf);
+
+
 	if (cmd->nparam == 3 && !regexec(&preg, cmd->cmd, 0, NULL, 0)) {
 		y = strtoul(cmd->param[1], 0, 10);
 		x = strtoul(cmd->param[2], 0, 10);
