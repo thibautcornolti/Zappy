@@ -10,7 +10,7 @@ def my_print(*args, **kwargs):
 
 def dup_me():
     global process
-    process = subprocess.run([config.file_name, "-h", str(config.hostname), "-p", str(config.port), "-n", str(config.team_name)])
+    process = subprocess.Popen([config.file_name, "-h", str(config.hostname), "-p", str(config.port), "-n", str(config.team_name)])
 
 def wait_son():
     pass
