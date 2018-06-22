@@ -252,5 +252,6 @@ int main(int ac, const char **av)
 		proceed_clients(&ctrl);
 		printf("Tick !\n");
 	}
+	//FIXME Remove player from team on DC
 	return (0);
 }
