@@ -85,6 +85,18 @@ class LookTransaction(TrackableTransaction):
         return repr(super().__repr__() + " -> Look")
 
 
+class BroadcastTransaction(TrackableTransaction):
+
+    def __init__(self, ok, pos=Vector()):
+        super().__init__(CmdCost.Broadcast.value, ok, pos)
+
+    def execute(self):
+        controller.broadcast(self.end)
+
+    def __repr__(self):
+        return repr(super().__repr__() + " -> Broadcast")
+
+
 class ConnectNbrTransaction(TrackableTransaction):
 
     def __init__(self, ok, pos=Vector()):
