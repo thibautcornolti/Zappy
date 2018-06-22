@@ -1,11 +1,11 @@
-from ia.src.classes.com.SafeController import safe_controller
-from ia.src.classes.ia_res.Path import Path, PathManipulator, PositionTracker
-from ia.src.classes.ia_res.TrackableTransactions import TakeTransaction, LookTransaction, EmptyPathTransaction
-from ia.src.classes.states.StateMachine import AAIState, statemachine
-from ia.src.classes.com.Controller import Resources
-from ia.src.classes.ia_res.Ant import ant
-from ia.src.classes.ia_res.Vector import Vector
-from ia.src.misc import my_print
+from src.classes.com.SafeController import safe_controller
+from src.classes.ia_res.Path import Path, PathManipulator, PositionTracker
+from src.classes.ia_res.TrackableTransactions import TakeTransaction, LookTransaction, EmptyPathTransaction
+from src.classes.states.StateMachine import AAIState, statemachine
+from src.classes.com.Controller import Resources
+from src.classes.ia_res.Ant import ant
+from src.classes.ia_res.Vector import Vector
+from src.misc import my_print
 
 
 class SeekItemsState(AAIState):

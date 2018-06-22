@@ -3,9 +3,9 @@
 import enum
 import re
 
-import ia.src.classes.com.Client as COM
-from ia.src.classes.ia_res.Ant import ant
-from ia.src.classes.ia_res.Vector import Vector
+import src.classes.com.Client as COM
+from src.classes.ia_res.Ant import ant
+from src.classes.ia_res.Vector import Vector
 
 
 class Cmd(enum.Enum):

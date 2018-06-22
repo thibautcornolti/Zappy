@@ -1,10 +1,10 @@
 # coding = utf-8
 
 import select
-import ia.src.classes.com.Client as COM
-from ia.src.classes.com.Controller import controller, Resources
-from ia.src.classes.ia_res.Ant import ant
-from ia.src.misc import my_print
+import src.classes.com.Client as COM
+from src.classes.com.Controller import controller, Resources
+from src.classes.ia_res.Ant import ant
+from src.misc import my_print
 
 
 class StateException(Exception):

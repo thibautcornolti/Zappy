@@ -1,10 +1,10 @@
 # coding = utf-8
 import math
 
-from ia.src.classes.ia_res.Vector import Vector, normalize, vecSize
-from ia.src.classes.com.Controller import Cmd
-from ia.src.classes.com.Transaction import Transaction
-from ia.src.classes.ia_res.TrackableTransactions import LeftTransaction, ForwardTransaction, RightTransaction, \
+from src.classes.ia_res.Vector import Vector, normalize, vecSize
+from src.classes.com.Controller import Cmd
+from src.classes.com.Transaction import Transaction
+from src.classes.ia_res.TrackableTransactions import LeftTransaction, ForwardTransaction, RightTransaction, \
     EmptyPathTransaction
 
 

@@ -1,10 +1,10 @@
 # coding = utf-8
 import enum
 
-from ia.src.misc import dup_me
-from ia.src.classes.com.SafeController import safe_controller
-from ia.src.classes.ia_res.TrackableTransactions import ForkTransaction, LookTransaction, ConnectNbrTransaction
-from ia.src.classes.states.StateMachine import AAIState, statemachine
+from src.misc import dup_me
+from src.classes.com.SafeController import safe_controller
+from src.classes.ia_res.TrackableTransactions import ForkTransaction, LookTransaction, ConnectNbrTransaction
+from src.classes.states.StateMachine import AAIState, statemachine
 
 
 class WaitTeamState(AAIState):

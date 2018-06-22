@@ -1,8 +1,8 @@
 # coding = utf-8
-from ia.src.classes.ia_res.Ant import ant
-from ia.src.classes.states.LevelUpHandlingState import LevelUpHandlingState
-from ia.src.classes.states.StateMachine import AState, statemachine
-from ia.src.misc import my_print
+from src.classes.ia_res.Ant import ant
+from src.classes.states.LevelUpHandlingState import LevelUpHandlingState
+from src.classes.states.StateMachine import AState, statemachine
+from src.misc import my_print
 
 
 class GameState(AState):
