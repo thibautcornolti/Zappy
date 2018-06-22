@@ -47,19 +47,10 @@ class AAIState(AState):
         self.need_food = 30
         self.actions = 0
         self.actions_max = 7
-        self.emergency = False
 
     def updateInventory(self, inventory):
-        from src.classes.states.SeekItemsState import SeekItemsState
         ant.inventory = inventory
-        if inventory[Resources.Food] < self.min_food and self.emergency == False:
-            statemachine.closure = lambda: statemachine.push(SeekItemsState({Resources.Food: self.need_food - inventory[Resources.Food]}, True))
-            self.emergency = True
-
-    def popped_over(self):
-        super().popped_over()
-        if self.emergency:
-            self.emergency = False
+        print("Food lvl : ", inventory[Resources.Food])
 
     def update(self, cli, inputs):
         del cli
@@ -108,9 +99,10 @@ class StateMachine(object):
             self._stack[0].update(COM.cli, msgs)
         if controller.hasBufferizedCmds():
             controller.flushCmds()
-        if self.closure:
-            self.closure()
+        while self.closure:
+            closure = self.closure
             self.closure = None
+            closure()
 
 
 statemachine = StateMachine()

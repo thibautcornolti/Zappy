@@ -22,16 +22,18 @@ class IncantationState(AAIState):
     # region take callbacks
 
     def removeResFail(self, res):
-        print("Failed to take ", res)
+        #print("Failed to take ", res)
+        pass
 
     def removeRes(self, res):
-        print("Take ", res)
+        #print("Take ", res)
+        pass
 
     def removeLastRes(self, res):
-        print("Take ", res)
+        #print("Take ", res)
         self.removingItems.remove(Resources(res))
         if not self.removingItems:
-            print("End Take")
+            #print("End Take")
             self.add_usefull_items()
 
     # endregion take callbacks
@@ -39,42 +41,36 @@ class IncantationState(AAIState):
     # region set callbacks
 
     def putResFail(self, res):
-        print("Failed to set ", res)
+        #print("Failed to set ", res)
+        pass
 
     def putRes(self, res):
-        print("Set ", res)
+        #print("Set ", res)
+        pass
 
     def putLastRes(self, res):
-        print("Set ", res)
+        #print("Set ", res)
         self.addingItems.remove(Resources(res))
         if not self.removingItems:
-            print("End Put")
+            #print("End Put")
             self.castIncantation()
 
     # endregion take callbacks
 
     # region incantation callbacks
 
-    def incantationStartFail(self):
-        print("Failed to start Incantation")  # TODO ???
+    def incantationStart(self):
+        pass
 
-    def incantationStartOK(self):
-        print("Incantation start successfully")  # TODO ???
-
-    def incantationEndFail(self):
-        print("Failed to end Incantation")  # TODO ???
-        statemachine.closure = lambda: statemachine.pop()
-
-    def incantationEndOK(self, value):
-        print("Incantation end successfully")  # TODO ???
-        print(value)
+    def incantationEnd(self, value=None):
+        if value:
+            ant.lvl = value
         statemachine.closure = lambda: statemachine.pop()
 
     # endregion incantation callbacks
 
     def castIncantation(self):
-        controller.incantation(self.incantationStartOK, self.incantationStartFail, self.incantationEndOK,
-                               self.incantationEndFail)
+        controller.incantation(self.incantationStart, self.incantationStart, self.incantationEnd, self.incantationEnd)
 
     def add_usefull_items(self):
         add_something = False
@@ -119,10 +115,6 @@ class IncantationState(AAIState):
         self.inventory = inventory
 
         merge = dict(Counter(self.inventory) + Counter(self.look))
-        print(merge)
-        print(self.require)
-        print(self.look)
-        print(self.inventory)
         for k, v in self.require.items():
             if k not in merge or merge[k] < v:
                 statemachine.closure = lambda: statemachine.pop()
