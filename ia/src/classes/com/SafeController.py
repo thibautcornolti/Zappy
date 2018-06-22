@@ -1,9 +1,9 @@
 # coding = utf-8
-from ia.src.classes.com.Controller import Resources
-from ia.src.classes.ia_res.Ant import ant
-from ia.src.classes.ia_res.TrackableTransactions import InventoryTransaction
-from ia.src.classes.states.StateMachine import statemachine
-from ia.src.misc import my_print
+from src.classes.com.Controller import Resources
+from src.classes.ia_res.Ant import ant
+from src.classes.ia_res.TrackableTransactions import InventoryTransaction
+from src.classes.states.StateMachine import statemachine
+from src.misc import my_print
 
 
 class SafeController(object):
@@ -26,7 +26,7 @@ class SafeController(object):
         self.safe_exec(self.save)
 
     def estimate_food(self, inventory):
-        from ia.src.classes.states.SeekItemsState import SeekItemsState
+        from src.classes.states.SeekItemsState import SeekItemsState
         ant.inventory = inventory
         my_print("Food Level : ", inventory[Resources.Food])
         if inventory[Resources.Food] < self.save.get_estimated_time() / 126 or inventory[Resources.Food] < 7:

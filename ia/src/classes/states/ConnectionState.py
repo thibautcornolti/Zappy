@@ -1,10 +1,10 @@
 # coding = utf-8
 import re
 
-from ia.src.classes.states.GameState import GameState
-from ia.src.classes.states.LevelUpHandlingState import LevelUpHandlingState
-from ia.src.classes.states.StateMachine import AState, StateException, statemachine
-from ia.src.classes.ia_res.Ant import ant
+from src.classes.states.GameState import GameState
+from src.classes.states.LevelUpHandlingState import LevelUpHandlingState
+from src.classes.states.StateMachine import AState, StateException, statemachine
+from src.classes.ia_res.Ant import ant
 
 
 class ConnectionState(AState):

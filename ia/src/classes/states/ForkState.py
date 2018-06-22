@@ -1,6 +1,6 @@
 # coding = utf-8
-from ia.src.classes.com.Controller import controller
-from ia.src.classes.states.StateMachine import AAIState, statemachine
+from src.classes.com.Controller import controller
+from src.classes.states.StateMachine import AAIState, statemachine
 
 
 class ForkState(AAIState):

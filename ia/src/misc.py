@@ -1,7 +1,7 @@
 # coding = utf-8
 import os
 import subprocess
-import ia.src.config as config
+import src.config as config
 
 process = None
 
