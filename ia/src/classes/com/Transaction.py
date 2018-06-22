@@ -5,6 +5,8 @@ from ia.src.classes.ia_res.Vector import Vector
 
 class Transaction:
     def __init__(self, estimated_time, end):
+        if not isinstance(estimated_time, int):
+            raise TypeError("Invalid type")
         self.estimated_time = estimated_time
         self._end = end
 

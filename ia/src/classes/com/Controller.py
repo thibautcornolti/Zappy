@@ -25,18 +25,18 @@ class Cmd(enum.Enum):
 
 
 class CmdCost(enum.Enum):
-    Forward = 7
-    Right = 7
-    Left = 7
-    Look = 7
-    Inventory = 1
-    Broadcast = 7
-    Connect_nbr = 0
-    Fork = 42
-    Eject = 7
-    Take = 7
-    Set = 7
-    Incantation = 300
+    Forward = int(7)
+    Right = int(7)
+    Left = int(7)
+    Look = int(7)
+    Inventory = int(1)
+    Broadcast = int(7)
+    Connect_nbr = int(0)
+    Fork = int(42)
+    Eject = int(7)
+    Take = int(7)
+    Set = int(7)
+    Incantation = int(300)
 
 
 class Resources(enum.Enum):

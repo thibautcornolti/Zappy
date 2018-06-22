@@ -3,6 +3,7 @@ import enum
 from ia.src.classes.com.Controller import requirement
 from ia.src.classes.ia_res.Ant import ant
 from ia.src.classes.states.StateMachine import AAIState, statemachine
+from ia.src.classes.states.WaitTeamState import WaitTeamState
 
 
 class Status(enum.Enum):
@@ -23,7 +24,7 @@ class LevelUpHandlingState(AAIState):
         if requirement[self.lvl][0] == 1:
             statemachine.closure = lambda: statemachine.push(LevelUpAlone())
         else:
-            statemachine.closure = lambda: exit(84)
+            statemachine.closure = lambda: statemachine.push(WaitTeamState())
 
     def popped_over(self):
         super().popped_over()

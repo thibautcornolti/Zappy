@@ -85,6 +85,18 @@ class LookTransaction(TrackableTransaction):
         return repr(super().__repr__() + " -> Look")
 
 
+class ConnectNbrTransaction(TrackableTransaction):
+
+    def __init__(self, ok, pos=Vector()):
+        super().__init__(CmdCost.Look.Connect_nbr.value, ok, pos)
+
+    def execute(self):
+        controller.connect_number(self.end)
+
+    def __repr__(self):
+        return repr(super().__repr__() + " -> Look")
+
+
 class LeftTransaction(TrackableTransaction):
 
     def __init__(self, ok, pos=Vector()):
