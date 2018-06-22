@@ -32,7 +32,7 @@ class MsgProtocol:
     def is_enrolment(msg):
         return MsgProtocol._is_template(
             ('sender', 'level'),
-            r"^([0-9a-z]*) \| Vend place PL 42sh!! No noob lvl ([3-8]) plz$",
+            r"^([0-9a-z]+) \| Vend place PL 42sh!! No noob lvl ([3-8]) plz$",
             msg
         )
 
@@ -45,7 +45,7 @@ class MsgProtocol:
     def is_apply(msg):
         return MsgProtocol._is_template(
             ('sender', 'recipient'),
-            r"^([0-9a-z]*) \| stp ([0-9a-z]*) achete 5 kama avant apres !! no fak$",
+            r"^([0-9a-z]+) \| stp ([0-9a-z]+) achete 5 kama avant apres !! no fak$",
             msg
         )
 
@@ -58,7 +58,7 @@ class MsgProtocol:
     def is_allowed_ants(msg):
         return MsgProtocol._is_template(
             ('sender', ('allowed_ants', lambda x: x.split(','))),
-            r"^([0-9a-z]*) \| mes esclaves ([0-9a-z,]*)",
+            r"^([0-9a-z]+) \| mes esclaves ([0-9a-z,]*)",
             msg
         )
 
@@ -75,7 +75,7 @@ class MsgProtocol:
                 o.split(' ')[0]: o.split(' ')[1]
                 for o in x.split(',')
             })),
-            r"^([0-9a-z]*) \| va chercher ([0-9a-z]*) : ([a-z0-9_ ,]*)",
+            r"^([0-9a-z]+) \| va chercher ([0-9a-z]+) : ([a-z0-9_ ,]*)",
             msg
         )
 
