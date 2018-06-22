@@ -20,21 +20,12 @@ void adm_getids(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(getids$)";
-	char usage[] = "getids";
+	char pattern[] = R"(^getids[[:space:]]*$)";
+	char usage[] = "USAGE: GETIDS";
 	char *str;
 	client_t *client;
 
-	//regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
-	char buf[2048];
-	int ret = regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
-	regerror(ret, &preg, buf, 2048);
-	printf("%s\n", buf);
-	ret = regexec(&preg, cmd->cmd, 0, NULL, 0);
-	regerror(ret, &preg, buf, 2048);
-	printf("%s\n", buf);
-
-
+	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE | REG_EXTENDED);
 	if (!cmd->nparam && !regexec(&preg, cmd->cmd, 0, NULL, 0)) {
 		str = lstr_concat(strdup(""), 1, LSTR_STR, "ids: ");
 		for (size_t i = 0; i < ctrl->clients->length; ++i) {

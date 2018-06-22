@@ -24,13 +24,13 @@ void adm_cast(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(?:cast \d+$)";
-	char usage[] = "CAST: [id]";
+	char pattern[] = R"(^cast[[:space:]]+[[:digit:]]+[[:space:]]*$)";
+	char usage[] = "USAGE: CAST: [id]";
 
-	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
-	if (cmd->nparam == 3 && !regexec(&preg, cmd->cmd, 0, NULL, 0) &&
+	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE | REG_EXTENDED);
+	if (cmd->nparam == 1 && !regexec(&preg, cmd->cmd, 0, NULL, 0) &&
 	    reset_cast(ctrl, cl, strtoul(cmd->param[0], 0, 10)))
-		add_pending(cl, "Command [SPAWN] successful");
+		add_pending(cl, strdup("Command [CAST] successful"));
 	else
 		add_pending(cl, strdup(usage));
 	regfree(&preg);

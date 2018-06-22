@@ -250,6 +250,7 @@ int main(int ac, const char **av)
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
 		proceed_clients(&ctrl);
+		printf("Tick !\n");
 	}
 	return (0);
 }

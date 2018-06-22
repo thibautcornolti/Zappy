@@ -28,26 +28,18 @@ void adm_move(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(move \d+ \d+ \d+)";
-	char usage[] = "MOVE: [id] [y] [x]";
+	char pattern[] = R"(^move([[:space:]]+[[:digit:]]+){3}[[:space:]]*$)";
+	char usage[] = "USAGE: MOVE: [id] [y] [x]";
 	size_t y, x;
 
-	char buf[2048];
-	int ret = regcomp(&preg, pattern, REG_NOSUB | REG_ICASE);
-	regerror(ret, &preg, buf, 2048);
-	printf("%s\n", buf);
-	ret = regexec(&preg, cmd->cmd, 0, NULL, 0);
-	regerror(ret, &preg, buf, 2048);
-	printf("%s\n", buf);
-
-
+	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE | REG_EXTENDED);
 	if (cmd->nparam == 3 && !regexec(&preg, cmd->cmd, 0, NULL, 0)) {
 		y = strtoul(cmd->param[1], 0, 10);
 		x = strtoul(cmd->param[2], 0, 10);
 		if (y < ctrl->params.height && x < ctrl->params.width &&
 			move_player(ctrl, cl, y, x)) {
 		}
-		add_pending(cl, "Command [SPAWN] successful");
+		add_pending(cl, strdup("Command [MOVE] successful"));
 	}
 	else
 		add_pending(cl, strdup(usage));
