@@ -1,6 +1,7 @@
 # coding = utf-8
 import re
 
+from ia.src.classes.states.GameState import GameState
 from ia.src.classes.states.LevelUpHandlingState import LevelUpHandlingState
 from ia.src.classes.states.StateMachine import AState, StateException, statemachine
 from ia.src.classes.ia_res.Ant import ant
@@ -42,7 +43,7 @@ class ConnectionState(AState):
         ant.map_size.y = int(match[0][1])
 
         def replaceClosure():
-            statemachine.replace(LevelUpHandlingState())
+            statemachine.replace(GameState())
 
         statemachine.closure = replaceClosure
 
