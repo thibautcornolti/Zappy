@@ -1,12 +1,14 @@
 # coding = utf-8
 
 from src.classes.com.HashManager import HashManager
+from src.classes.ia_res.Mate import Mates
 from src.classes.ia_res.Vector import Vector
 
 
 class Ant(object):
 
     def __init__(self, team):
+        self.queen = True
         self.team = team
         self.map_size = Vector()
         self.current_nbr = 0
@@ -15,11 +17,17 @@ class Ant(object):
         self.inventory = {}
         self._uuid = HashManager.generate()
 
+    def __next__(self):
+        self._uuid = HashManager.hash(self._uuid)
+        return self._uuid
+
     @property
     def uuid(self):
-        save = self.uuid
-        self._uuid = HashManager.hash(self._uuid)
-        return save
+        return self._uuid
+
+    @uuid.setter
+    def uuid(self, uuid):
+        raise Exception("Can't set UUID")
 
     @uuid.setter
     def uuid(self, value):
@@ -27,6 +35,7 @@ class Ant(object):
 
 
 ant = Ant(None)
+mates = Mates()
 
 
 def init_ant(team):

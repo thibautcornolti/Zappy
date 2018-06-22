@@ -53,10 +53,14 @@ requirement = {
     2: (1, {Resources.Linemate: 1}),
     3: (2, {Resources.Linemate: 1, Resources.Deraumere: 1, Resources.Sibur: 1}),
     4: (2, {Resources.Linemate: 2, Resources.Sibur: 1, Resources.Phiras: 2}),
-    5: (4, {Resources.Linemate: 1, Resources.Deraumere: 1, Resources.Sibur: 2, Resources.Phiras: 1}),
-    6: (4, {Resources.Linemate: 1, Resources.Deraumere: 2, Resources.Sibur: 1, Resources.Mendiane: 3}),
-    7: (6, {Resources.Linemate: 1, Resources.Deraumere: 2, Resources.Sibur: 3, Resources.Phiras: 1}),
-    8: (6, {Resources.Linemate: 2, Resources.Deraumere: 2, Resources.Sibur: 2, Resources.Mendiane: 2, Resources.Phiras: 2, Resources.Thystame: 1}),
+    5: (4, {Resources.Linemate: 1, Resources.Deraumere: 1, Resources.Sibur: 2,
+            Resources.Phiras: 1}),
+    6: (4, {Resources.Linemate: 1, Resources.Deraumere: 2, Resources.Sibur: 1,
+            Resources.Mendiane: 3}),
+    7: (6, {Resources.Linemate: 1, Resources.Deraumere: 2, Resources.Sibur: 3,
+            Resources.Phiras: 1}),
+    8: (6, {Resources.Linemate: 2, Resources.Deraumere: 2, Resources.Sibur: 2,
+            Resources.Mendiane: 2, Resources.Phiras: 2, Resources.Thystame: 1}),
 }
 
 
@@ -294,7 +298,8 @@ class Controller(object):
             return False, False
 
     def flushCmds(self):
-        while len(self._cmdQueue) - len(self._writeQueue) < 10 and len(self._writeQueue):
+        while len(self._cmdQueue) - len(self._writeQueue) < 10 and len(
+                self._writeQueue):
             value = self._writeQueue.pop(0)
             COM.cli.write(value)
 
@@ -305,6 +310,11 @@ class Controller(object):
         for elem in args:
             if elem == "dead":
                 raise GameException("You died")
+
+    def consultMessages(self):
+        res = self._msgQueue.copy()
+        self._msgQueue.clear()
+        return res
 
 
 controller = Controller()

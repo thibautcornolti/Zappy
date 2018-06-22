@@ -2,6 +2,7 @@
 import enum
 from src.classes.com.Controller import requirement
 from src.classes.ia_res.Ant import ant
+from src.classes.states.QueenState import QueenState
 from src.classes.states.StateMachine import AAIState, statemachine
 from src.classes.states.WaitTeamState import WaitTeamState
 
@@ -23,6 +24,8 @@ class LevelUpHandlingState(AAIState):
         super().on_push(cli)
         if requirement[self.lvl][0] == 1:
             statemachine.closure = lambda: statemachine.push(LevelUpAlone())
+        elif ant.queen:
+            statemachine.closure = lambda: statemachine.push(QueenState())
         else:
             statemachine.closure = lambda: statemachine.push(WaitTeamState())
 

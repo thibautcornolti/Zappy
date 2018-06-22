@@ -1,6 +1,8 @@
 # coding = utf-8
 import enum
 
+from src.classes.com.Controller import controller
+from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.misc import dup_me, my_print
 from src.classes.com.SafeController import safe_controller
 from src.classes.ia_res.TrackableTransactions import ForkTransaction, LookTransaction, ConnectNbrTransaction
@@ -28,6 +30,12 @@ class WaitTeamState(AAIState):
         self.template()
 
     def wait_msg(self, *args):
+        messages = controller.consultMessages()
+        for m in messages:
+            enr = MsgProtocol.is_enrolment(m)
+            if enr:
+                my_print("YES CEN EST UN!!!")
+                exit(12093)
         #self._status_stack.pop(0)
         self.template()
 

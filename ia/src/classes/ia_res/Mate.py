@@ -10,20 +10,51 @@ class Roles(enum.Enum):
     STONE_SEEKER = 2
 
 
+class Mates(object):
+
+    def __init__(self):
+        self.mates = []
+
+    def __iter__(self):
+        return self.mates.__iter__()
+
+    def __len__(self):
+        return len(self.mates)
+
+    def clear(self):
+        self.mates.clear()
+
+    def add_mate(self, uuid):
+        self.mates.append(Mate(uuid))
+
+    def get_mate(self, uuid):
+        for mate in self:
+            if mate.uuid() == uuid:
+                return mate
+
+    def pop_mate(self, uuid):
+        for mate in self:
+            if mate.uuid() == uuid:
+                self.mates.pop()
+
+
 class Mate(object):
 
     def __init__(self, uuid):
         self._uuid = uuid
         self.roles = list()
 
-    @property
-    def uuid(self):
+    def __next__(self):
         self._uuid = HashManager.hash(self._uuid)
         return self._uuid
 
+    @property
+    def uuid(self):
+        return self._uuid
+
     @uuid.setter
-    def uuid(self, value):
-        raise Exception("Can't set uuid directly")
+    def uuid(self, uuid):
+        raise Exception("Can't set UUID")
 
     @property
     def roles(self):

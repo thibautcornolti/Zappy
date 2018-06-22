@@ -60,7 +60,7 @@ class StateMachine(object):
         self._stack = []
         self.closure = None
 
-    def push(self, state):
+    def push(self, state: object) -> object:
         my_print("PUSH ", state)
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):
             raise Exception("State is not a valid variable type")
