@@ -1,4 +1,5 @@
 # coding = utf-8
+from ia.src.classes.com.Controller import CmdCost
 from ia.src.classes.ia_res.Vector import Vector
 
 

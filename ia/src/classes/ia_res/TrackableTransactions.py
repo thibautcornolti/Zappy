@@ -4,6 +4,7 @@ from ia.src.classes.com.Controller import controller, CmdCost
 from ia.src.classes.com.Transaction import TrackableTransaction
 from ia.src.classes.ia_res.Vector import Vector
 
+
 class CheckTransaction(TrackableTransaction):
 
     def __init__(self, pos=Vector()):
@@ -11,6 +12,7 @@ class CheckTransaction(TrackableTransaction):
 
     def execute(self):
         pass
+
 
 class TakeTransaction(TrackableTransaction):
 
@@ -131,14 +133,42 @@ class InventoryTransaction(TrackableTransaction):
         return repr(self.position.__repr__() + " -> Inventory")
 
 
-class IncantationTransaction(TrackableTransaction):
-
-    def __init__(self, ok, pos=Vector()):
-        super().__init__(CmdCost.Incantation.value, ok, pos)
+class PackedTransaction(TrackableTransaction):
 
     def execute(self):
-        pass
-        # controller.incantation(self.end)
+        for elem in self.transactions:
+            elem.execute()
 
-    def __repr__(self):
-        return repr(self.position.__repr__() + " -> Incantation")
+    def end(self, *args, **kwargs):
+        self.transactions.pop(0)._end(*args, **kwargs)
+        if len(self.transactions) == 0:
+            super().end(*args, **kwargs)
+
+    def addTransaction(self, trans):
+        trans.end = self.end
+        self.transactions.append(trans)
+        self.estimated_time += trans.estimated_time
+
+    def __init__(self, end, pos=Vector()):
+        super().__init__(0, end, pos)
+        self.transactions = list()
+
+class IncantationTransaction(TrackableTransaction):
+
+    def execute(self):
+        controller.incantation(self.sok, self.sko, self.end_ok, self.end_ko)
+
+    def end_ko(self, *args):
+        self.eko(*args)
+        self.end(*args)
+
+    def end_ok(self, *args):
+        self.eok(*args)
+        self.end(*args)
+
+    def __init__(self, sok, sko, eok, eko, end,  pos=Vector()):
+        super().__init__(CmdCost.Incantation.value, end, pos)
+        self.sok = sok
+        self.sko = sko
+        self.eok = eok
+        self.eko = eko

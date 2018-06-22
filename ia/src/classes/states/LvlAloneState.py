@@ -34,7 +34,6 @@ class LevelUpAlone(AAIState):
     def endFarming(self):
         statemachine.push(IncantationState())
         self.status = Status.Casting
-        print("CAN PASS TO INCANTATION")
         pass
 
     def endCasting(self):
