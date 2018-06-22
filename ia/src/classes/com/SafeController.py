@@ -3,6 +3,7 @@ from ia.src.classes.com.Controller import Resources
 from ia.src.classes.ia_res.Ant import ant
 from ia.src.classes.ia_res.TrackableTransactions import InventoryTransaction
 from ia.src.classes.states.StateMachine import statemachine
+from ia.src.misc import my_print
 
 
 class SafeController(object):
@@ -13,6 +14,7 @@ class SafeController(object):
         self.safe = True
 
     def clear_transaction(self, *args, **kwargs):
+        my_print("END TRANSACTION")
         endTransa = self.endTransaction
         self.save = None
         self.endTransaction = None
@@ -26,9 +28,9 @@ class SafeController(object):
     def estimate_food(self, inventory):
         from ia.src.classes.states.SeekItemsState import SeekItemsState
         ant.inventory = inventory
-        print("Food Level : ", inventory)
+        my_print("Food Level : ", inventory[Resources.Food])
         if inventory[Resources.Food] < self.save.get_estimated_time() / 126 or inventory[Resources.Food] < 7:
-            print("EMERGENCY MOD")
+            my_print("EMERGENCY MOD")
             self.safe = False
             state = SeekItemsState({Resources.Food: int(self.save.get_estimated_time() / 126 + 10)}, True)
             state.on_pop = self.clear_state
@@ -43,7 +45,10 @@ class SafeController(object):
         InventoryTransaction(self.estimate_food).execute()
 
     def execute(self, transaction):
+        my_print("START TRANSACTION")
         if self.save and self.safe:
+            my_print(transaction)
+            my_print(self.save)
             raise Exception("Invalid Concurrent transaction")
         if self.safe:
             self.safe_exec(transaction)

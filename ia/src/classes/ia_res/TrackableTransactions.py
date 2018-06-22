@@ -3,12 +3,13 @@
 from ia.src.classes.com.Controller import controller, CmdCost
 from ia.src.classes.com.Transaction import TrackableTransaction
 from ia.src.classes.ia_res.Vector import Vector
+from ia.src.misc import my_print
 
 
 class EmptyPathTransaction(TrackableTransaction):
 
     def __init__(self, pos=Vector()):
-        super().__init__(0, lambda ok=print("end"): None, pos)
+        super().__init__(0, lambda ok=my_print("end"): None, pos)
 
     def execute(self):
         pass
@@ -32,7 +33,7 @@ class TakeTransaction(TrackableTransaction):
         self.end(value)
 
     def execute(self):
-        print("take execute ", self.item.value, " in ", self.position)
+        my_print("take execute ", self.item.value, " in ", self.position)
         for j in range(self.nb):
             if j == self.nb - 1:
                 controller.take(self.item, self.last_item_ok, self.last_item_ko)
@@ -61,7 +62,7 @@ class SetTransaction(TrackableTransaction):
         self.end(value)
 
     def execute(self):
-        print("set execute ", self.item.value, " in ", self.position)
+        my_print("set execute ", self.item.value, " in ", self.position)
         for j in range(self.nb):
             if j == self.nb - 1:
                 controller.set(self.item, self.last_item_ok, self.last_item_ko)
@@ -138,13 +139,13 @@ class PackedTransaction(TrackableTransaction):
         for elem in self.transactions:
             elem.execute()
 
-    def end(self, *args, **kwargs):
+    def removeSubTransaction(self, *args, **kwargs):
         self.transactions.pop(0)._end(*args, **kwargs)
         if len(self.transactions) == 0:
-            super().end(*args, **kwargs)
+            self.end(*args, **kwargs)
 
     def addTransaction(self, trans):
-        trans.end = self.end
+        trans.end = self.removeSubTransaction
         self.transactions.append(trans)
         self.estimated_time += trans.estimated_time
 

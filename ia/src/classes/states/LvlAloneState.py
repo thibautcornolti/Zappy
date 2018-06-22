@@ -5,6 +5,7 @@ from ia.src.classes.ia_res.Ant import ant
 from ia.src.classes.states.IncantationState import IncantationState
 from ia.src.classes.states.SeekItemsState import SeekItemsState
 from ia.src.classes.states.StateMachine import AAIState, statemachine
+from ia.src.misc import my_print
 
 
 class Status(enum.Enum):
@@ -38,9 +39,9 @@ class LevelUpAlone(AAIState):
 
     def endCasting(self):
         if ant.lvl == self.aimed_lvl:
-            print("LvL up : ", self.aimed_lvl)
+            my_print("LvL up : ", self.aimed_lvl)
         else:
-            print("Failed to LvL up !")
+            my_print("Failed to LvL up !")
         statemachine.closure = lambda: statemachine.pop()
 
     # endregion
