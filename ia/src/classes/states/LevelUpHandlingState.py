@@ -1,8 +1,8 @@
 # coding = utf-8
 import enum
-from src.classes.com.Controller import requirement
-from src.classes.ia_res.Ant import ant
-from src.classes.states.StateMachine import AAIState, statemachine
+from ia.src.classes.com.Controller import requirement
+from ia.src.classes.ia_res.Ant import ant
+from ia.src.classes.states.StateMachine import AAIState, statemachine
 
 
 class Status(enum.Enum):
@@ -18,7 +18,7 @@ class LevelUpHandlingState(AAIState):
         self.lvl = ant.lvl + 1
 
     def on_push(self, cli):
-        from src.classes.states.LvlAloneState import LevelUpAlone
+        from ia.src.classes.states.LvlAloneState import LevelUpAlone
         super().on_push(cli)
         if requirement[self.lvl][0] == 1:
             statemachine.closure = lambda: statemachine.push(LevelUpAlone())

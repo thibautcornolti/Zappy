@@ -1,5 +1,5 @@
 # coding = utf-8
-from src.classes.states.StateMachine import AAIState
+from ia.src.classes.states.StateMachine import AAIState
 
 
 class ForkState(AAIState):

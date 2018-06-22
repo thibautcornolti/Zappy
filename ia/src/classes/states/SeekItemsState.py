@@ -1,8 +1,9 @@
-from src.classes.ia_res.Path import Path, PathManipulator, PositionTracker
-from src.classes.ia_res.PathEvents import TakeEvent, LookEvent, PointEvent
-from src.classes.states.StateMachine import AAIState, statemachine
-from src.classes.com.Controller import controller, Resources
-from src.classes.ia_res.Ant import ant, Vector
+from ia.src.classes.ia_res.Path import Path, PathManipulator, PositionTracker
+from ia.src.classes.ia_res.TrackableTransactions import TakeTransaction, LookTransaction, CheckTransaction
+from ia.src.classes.states.StateMachine import AAIState, statemachine
+from ia.src.classes.com.Controller import Resources
+from ia.src.classes.ia_res.Ant import ant
+from ia.src.classes.ia_res.Vector import Vector
 
 
 class SeekItemsState(AAIState):
@@ -19,7 +20,7 @@ class SeekItemsState(AAIState):
                     if nb < 0:
                         nb = look[i].count(item.value)
                     dup_items[item] -= nb
-                    event = TakeEvent(item, nb, self.last_take_ok, self.take_ok, self.take_ko)
+                    event = TakeTransaction(item, nb, lambda value: None, self.take_ok, self.take_ko)
                     path.addConePoint(i, event)
         return found, path
 
@@ -27,35 +28,31 @@ class SeekItemsState(AAIState):
         path = Path()
         if self.progress == self.surface:
             left_dist = ant.lvl - 1
-            path.addPoint(Vector(-left_dist, 0), PointEvent(0, lambda: self.pathHandler.stepNextPoint()))
-            path.addPoint(Vector(-left_dist, -1), LookEvent(self.updateAntLook))
+            path.addPoint(Vector(-left_dist, 0), CheckTransaction())
+            path.addPoint(Vector(-left_dist, -1), LookTransaction(lambda value: None))
             move = Vector(-left_dist, -1)
             self.progress = 0
         else:
-            path.addPoint(Vector(0, 1), LookEvent(self.updateAntLook))
+            path.addPoint(Vector(0, 1), LookTransaction(lambda value: None))
             move = Vector(0, 1)
             self.progress += 1
         path, look = path.generateOrder(False)
         self.tracker.addMove(move, look)
         self.pathHandler = PathManipulator(path, self.updateAntLook)  # TODO estimate ?
+        self.pathHandler.execute()
 
     def updateAntLook(self, look):
         ant.look = look
         found, path = self.findLooksItems(look)
         if found:
             self.pathHandler = PathManipulator(path.generateOpti(True)[0], self.checkEnd)  # TODO estimate ?
+            self.pathHandler.execute()
         else:
             self.goNextPlace()
-        self.pathHandler.stepNextPoint()
 
     def take_ko(self, value):
         print("TAKE FAILED ", value)
         del value
-        self.pathHandler.stepNextPoint()
-
-    def last_take_ok(self, value):
-        self.items_dict[Resources(value)] -= 1
-        self.pathHandler.stepNextPoint()
 
     def take_ok(self, value):
         print("TAKE OK ", value)
@@ -63,15 +60,14 @@ class SeekItemsState(AAIState):
 
     def on_push(self, cli):
         super().on_push(cli)
-        controller.look(self.updateAntLook)
+        LookTransaction(self.updateAntLook).execute()
 
     def update(self, cli, inputs):
         super().update(cli, inputs)
 
-    def checkEnd(self):
+    def checkEnd(self, *args):
+        del args
         check = True
-        if self.pathHandler and not self.pathHandler.isEnded():
-            return False
 
         def closurePop():
             statemachine.pop()
@@ -85,9 +81,9 @@ class SeekItemsState(AAIState):
             self.rollback = False
             look, path = self.tracker.returnHome()
             self.pathHandler = PathManipulator(path, self.checkEnd)  # TODO estimate ?
-            self.pathHandler.stepNextPoint()
+            self.pathHandler.execute()
         else:
-            controller.look(self.updateAntLook)
+            LookTransaction(self.updateAntLook).execute()
 
     def __init__(self, items_dict, rollback=False):
         super().__init__("SeekItems")

@@ -1,9 +1,10 @@
 # coding = utf-8
 import math
 
-from src.classes.ia_res.Vector import Vector, normalize, vecSize
-from src.classes.com.Controller import Cmd, controller
-from src.classes.ia_res.PathEvents import PointEvent
+from ia.src.classes.ia_res.Vector import Vector, normalize, vecSize
+from ia.src.classes.com.Controller import Cmd
+from ia.src.classes.com.Transaction import Transaction
+from ia.src.classes.ia_res.TrackableTransactions import LeftTransaction, ForwardTransaction, RightTransaction
 
 
 class Path(object):
@@ -14,11 +15,11 @@ class Path(object):
 
         self.points = list()
 
-    def addPoint(self, pos, callback):
-        callback.position = pos
-        self.points.append((pos, callback))
+    def addPoint(self, pos, transaction):
+        transaction.position = pos
+        self.points.append((pos, transaction))
 
-    def addConePoint(self, idx, callback):
+    def addConePoint(self, idx, transaction):
         pos = None
         min_val = 0
         max_val = 0
@@ -31,7 +32,7 @@ class Path(object):
             deep += 1
             min_val = max_val + 1
             max_val = min_val + deep * 2
-        self.addPoint(pos, callback)
+        self.addPoint(pos, transaction)
 
     def _alignX(self, look, src_point, dest_point):
         wsrc_point = Vector(src_point.x, 0)
@@ -162,58 +163,35 @@ class Path(object):
         return ret, look
 
 
-class PathManipulator(object):
+class PathManipulator(Transaction):
+
+    def execute(self):
+        for elem in self.path:
+            elem.execute()
+
+    def end(self, *args, **kwargs):
+        self.path.pop(0)._end(*args, **kwargs)
+        if len(self.path) == 0:
+            super().end(*args, **kwargs)
 
     def __init__(self, path, end):
-        self.cmds = {
-            Cmd.Forward: controller.forward,
-            Cmd.Left: controller.left,
-            Cmd.Right: controller.right,
+        cmds = {
+            Cmd.Forward: ForwardTransaction(lambda: None),
+            Cmd.Left: LeftTransaction(lambda: None),
+            Cmd.Right: RightTransaction(lambda: None),
         }
-        self.path = path
-        self.end = end
-
-    def costEstimation(self, next_point=False):
-        cost = 0
+        self.path = list()
+        for elem in path:
+            if issubclass(type(elem), Cmd):
+                self.path.append(cmds[elem])
+            else:
+                self.path.append(elem)
+        sum = 0
         for elem in self.path:
-            if type(elem) is Cmd:
-                cost += 7
-            elif type(elem) is PointEvent:
-                cost += elem.time_estimation
-                if next_point:
-                    break
-        return cost
-
-    def isEnded(self):
-        return len(self.path) == 0
-
-    def _step(self, callback=lambda: None):
-        user_cmd = None
-        if len(self.path) == 0:
-            return False, type(user_cmd) == Cmd
-        first = self.path.pop(0)
-        if issubclass(type(first), PointEvent):
-            first.execute()
-            return True, False
-        if len(self.path) != 0 and issubclass(type(self.path[0]), PointEvent):
-            user_cmd = self.path.pop(0)
-
-        def call():
-            callback()
-            if user_cmd:
-                user_cmd.execute()
-
-        self.cmds[first](call)
-        return True, not user_cmd
-
-    def stepNextPoint(self, callback=lambda: None):
-        stepped, is_move = self._step(callback)
-        while stepped and is_move:
-            stepped, is_move = self._step(callback)
-        if not stepped:
-            self.end()
-        return stepped
-
+            sum += elem.get_estimated_time()
+        super().__init__(sum, end)
+        for elem in self.path:
+            elem.end = self.end
 
 class PositionTracker(object):
 

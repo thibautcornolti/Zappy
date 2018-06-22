@@ -3,9 +3,9 @@
 import enum
 import re
 
-import src.classes.com.Client as COM
-from src.classes.ia_res.Ant import ant
-from src.classes.ia_res.Vector import Vector
+import ia.src.classes.com.Client as COM
+from ia.src.classes.ia_res.Ant import ant
+from ia.src.classes.ia_res.Vector import Vector
 
 
 class Cmd(enum.Enum):
@@ -122,35 +122,32 @@ class Controller(object):
             Cmd.IncantationStart: self._applyDefault,
             Cmd.IncantationStop: self._applyArgIncantation,
         }
-        self._cmdStack = []
+        self._cmdQueue = []
         self._takeQueue = []
         self._setQueue = []
-        self._writeStack = []
+        self._writeQueue = []
         self._msgQueue = []
 
     def _write(self, value):
-        if len(self._cmdStack) >= 10:
-            self._writeStack.append(value)
+        if len(self._cmdQueue) >= 10:
+            self._writeQueue.append(value)
         else:
             COM.cli.write(value)
 
     def forward(self, callback):
-        print("Forward")
         cmd = Cmd.Forward
         self._write(cmd.value)
-        self._cmdStack.append((cmd, callback, defaultError))
+        self._cmdQueue.append((cmd, callback, defaultError))
 
     def right(self, callback):
-        print("Right")
         cmd = Cmd.Right
         self._write(cmd.value)
-        self._cmdStack.append((cmd, callback, defaultError))
+        self._cmdQueue.append((cmd, callback, defaultError))
 
     def left(self, callback):
-        print("Left")
         cmd = Cmd.Left
         self._write(cmd.value)
-        self._cmdStack.append((cmd, callback, defaultError))
+        self._cmdQueue.append((cmd, callback, defaultError))
 
     def look(self, callback):
         """
@@ -159,7 +156,7 @@ class Controller(object):
         """
         cmd = Cmd.Look
         self._write(cmd.value)
-        self._cmdStack.append((cmd, callback, defaultError))
+        self._cmdQueue.append((cmd, callback, defaultError))
 
     def inventory(self, callback):
         """
@@ -168,12 +165,12 @@ class Controller(object):
         """
         cmd = Cmd.Inventory
         self._write(cmd.value)
-        self._cmdStack.append((cmd, callback, defaultError))
+        self._cmdQueue.append((cmd, callback, defaultError))
 
     def broadcast(self, msg, callback):
         cmd = Cmd.Broadcast
         self._write(' '.join((cmd.value, msg)))
-        self._cmdStack.append((cmd, callback, defaultError))
+        self._cmdQueue.append((cmd, callback, defaultError))
 
     def connect_number(self, callback=defaultConnectNbr):
         """
@@ -182,17 +179,17 @@ class Controller(object):
         """
         cmd = Cmd.Connect_nbr
         self._write(cmd.value)
-        self._cmdStack.append((cmd, callback, defaultError))
+        self._cmdQueue.append((cmd, callback, defaultError))
 
     def fork(self, callback):
         cmd = Cmd.Fork
         self._write(cmd.value)
-        self._cmdStack.append((cmd, callback, defaultError))
+        self._cmdQueue.append((cmd, callback, defaultError))
 
     def eject(self, ok, ko):
         cmd = Cmd.Eject
         self._write(cmd.value)
-        self._cmdStack.append((cmd, ok, ko))
+        self._cmdQueue.append((cmd, ok, ko))
 
     def take(self, object, ok, ko):
         """
@@ -203,7 +200,7 @@ class Controller(object):
             raise Exception("Invalid type")
         cmd = Cmd.Take
         self._write(' '.join((cmd.value, object.value)))
-        self._cmdStack.append((cmd, ok, ko))
+        self._cmdQueue.append((cmd, ok, ko))
         self._takeQueue.append(object.value)
 
     def set(self, object, ok, ko):
@@ -215,7 +212,7 @@ class Controller(object):
             raise Exception("Invalid type")
         cmd = Cmd.Set
         self._write(' '.join((cmd.value, object.value)))
-        self._cmdStack.append((cmd, ok, ko))
+        self._cmdQueue.append((cmd, ok, ko))
         self._setQueue.append(object.value)
 
     def incantation(self, ok_start, ko_start, ok_end, ko_end):
@@ -228,8 +225,8 @@ class Controller(object):
         """
         cmd = Cmd.IncantationStart
         self._write(cmd.value)
-        self._cmdStack.append((cmd, ok_start, ko_start))
-        self._cmdStack.append((Cmd.IncantationStop, ok_end, ko_end))
+        self._cmdQueue.append((cmd, ok_start, ko_start))
+        self._cmdQueue.append((Cmd.IncantationStop, ok_end, ko_end))
 
     def _applyDefault(self, server_answer, cmd_item):
         if server_answer == "ko":
@@ -286,7 +283,7 @@ class Controller(object):
 
     def applyTop(self, server_answer):
         try:
-            value = self._cmdStack.pop(0)
+            value = self._cmdQueue.pop(0)
             match = re.findall("^message\s+(\d),\s+(.*)$", server_answer)
             if match:
                 self._msgQueue.append(Message(int(match[0][0]), match[1]))
@@ -297,12 +294,12 @@ class Controller(object):
             return False, False
 
     def flushCmds(self):
-        while len(self._cmdStack) - len(self._writeStack) < 10 and len(self._writeStack):
-            value = self._writeStack.pop(0)
+        while len(self._cmdQueue) - len(self._writeQueue) < 10 and len(self._writeQueue):
+            value = self._writeQueue.pop(0)
             COM.cli.write(value)
 
     def hasBufferizedCmds(self):
-        return len(self._writeStack) != 0
+        return len(self._writeQueue) != 0
 
     def checkEndGame(self, args):
         for elem in args:

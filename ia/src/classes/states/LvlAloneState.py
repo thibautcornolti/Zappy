@@ -1,10 +1,10 @@
 # coding = utf-8
 import enum
-from src.classes.com.Controller import requirement, controller, defaultError
-from src.classes.ia_res.Ant import ant
-from src.classes.states.IncantationState import IncantationState
-from src.classes.states.SeekItemsState import SeekItemsState
-from src.classes.states.StateMachine import AAIState, statemachine
+from ia.src.classes.com.Controller import requirement, controller, defaultError
+from ia.src.classes.ia_res.Ant import ant
+from ia.src.classes.states.IncantationState import IncantationState
+from ia.src.classes.states.SeekItemsState import SeekItemsState
+from ia.src.classes.states.StateMachine import AAIState, statemachine
 
 
 class Status(enum.Enum):
@@ -34,6 +34,8 @@ class LevelUpAlone(AAIState):
     def endFarming(self):
         statemachine.push(IncantationState())
         self.status = Status.Casting
+        print("CAN PASS TO INCANTATION")
+        pass
 
     def endCasting(self):
         if ant.lvl == self.aimed_lvl:

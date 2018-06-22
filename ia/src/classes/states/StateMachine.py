@@ -1,9 +1,9 @@
 # coding = utf-8
 
 import select
-import src.classes.com.Client as COM
-from src.classes.com.Controller import controller, Resources
-from src.classes.ia_res.Ant import ant
+import ia.src.classes.com.Client as COM
+from ia.src.classes.com.Controller import controller, Resources
+from ia.src.classes.ia_res.Ant import ant
 
 
 class StateException(Exception):
@@ -70,6 +70,7 @@ class StateMachine(object):
         self.closure = None
 
     def push(self, state):
+        print("PUSH ", state)
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):
             raise Exception("State is not a valid variable type")
         if self._stack:
@@ -78,6 +79,7 @@ class StateMachine(object):
         self._stack[0].on_push(COM.cli)
 
     def pop(self):
+        print("POP ", self._stack[0])
         self._stack[0].on_pop(COM.cli)
         self._stack.pop(0)
         if self._stack:

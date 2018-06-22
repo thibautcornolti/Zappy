@@ -1,9 +1,9 @@
 # coding = utf-8
-from src.classes.com.Controller import requirement, Resources, controller
-from src.classes.ia_res.Ant import ant
+from ia.src.classes.com.Controller import requirement, Resources, controller
+from ia.src.classes.ia_res.Ant import ant
 from collections import Counter
-from src.classes.ia_res.PathEvents import TakeEvent, SetEvent
-from src.classes.states.StateMachine import AAIState, statemachine
+from ia.src.classes.ia_res.TrackableTransactions import TakeTransaction, SetTransaction
+from ia.src.classes.states.StateMachine import AAIState, statemachine
 
 
 # look + inventory chained => take set combo
@@ -22,15 +22,15 @@ class IncantationState(AAIState):
     # region take callbacks
 
     def removeResFail(self, res):
-        #print("Failed to take ", res)
+        print("Failed to take ", res)
         pass
 
     def removeRes(self, res):
-        #print("Take ", res)
+        print("Take ", res)
         pass
 
     def removeLastRes(self, res):
-        #print("Take ", res)
+        print("Take ", res)
         self.removingItems.remove(Resources(res))
         if not self.removingItems:
             #print("End Take")
@@ -41,11 +41,11 @@ class IncantationState(AAIState):
     # region set callbacks
 
     def putResFail(self, res):
-        #print("Failed to set ", res)
+        print("Failed to set ", res)#  TODO check cette merde
         pass
 
     def putRes(self, res):
-        #print("Set ", res)
+        #print("Set ", res) TODO check cette merde
         pass
 
     def putLastRes(self, res):
@@ -73,40 +73,30 @@ class IncantationState(AAIState):
         controller.incantation(self.incantationStart, self.incantationStart, self.incantationEnd, self.incantationEnd)
 
     def add_usefull_items(self):
-        add_something = False
         for k in self.inventory:
             if k not in self.require:
                 continue
             if k in self.look and self.look[k] < self.require[k]:
-                event = SetEvent(Resources(k), self.require[k] - self.look[k], self.putLastRes, self.putRes,
-                                 self.putResFail)
+                event = SetTransaction(Resources(k), self.require[k] - self.look[k], self.putLastRes, self.putRes, self.putResFail)
                 self.addingItems.append(k)
-                add_something = True
                 event.execute()
             elif k not in self.look:
-                event = SetEvent(Resources(k), self.require[k], self.putLastRes, self.putRes, self.putResFail)
+                event = SetTransaction(Resources(k), self.require[k], self.putLastRes, self.putRes, self.putResFail)
                 self.addingItems.append(k)
-                add_something = True
                 event.execute()
-        if not add_something:
-            self.castIncantation()
+        self.castIncantation()
 
     def remove_useless_items(self):
-        remove_something = False
         for k, v in self.look.items():
             if k not in self.require:
-                event = TakeEvent(Resources(k), v, self.removeLastRes, self.removeRes, self.removeResFail)
+                event = TakeTransaction(Resources(k), v, self.removeLastRes, self.removeRes, self.removeResFail)
                 self.removingItems.append(k)
-                remove_something = True
                 event.execute()
             elif k in requirement and self.require[k] < v:
-                event = TakeEvent(Resources(k), v - self.require[k], self.removeLastRes, self.removeRes,
-                                  self.removeResFail)
+                event = TakeTransaction(Resources(k), v - self.require[k], self.removeLastRes, self.removeRes, self.removeResFail)
                 self.removingItems.append(k)
-                remove_something = True
                 event.execute()
-        if not remove_something:
-            self.add_usefull_items()
+        self.add_usefull_items()
 
     # region precheck
 
