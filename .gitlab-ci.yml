@@ -2,6 +2,7 @@ gui_compile:
   image: node:9
   stage: build
   before_script:
+    - cd gui
     - npm install --progress=false
     - npm install -g webpack webpack-cli --progress=false
   script:
