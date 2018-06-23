@@ -1,15 +1,17 @@
-build site:
+gui_compile:
   image: node:9
   stage: build
-  script:
+  before_script:
     - npm install --progress=false
     - npm install -g webpack webpack-cli --progress=false
-#    - npm run build
+  script:
+    - cd gui
+    - webpack --verbose
 
 #before_script:
 #  -
 
-gui_compile:
-  script:
-    - cd gui
-    - webpack --verbose
+#gui_compile:
+#  script:
+#    - cd gui
+#    - webpack --verbose
