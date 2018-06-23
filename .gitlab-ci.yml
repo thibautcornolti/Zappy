@@ -2,7 +2,8 @@ srv_compile:
   script:
     - make -C server
   cache:
-    - server/zappy_server
+    path:
+      - server/zappy_server
 
 srv_connect:
   script:
