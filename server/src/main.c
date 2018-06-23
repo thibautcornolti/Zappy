@@ -187,9 +187,10 @@ bool consume_food(control_t *control)
 
 	for (ssize_t i = size; i >= 0; i -= 1) {
 		client = llist_at(control->clients, i);
-		client->food_delay -= 1;
+		client->food_delay -= (client->food_delay != 0);
 		if (client->food_delay == 0) {
-			client->inventory[FOOD] -= 1;
+			client->inventory[FOOD] -=
+				(client->inventory[FOOD] != 0);
 			client->food_delay = FOOD_DELAY;
 		}
 		if (client->inventory[FOOD] == 0) {
@@ -200,7 +201,8 @@ bool consume_food(control_t *control)
 	return (true);
 }
 
-bool find_evicted(void *t, void *s, size_t l) {
+bool find_evicted(void *t, void *s, size_t l)
+{
 	(void)l;
 	return (s == t);
 }
