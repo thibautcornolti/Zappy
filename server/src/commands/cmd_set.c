@@ -14,7 +14,7 @@ void cmd_set(control_t *control, client_t *client)
 
 	(void)control;
 	client->task.time = 7;
-	client->task.type = TAKE;
+	client->task.type = SET;
 	client->task.data = ((cmd->nparam != 1) ? 0 : strdup(cmd->param[0]));
 }
 
