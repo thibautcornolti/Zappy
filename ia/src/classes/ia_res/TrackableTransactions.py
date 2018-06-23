@@ -9,7 +9,7 @@ from src.misc import my_print
 class EmptyPathTransaction(TrackableTransaction):
 
     def __init__(self, pos=Vector()):
-        super().__init__(0, lambda ok=my_print("end"): None, pos)
+        super().__init__(0, lambda ok=None: None, pos)
 
     def execute(self):
         pass
@@ -33,7 +33,6 @@ class TakeTransaction(TrackableTransaction):
         self.end(value)
 
     def execute(self):
-        my_print("take execute ", self.item.value, " in ", self.position)
         for j in range(self.nb):
             if j == self.nb - 1:
                 controller.take(self.item, self.last_item_ok, self.last_item_ko)
@@ -62,7 +61,6 @@ class SetTransaction(TrackableTransaction):
         self.end(value)
 
     def execute(self):
-        my_print("set execute ", self.item.value, " in ", self.position)
         for j in range(self.nb):
             if j == self.nb - 1:
                 controller.set(self.item, self.last_item_ok, self.last_item_ko)

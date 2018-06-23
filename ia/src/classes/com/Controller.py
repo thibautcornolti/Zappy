@@ -6,6 +6,7 @@ import re
 import src.classes.com.Client as COM
 from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.Vector import Vector
+from src.misc import my_print
 
 
 class Cmd(enum.Enum):
@@ -89,6 +90,7 @@ class Message(object):
 
     def __init__(self, dir_nbr, text):
         dir_conv = {
+            0: Vector(0, 0),
             1: Vector(0, 1),
             2: Vector(-1, 1),
             3: Vector(-1, 0),
@@ -287,14 +289,14 @@ class Controller(object):
 
     def applyTop(self, server_answer):
         try:
-            value = self._cmdQueue.pop(0)
             match = re.findall("^message\s+(\d),\s+(.*)$", server_answer)
             if match:
-                self._msgQueue.append(Message(int(match[0][0]), match[1]))
+                self._msgQueue.append(Message(int(match[0][0]), match[0][1]))
             else:
+                value = self._cmdQueue.pop(0)
                 self._answersCallers[value[0]](server_answer, value)
             return True, len(match) > 0
-        except IndexError:
+        except IndexError as e:
             return False, False
 
     def flushCmds(self):
@@ -312,8 +314,9 @@ class Controller(object):
                 raise GameException("You died")
 
     def consultMessages(self):
-        res = self._msgQueue.copy()
-        self._msgQueue.clear()
+#        my_print("MESSAGE : ", self._msgQueue)
+        res = self._msgQueue
+        self._msgQueue = list()
         return res
 
 

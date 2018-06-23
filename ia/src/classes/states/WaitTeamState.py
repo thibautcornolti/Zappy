@@ -2,6 +2,7 @@
 import enum
 
 from src.classes.com.Controller import controller
+from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.misc import dup_me, my_print
 from src.classes.com.SafeController import safe_controller
@@ -14,7 +15,7 @@ class WaitTeamState(AAIState):
     def __init__(self):
         super().__init__("Wait")
         self._status_stack = [
-            lambda: ForkTransaction(self.fork),
+            lambda: LookTransaction(self.fork),  # ForkTransaction(self.fork),
             lambda: ConnectNbrTransaction(self.connect_nbr),
             lambda: LookTransaction(self.wait_msg),
         ]
@@ -32,11 +33,10 @@ class WaitTeamState(AAIState):
     def wait_msg(self, *args):
         messages = controller.consultMessages()
         for m in messages:
-            enr = MsgProtocol.is_enrolment(m)
-            if enr:
-                my_print("YES CEN EST UN!!!")
-                exit(12093)
-        #self._status_stack.pop(0)
+            enr = MsgProtocol.is_enrolment(m.text)
+            if enr and int(enr['level']) == ant.lvl + 1:
+                my_print("DETECT ENROL", statemachine._stack)
+                self._status_stack.pop(0)
         self.template()
 
     def template(self):

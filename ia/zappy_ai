@@ -3,10 +3,13 @@
 
 import argparse
 import os
+import traceback
+
 from src.classes.com.Client import init_client
 from src.classes.states.ConnectionState import ConnectionState
 from src.classes.ia_res.Ant import init_ant
 from src import config
+from src.misc import process
 
 
 def parse_arg():
@@ -44,12 +47,18 @@ def run(args):
 
 
 def main():
-    args = parse_arg()
-    run(args)  # TODO remove
     try:
-        run(args)
-    except Exception as e:
-        exit(e)
+        args = parse_arg()
+        try:
+            run(args)
+        except Exception as e:
+            traceback.print_tb(e.__traceback__)
+            if process:
+                process.wait()
+            exit(e)
+    except Exception:
+        if process:
+            process.kill()
 
 
 if __name__ == "__main__":

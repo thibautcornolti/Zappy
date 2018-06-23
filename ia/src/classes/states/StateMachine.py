@@ -57,30 +57,43 @@ class AAIState(AState):
 class StateMachine(object):
 
     def __init__(self):
+        self.block_trans_detect = False
         self._stack = []
-        self.closure = None
+        self._closure = None
+
+    @property
+    def closure(self):
+        return self._closure
+
+    @closure.setter
+    def closure(self, value):
+        self._closure = value
 
     def push(self, state: object) -> object:
-        my_print("PUSH ", state)
+        #my_print("PUSH ", state)
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):
             raise Exception("State is not a valid variable type")
-        if self._stack:
+        if self._stack and not self.block_trans_detect:
             self._stack[0].pushed_over()
         self._stack.insert(0, state)
         self._stack[0].on_push(COM.cli)
 
     def pop(self):
-        my_print("POP ", self._stack[0])
+        #my_print("POP ", self._stack[0])
         self._stack[0].on_pop(COM.cli)
         self._stack.pop(0)
-        if self._stack:
+        if self._stack and not self.block_trans_detect:
             self._stack[0].popped_over()
 
     def replace(self, state):
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):
             raise Exception("State is not a valid variable type")
+        save = self.block_trans_detect
+        self.block_trans_detect = True
+        #my_print("REPLACE STATE ", self._stack[0], " -> ", state)
         self.pop()
         self.push(state)
+        self.block_trans_detect = save
 
     def update(self):
         if len(self._stack) == 0:
