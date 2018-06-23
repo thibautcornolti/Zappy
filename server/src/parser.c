@@ -86,7 +86,7 @@ static bool retrieve_cmd(client_t *client)
 	if (loop && client->cmd)
 		extract_found_cmd(client, tmp, csize);
 	if(client->cmd->length > 10)
-		llist_pop(client->cmd);
+		clear_cmd(llist_pop(client->cmd));
 	return (loop);
 }
 

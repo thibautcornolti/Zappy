@@ -274,6 +274,7 @@ object_t *emit_command_error(char *);
 object_t *emit_syntax_error(char *);
 list_t *create_tile_data(control_t *, vec2_t);
 void forward_event(control_t *, object_t *);
+void clear_cmd(cmd_t *);
 
 /*
 ** Teams
