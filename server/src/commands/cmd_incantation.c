@@ -33,6 +33,7 @@ static void incantation_success(
 	llist_for_each(count,
 		(void (*)(void *, void *, size_t))(upgrade_level), control);
 	llist_destroy(count);
+	add_pending(client, strdup(OK_MSG));
 }
 
 static list_t *validate_clients(control_t *control, client_t *client)
