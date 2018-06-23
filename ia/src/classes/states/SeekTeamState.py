@@ -18,8 +18,7 @@ class SeekTeamState(AAIState):
         super().on_push(cli)
         msg = MsgProtocol.enrolment(ant.uuid, ant.lvl + 1)
         my_print("Search a team lvl {}...".format(ant.lvl + 1))
-        transaction = BroadcastTransaction(msg, lambda: statemachine.push(
-            WaitAnswerState(10)))
+        transaction = BroadcastTransaction(msg, lambda: statemachine.push(WaitAnswerState(40)))
         safe_controller.execute(transaction)
 
     def popped_over(self):
