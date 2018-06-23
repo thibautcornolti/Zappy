@@ -18,7 +18,7 @@ class SlaveState(AAIState):
     def find_callback(self, _):
         messages = controller.consultMessages()
         for m in messages:
-            seek = MsgProtocol.is_seek_slave(m)
+            seek = MsgProtocol.is_seek_slave(m.text)
             if seek and seek['recipient'] == ant.uuid and seek['sender'] == ant.queen:
                 my_print('I have finally a real duty!! :')
                 my_print('{}'.format(seek['items']))
@@ -36,7 +36,7 @@ class SlaveState(AAIState):
     def meet_callback(self, _):
         messages = controller.consultMessages()
         for m in messages:
-            meet = MsgProtocol.is_meet_ants(m)
+            meet = MsgProtocol.is_meet_ants(m.text)
             if meet and ant.uuid in meet['recipients'] and meet['sender'] == ant.queen:
                 my_print("My dear queen asked me to join her, let's go!")
                 # TODO: JOIN THE QUEEN WITH THE ANGLE OF THE BROADCAST LOL MDR

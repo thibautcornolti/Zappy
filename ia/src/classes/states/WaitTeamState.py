@@ -42,6 +42,7 @@ class WaitTeamState(AAIState):
                 if ant.uuid in allow['allowed_ants']:
                     my_print("Je suis dans la team !", statemachine._stack)
                     statemachine.closure = lambda: statemachine.replace(SlaveState())
+                    return
                 else:
                     my_print("Je suis pas dans la team :'(", statemachine._stack)
                     self._status_stack.insert(0, lambda: LookTransaction(self.wait_enrol_msg))
