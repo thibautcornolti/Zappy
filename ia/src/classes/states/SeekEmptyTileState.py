@@ -5,6 +5,7 @@ from src.classes.ia_res.Path import PathManipulator, Path
 from src.classes.ia_res.TrackableTransactions import EmptyPathTransaction, InventoryTransaction, LookTransaction
 from src.classes.ia_res.Vector import Vector
 from src.classes.states.StateMachine import AAIState, statemachine
+from src.misc import my_print
 
 
 class SeekEmptyTileState(AAIState):
@@ -24,6 +25,7 @@ class SeekEmptyTileState(AAIState):
                 found = True
                 event = InventoryTransaction(lambda ok=None: None)
                 path.addConePoint(i, event)
+                break
         return found, path
 
     def goNextPlace(self):
