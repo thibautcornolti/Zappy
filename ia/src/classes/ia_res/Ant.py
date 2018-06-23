@@ -16,6 +16,7 @@ class Ant(object):
         self.lvl = 1
         self.look = []
         self.inventory = {}
+        self.request = {}
         self._uuid = HashManager.generate()
 
     def __next__(self):

@@ -23,11 +23,11 @@ class SlaveState(AAIState):
             if seek and seek['recipient'] == ant.uuid and seek['sender'] == ant.queen.uuid:
                 my_print('I have finally a real duty!! :')
                 my_print('{}'.format(seek['items']))
-                self.queen_uuid = seek['sender']
                 items = {
                     Resources(name): int(value)
                     for name, value in seek['items'].items()
                 }
+                ant.request = items
                 statemachine.closure = lambda: statemachine.push(
                     SeekItemsState(items))
                 return
