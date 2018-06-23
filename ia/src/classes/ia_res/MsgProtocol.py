@@ -215,3 +215,8 @@ if __name__ == '__main__':
     args_name = ['sender', 'recipient']
     test('READY INC', MsgProtocol.ready_inc, MsgProtocol.is_ready_inc, args,
          args_name)
+
+    args = [fake_uuid]
+    args_name = ['sender']
+    test('PING TEAM', MsgProtocol.we_need_an_upgrade, MsgProtocol.is_an_upgrade, args,
+         args_name)
