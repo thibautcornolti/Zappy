@@ -31,8 +31,8 @@ class SeekItemsState(AAIState):
         if self.progress == self.surface:
             left_dist = ant.lvl - 1
             path.addPoint(Vector(-left_dist, 0), EmptyPathTransaction())
-            path.addPoint(Vector(-left_dist, -1), LookTransaction(lambda value: None))
-            move = Vector(-left_dist, -1)
+            path.addPoint(Vector(-left_dist, 1), LookTransaction(lambda value: None))
+            move = Vector(-left_dist, 1)
             self.progress = 0
         else:
             path.addPoint(Vector(0, 1), LookTransaction(lambda value: None))
