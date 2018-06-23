@@ -33,7 +33,6 @@ static void incantation_success(
 	llist_for_each(count,
 		(void (*)(void *, void *, size_t))(upgrade_level), control);
 	llist_destroy(count);
-	add_pending(client, strdup(OK_MSG));
 }
 
 static list_t *validate_clients(control_t *control, client_t *client)
@@ -74,7 +73,7 @@ void cmd_incantation(control_t *control, client_t *client)
 	client->task.time = 300;
 	client->task.type = INCANTATION;
 	llist_destroy(count);
-	add_pending(client, strdup(OK_MSG));
+	add_pending(client, strdup(ELEVATION_MSG));
 	event_incantation_start(control, client);
 }
 
