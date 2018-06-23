@@ -5,10 +5,29 @@
 ** Created by rectoria
 */
 
+#include <regex.h>
 #include "server.h"
 
 void adm_killall(control_t *ctrl, client_t *cl)
 {
-	(void)(ctrl);
-	(void)(cl);
+	regex_t preg;
+	cmd_t *cmd = cl->cmd->head->payload;
+	char pattern[] = R"(^killall[[:space:]]*$)";
+	char usage[] = "USAGE: KILLALL";
+	client_t *tmp;
+
+	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE | REG_EXTENDED);
+	if (!cmd->nparam && !regexec(&preg, cmd->cmd, 0, NULL, 0)) {
+		for (size_t i = 0; i < ctrl->clients->length;) {
+			tmp = llist_at(ctrl->clients, i);
+			if (tmp->state == PLAYER)
+				evict_client(ctrl, llist_remove(ctrl->clients, i));
+			else
+				i += 1;
+		}
+		add_pending(cl, strdup("Command [KILLALL] successful"));
+	}
+	else
+		add_pending(cl, strdup(usage));
+	regfree(&preg);
 }

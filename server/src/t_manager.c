@@ -39,6 +39,7 @@ bool team_remove_client(control_t *ctrl, client_t *cl)
 				cl->team->cl[i] = cl->team->cl[i + 1];
 				cl->team->cl[i + 1] = 0;
 			}
+		cl->team->av += (ret) ? 1 : 0;
 		cl->team = (ret) ? 0 : cl->team;
 	}
 	return (ret);
