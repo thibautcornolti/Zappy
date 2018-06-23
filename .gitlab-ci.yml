@@ -1,5 +1,6 @@
 before_script:
   - make -C server
+
 srv_compile:
   script:
     - make -C server
@@ -9,3 +10,8 @@ srv_connect:
     - ./server/zappy_server &
     - timeout 1 nc -C 0 4242 > /tmp/zappy_output&
     - '[ ! -s /tmp/zappy_output ]'
+
+gui_compile:
+  script:
+    - cd gui
+    - webpack --verbose
