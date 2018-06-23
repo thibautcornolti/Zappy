@@ -16,7 +16,7 @@ static tuple_t player[] = {{"forward", &cmd_forward}, {"right", &cmd_right},
 
 static tuple_t gui[] = {{"map-size", &gui_map_size},
 	{"entities", &gui_entities}, {"tile", &gui_tile},
-	{"player", &gui_player}};
+	{"player", &gui_player}, {"tickrate", &gui_tickrate}};
 
 static tuple_t admin[] = {{"getids", &adm_getids}, {"cast", &adm_cast},
 	{"killall", &adm_killall}, {"lvlup", &adm_lvlup}, {"move", &adm_move},
