@@ -24,8 +24,6 @@ export default class Player {
     }
 
     public remove() {
-        let selectedObject = GUIManagger.getInstance().getScene().getObjectByName(this.object.name);
-        GUIManagger.getInstance().getScene().remove(selectedObject);
-        // this.object.remove();
+        GUIManagger.getInstance().getScene().remove(this.object);
     }
 }
