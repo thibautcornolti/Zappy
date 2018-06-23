@@ -178,6 +178,20 @@ export default class MapEntity {
         });
     }
 
+    private convertPosition(pos: Vector2) : Vector3 {
+        let ret = new Vector3();
+        let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
+            (this.posEnd.y - this.posStart.y) / this.mapSize.y);
+        let tileStart = new Vector2(mapRatio.x * pos.x, mapRatio.y * pos.y);
+        let tileEnd = new Vector2(mapRatio.x * (pos.x + 1), mapRatio.y * (pos.y + 1));
+        let posInTile = new Vector2((tileEnd.x - tileStart.x) / 2, (tileEnd.y - tileStart.y) / 2);
+
+        ret.x = this.posStart.x + tileStart.x + posInTile.x;
+        ret.y = 0;
+        ret.z = this.posStart.y + tileStart.y + posInTile.y;
+        return ret;
+    }
+
 
     //EVENT
     public playerJoin(data: IPlayerEntity) {
