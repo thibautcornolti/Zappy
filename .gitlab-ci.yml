@@ -1,9 +1,9 @@
-stage:
+stages:
   - build
   - test
 
 srv_compile:
-  type: build
+  stage: build
   script:
     - make -C server
   artifacts:
@@ -11,7 +11,7 @@ srv_compile:
       - server/zappy_server
 
 srv_connect:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -20,7 +20,7 @@ srv_connect:
     - cat /tmp/zappy_output | grep "`cat test/server/connect.output`"
 
 srv_join:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -29,7 +29,7 @@ srv_join:
     - cat /tmp/zappy_output | grep "`cat test/server/join.output`"
 
 srv_unknown:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -38,7 +38,7 @@ srv_unknown:
     - cat /tmp/zappy_output | grep "`cat test/server/unknown.output`"
 
 srv_player_forward:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -47,7 +47,7 @@ srv_player_forward:
     - cat /tmp/zappy_output | grep "`cat test/server/forward.output`"
 
 srv_player_death:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -56,7 +56,7 @@ srv_player_death:
     - cat /tmp/zappy_output | grep "`cat test/server/death.output`"
 
 srv_player_broadcast:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -66,7 +66,7 @@ srv_player_broadcast:
     - cat /tmp/zappy_output | grep "`cat test/server/broadcast.output`"
 
 srv_player_connect_nbr:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -75,7 +75,7 @@ srv_player_connect_nbr:
     - cat /tmp/zappy_output | grep "`cat test/server/connect_nbr.output`"
 
 srv_player_fork:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -85,7 +85,7 @@ srv_player_fork:
     - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/fork.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/fork.output`"
 
 srv_player_incantation_fail:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
@@ -95,7 +95,7 @@ srv_player_incantation_fail:
     - cat /tmp/zappy_output | grep "`cat test/server/incantation_fail.output`"
 
 srv_player_inventory:
-  type: test
+  stage: test
   dependencies:
     - srv_compile
   script:
