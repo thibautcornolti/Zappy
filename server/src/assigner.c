@@ -32,7 +32,7 @@ static void cmd_unknown(client_t *cl, cmd_t *cmd)
 {
 	dprintf(2, "[%s] Unknown command %s\n", cl->ip, cmd->name);
 	if (cl->state == GUI)
-		finalize_json(cl, emit_command_error(), cmd);
+		finalize_json(cl, emit_command_error("Unknown command."), cmd);
 	else
 		add_pending(cl, strdup(KO_MSG));
 }
@@ -61,7 +61,8 @@ void proceed_cmd(control_t *ctrl, client_t *cl)
 	(void)(ctrl);
 	show_cmd(cmd);
 	if (cmd->name[0] == 0 && cl->state == GUI) {
-		finalize_json(cl, emit_syntax_error(), cmd);
+		finalize_json(cl,
+			emit_syntax_error("Non-JSON payload received."), cmd);
 		clear_cmd(llist_remove(cl->cmd, 0));
 		return;
 	}

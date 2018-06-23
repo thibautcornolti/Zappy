@@ -51,7 +51,7 @@ void gui_tile(control_t *control, client_t *cl)
 	if (get_coords(&pos, cmd->json->root->data) == false ||
 		pos.x >= control->params.width ||
 		pos.y >= control->params.height)
-		ret = emit_command_error();
+		ret = emit_command_error("Position is out of map bounds.");
 	else {
 		ret = lobj_init();
 		lobj_set(ret, "type", "string", strdup("response"));

@@ -5,8 +5,18 @@
 ** Created by rectoria
 */
 
-#include <math.h>
 #include "server.h"
+#include <math.h>
+#include <stdio.h>
+
+static const float bounds[][2] = {[1] = {1.249046, 1.892547},
+	[2] = {1.892547, 2.819842},
+	[3] = {2.819842, 3.463343},
+	[4] = {3.463343, 4.390638},
+	[5] = {4.390638, 5.034139},
+	[6] = {5.034139, 5.961434},
+	[7] = {5.961434, 6.604936},
+	[8] = {6.604936, 7.532231}};
 
 void cmd_broadcast(control_t *control, client_t *client)
 {
@@ -15,23 +25,57 @@ void cmd_broadcast(control_t *control, client_t *client)
 	client->task.type = BROADCAST;
 }
 
-void exec_broadcast(control_t *control, client_t *client)
+float get_angle(control_t *control, vec2_t pos1, vec2_t pos2)
 {
-	client_t *cl;
-	vec2f_t v;
+	vec2_t v;
 	float norm;
 	float angle;
+
+	v.x = (float)(pos1.x) - (float)(pos2.x);
+	v.x = (v.x > control->params.width) ? -v.x : v.x;
+	v.y = (float)(pos1.y) - (float)(pos2.y);
+	v.y = (v.y > control->params.height) ? -v.y : v.y;
+	norm = sqrtf(v.x * v.x + v.y * v.y);
+	v.x /= norm;
+	v.y /= norm;
+	angle = atan2f(v.y, v.x);
+	if (angle < 1.249046)
+		angle += 2 * M_PI;
+	return (angle);
+}
+
+void send_message(control_t *control, client_t *client, char *message)
+{
+	client_t *cl;
+	float angle;
+	char *str = 0;
 
 	for (list_elem_t *it = control->clients->head; it; it = it->next) {
 		cl = it->payload;
 		if (cl->fd == client->fd)
 			continue;
-		v.x = (float)(client->pos.x) - (float)(cl->pos.x);
-		v.y = (float)(client->pos.y) - (float)(cl->pos.y);
-		norm = sqrtf(v.x * v.x + v.y * v.y);
-		v.x /= norm;
-		v.y /= norm;
-		angle = atan2f(v.y, v.x);
+		angle = get_angle(control, client->pos, cl->pos);
+		for (size_t i = 1; i < 9; ++i)
+			if (angle >= bounds[i][0] && angle <= bounds[i][1]) {
+				i += 2 * cl->facing;
+				i %= 8;
+				i += 1;
+				asprintf(&str, "message %lu, %s", i,
+					message);
+				add_pending(cl, str);
+			}
 	}
+}
+
+void exec_broadcast(control_t *control, client_t *client)
+{
+	cmd_t *cmd = client->cmd->head->payload;
+
 	client->task.type = NONE;
+	if (cmd->nparam != 1) {
+		add_pending(client, strdup("ko"));
+		return;
+	}
+	send_message(control, client, cmd->param[0]);
+	add_pending(client, strdup("ok"));
 }

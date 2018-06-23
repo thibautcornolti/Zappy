@@ -37,7 +37,8 @@ bool add_new_client(control_t *ctrl)
 	client->state = ANONYMOUS;
 	client->pos.x = rand() % ctrl->params.width;
 	client->pos.y = rand() % ctrl->params.height;
-	dprintf(2, "spawn position: (%lu,%lu)\n", client->pos.x, client->pos.y);
+	dprintf(2, "spawn position: (%lu,%lu)\n", client->pos.x,
+		client->pos.y);
 	CHECK(client->fd = accept(ctrl->fd, (struct sockaddr *)&addr, &size),
 		== -1, false);
 	CHECK(inet_ntop(AF_INET, client->ip, (void *)&addr, size), == 0,
@@ -47,7 +48,6 @@ bool add_new_client(control_t *ctrl)
 		== 0, false);
 	add_pending(client, strdup(WELCOME_MSG));
 	CHECK(llist_push(ctrl->clients, 1, client), == -1, false);
-	serialize_player(client);
 	return (true);
 }
 
@@ -92,6 +92,7 @@ bool write_to_client(control_t *control, client_t *cl)
 
 bool append_special_client(control_t *control, client_t *client, char *type)
 {
+	(void)(control);
 	if (lstr_equals(type, "gui"))
 		client->state = GUI;
 	else if (lstr_equals(type, "admin"))
@@ -150,29 +151,48 @@ bool proceed_clients(control_t *ctrl)
 		if (to_evict)
 			evict_client(ctrl, cl);
 	}
-	return (true);
+	return (to_evict == false);
 }
 
 bool handle_client(control_t *control, client_t *cl, size_t idx)
 {
 	bool to_evict = ((cl->node->revt & POLLHUP) == POLLHUP);
 
+	(void)(control);
 	(void)(idx);
 	if (!to_evict && (cl->node->revt & POLLIN))
 		to_evict = !(receive_data(cl) && extract_rbuf_cmd(cl));
 	return (to_evict == false);
 }
 
-bool consume_food(control_t *control, client_t *client)
+void free_player(control_t *control, client_t *client)
 {
-	(void)(control);
-	client->food_delay -= 1;
-	if (client->food_delay == 0) {
-		client->food -= 1;
-		client->food_delay = FOOD_DELAY;
+	dprintf(client->fd, "dead");
+	close(client->fd);
+	poll_rm(&control->list, client->fd);
+	llist_clear(client->pending, true);
+	llist_destroy(client->pending);
+	team_remove_client(control, client);
+	free(client);
+}
+
+bool consume_food(control_t *control)
+{
+	ssize_t size = ((ssize_t)(control->clients->length)) - 1;
+	client_t *client;
+
+	for (ssize_t i = size; i >= 0; i -= 1) {
+		client = llist_at(control->clients, i);
+		client->food_delay -= 1;
+		if (client->food_delay == 0) {
+			client->food -= 1;
+			client->food_delay = FOOD_DELAY;
+		}
+		if (client->food == 0) {
+			free_player(control, client);
+			llist_remove(control->clients, i);
+		}
 	}
-	if (client->food == 0)
-		; // TODO: Kill player
 	return (true);
 }
 
@@ -188,14 +208,15 @@ bool handle_request(control_t *control)
 	for (list_elem_t *it = control->clients->head; it; it = it->next) {
 		cl = it->payload;
 		cl->node->evt = POLLIN | (cl->pending->length ? POLLOUT : 0);
-		consume_food(control, cl);
 	}
+	consume_food(control);
 	return (true);
 }
 
 bool ctrl_init(control_t *ctrl)
 {
 	CHECK(ctrl->clients = llist_init(), == 0, false);
+	CHECK(ctrl->eggs = llist_init(), == 0, false);
 	CHECK(init_map(ctrl), == false, false);
 	CHECK(place_resources(ctrl), == false, false);
 	CHECK(team_init(ctrl), == false, false);
@@ -232,6 +253,21 @@ static bool cycle_adjustment(control_t *ctrl)
 	return (true);
 }
 
+void consume_eggs(control_t *control)
+{
+	ssize_t size = ((ssize_t)(control->eggs->length)) - 1;
+	egg_t *egg;
+
+	for (ssize_t i = size; i >= 0; i -= 1) {
+		egg->delay -= 1;
+		if (egg->delay == 0) {
+			// TODO: Event egg-hatch.
+			// TODO: resize team to accept one more client.
+			llist_remove(control->eggs, i);
+		}
+	}
+}
+
 int main(int ac, const char **av)
 {
 	control_t ctrl = {0};
@@ -250,6 +286,8 @@ int main(int ac, const char **av)
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
 		proceed_clients(&ctrl);
+		consume_food(&ctrl);
+		consume_eggs(&ctrl);
 	}
 	return (0);
 }

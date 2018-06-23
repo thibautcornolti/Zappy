@@ -147,13 +147,21 @@ typedef struct team_s {
 	size_t av;
 } team_t;
 
+typedef struct egg_s {
+	size_t delay;
+	team_t *team;
+	vec2_t pos;
+} egg_t;
+
 typedef struct control_s {
 	int fd;
 	poll_t *list;
+	list_t *eggs;
 	list_t *clients;
 	team_t *teams;
 	cell_t *map;
 	params_t params;
+
 } control_t;
 
 typedef struct tuple_s {
@@ -238,8 +246,8 @@ void proceed_cmd(control_t *, client_t *);
 bool exec_task(control_t *, client_t *);
 bool place_resources(control_t *);
 void finalize_json(client_t *, object_t *, cmd_t *);
-object_t *emit_command_error(void);
-object_t *emit_syntax_error(void);
+object_t *emit_command_error(char *reason);
+object_t *emit_syntax_error(char *reason);
 list_t *create_tile_data(control_t *control, vec2_t pos);
 
 /*
