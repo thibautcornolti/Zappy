@@ -1,5 +1,13 @@
-before_script:
-  - npm i -g webpack webpack-cli
+build site:
+  image: node:9
+  stage: build
+  script:
+    - npm install --progress=false
+    - npm install -g webpack webpack-cli --progress=false
+#    - npm run build
+
+#before_script:
+#  -
 
 gui_compile:
   script:
