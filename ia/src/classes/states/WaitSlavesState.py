@@ -4,6 +4,7 @@ from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.ia_res.TrackableTransactions import LookTransaction, BroadcastTransaction
 from src.classes.com.SafeController import safe_controller
 from src.classes.states.StateMachine import AAIState, statemachine
+from src.misc import my_print
 
 
 class WaitSlavesState(AAIState):
@@ -20,6 +21,7 @@ class WaitSlavesState(AAIState):
         if look[0].count("player") == self.size:
             statemachine.closure = lambda: statemachine.replace(self.replacement_state)
         else:
+            my_print("I'm here minions")
             msg = MsgProtocol.ping_team(ant.uuid)
             safe_controller.execute(BroadcastTransaction(msg, self.broadcast_team))
 

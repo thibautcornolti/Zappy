@@ -30,6 +30,7 @@ class SafeController(object):
         statemachine.closure = reset_trans
         self.safe = True
         self.safe_exec(self.save, self.floor)
+        my_print("END EMERGENCY MOD")
 
     def estimate_food(self, inventory):
         from src.classes.states.SeekItemsState import SeekItemsState

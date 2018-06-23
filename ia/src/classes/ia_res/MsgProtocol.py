@@ -13,6 +13,8 @@ class MsgProtocol:
             return gn[1] if isinstance(gn, tuple) else lambda x: x
 
         res = re.findall(regex, msg)
+        if isinstance(res[0], str):
+            res = [res]
         return {
             get_gn_name(n): get_gn_lambda(n)(res[0][i])
             for i, n in zip(itertools.count(), group_names)
@@ -108,13 +110,13 @@ class MsgProtocol:
 
     @staticmethod
     def ping_team(self_uuid):
-        return "%s | j'existe les gars!" % self_uuid
+        return "%s | j existe les gars" % self_uuid
 
     @staticmethod
     def is_ping_team(msg):
         return MsgProtocol._is_template(
             ['sender'],
-            r"^([0-9a-z]+) \| j'existe les gars!$",
+            r"^([0-9a-z]+) \| j existe les gars",
             msg
         )
 
@@ -174,3 +176,7 @@ if __name__ == '__main__':
     args = [fake_uuid, [fake_dest] * 4]
     args_name = ['sender', 'recipients']
     test('MEET ANTS', MsgProtocol.meet_ants, MsgProtocol.is_meet_ants, args, args_name)
+
+    args = [fake_uuid]
+    args_name = ['sender']
+    test('PING TEAM', MsgProtocol.ping_team, MsgProtocol.is_ping_team, args, args_name)

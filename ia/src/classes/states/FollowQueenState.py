@@ -4,7 +4,8 @@ from src.classes.com.SafeController import safe_controller
 from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.ia_res.Path import Path, PathManipulator
-from src.classes.ia_res.TrackableTransactions import LookTransaction, PackedTransaction, SetTransaction
+from src.classes.ia_res.TrackableTransactions import LookTransaction, PackedTransaction, SetTransaction, \
+    EmptyPathTransaction
 from src.classes.ia_res.Vector import Vector
 from src.classes.states.StateMachine import AAIState
 from src.misc import my_print
@@ -22,8 +23,9 @@ class FollowQueenState(AAIState):
             real_dir.x = dir.x
         else:
             real_dir.y = dir.y
-        path.addPoint(real_dir, lambda ok=None: None)
-        safe_controller.execute(PathManipulator(path, self.listen_the_queen))
+        path.addPoint(real_dir, EmptyPathTransaction())
+        my_print("Ok reine je viens vers vous : ", real_dir)
+        safe_controller.execute(PathManipulator(path.generateOrder()[0], self.listen_the_queen))
 
     def wait_others(self):
         my_print("On the queen position, waiting for queen signal")
@@ -35,13 +37,15 @@ class FollowQueenState(AAIState):
             transaction.addTransaction(sub_transaction)
         safe_controller.execute(transaction)
 
-    def listen_the_queen(self, _):
+    def listen_the_queen(self, _=None):
         save = None
         for msg in controller.msgQueue:
             ping = MsgProtocol.is_ping_team(msg.text)
+            my_print("msg : ", msg.text, msg.dir, ping)
             if ping and ping['sender'] == ant.queen.uuid:
-                save = ping
+                save = msg
         if save and save.dir.x == 0 and save.dir.y == 0:
+            my_print("J'vais poser les res les gars !")
             self.set_requested_items()
         elif save:
             self.follow_dir(save.dir)
