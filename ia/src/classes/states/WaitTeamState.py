@@ -39,10 +39,11 @@ class WaitTeamState(AAIState):
             allow = MsgProtocol.is_allowed_ants(m.text)
             if allow and allow['sender'] == ant.queen.uuid:
                 if ant.uuid in allow['allowed_ants']:
-                    my_print("Je suis dans la team !")
+                    my_print("Je suis dans la team !", statemachine._stack)
+                    #statemachine.closure = lambda: statemachine.replace(SlaveState())
                 else:
-                    my_print("Je suis pas dans la team :'(")
-                self._status_stack.pop(0)
+                    my_print("Je suis pas dans la team :'(", statemachine._stack)
+                    self._status_stack.insert(0, lambda: LookTransaction(self.wait_enrol_msg))
         self.template()
 
     def wait_enrol_msg(self, *args):
@@ -59,9 +60,6 @@ class WaitTeamState(AAIState):
         self.template()
 
     def template(self):
-        if len(self._status_stack) == 0:
-            statemachine.closure = lambda ok=None: statemachine.pop()
-        else:
             safe_controller.execute(self._status_stack[0]())
 
     def on_push(self, cli):

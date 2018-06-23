@@ -9,6 +9,7 @@ from src.misc import my_print
 class SafeController(object):
 
     def __init__(self):
+        self.floor = None
         self.save = None
         self.endTransaction = None
         self.safe = True
@@ -16,6 +17,7 @@ class SafeController(object):
     def clear_transaction(self, *args, **kwargs):
         endTransa = self.endTransaction
         self.save = None
+        self.floor = None
         self.endTransaction = None
         endTransa(*args, **kwargs)
 
@@ -27,12 +29,12 @@ class SafeController(object):
 
         statemachine.closure = reset_trans
         self.safe = True
-        self.safe_exec(self.save)
+        self.safe_exec(self.save, self.floor)
 
     def estimate_food(self, inventory):
         from src.classes.states.SeekItemsState import SeekItemsState
         ant.inventory = inventory
-        if inventory[Resources.Food] < self.save.get_estimated_time() / 126 or inventory[Resources.Food] < 7:
+        if inventory[Resources.Food] < self.save.get_estimated_time() / 126 or inventory[Resources.Food] < self.floor:
             my_print("EMERGENCY MOD")
             statemachine.block_trans_detect = True
             self.safe = False
@@ -44,15 +46,16 @@ class SafeController(object):
             self.save.end = self.clear_transaction
             self.save.execute()
 
-    def safe_exec(self, transaction):
+    def safe_exec(self, transaction, floor):
         self.save = transaction
+        self.floor = floor
         InventoryTransaction(self.estimate_food).execute()
 
-    def execute(self, transaction):
+    def execute(self, transaction, floor=7):
         if self.save and self.safe:
             raise Exception("Invalid Concurrent transaction : {} vs {}".format(self.save.__repr__(), transaction.__repr__()))
         if self.safe:
-            self.safe_exec(transaction)
+            self.safe_exec(transaction, floor)
         else:
             transaction.execute()
 
