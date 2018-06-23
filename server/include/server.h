@@ -172,6 +172,11 @@ typedef struct param_parse_s {
 void add_pending(client_t *, char *);
 
 /*
+ * Client management function
+ */
+bool evict_client(control_t *, client_t *);
+
+/*
 ** Command pre-processing
 */
 void cmd_forward(control_t *, client_t *);

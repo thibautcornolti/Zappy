@@ -24,7 +24,7 @@ object_t *serialize_player(client_t *client)
 	object_t *ret = lobj_init();
 
 	lobj_set(ret, "type", "string", strdup("player"));
-	lobj_set(ret, "id", "number", double_to_void_ptr(client->fd));
+	lobj_set(ret, "id", "number", double_to_void_ptr(client->id));
 	lobj_set(ret, "pos", "object", serialize_position(client->pos));
 	return (ret);
 }

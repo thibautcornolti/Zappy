@@ -28,10 +28,12 @@ bool add_new_client(control_t *ctrl)
 	client_t *client;
 	struct sockaddr_in addr = {0};
 	socklen_t size = sizeof(addr);
+	static size_t ids = 0;
 
 	CHECK(client = calloc(1, sizeof(client_t)), == 0, false);
 	CHECK(client->cmd = llist_init(), == 0, false);
 	CHECK(client->pending = llist_init(), == 0, false);
+	client->id = ids++;
 	client->inventory[FOOD] = 10;
 	client->rbuf.size = RBUFFER_SIZE;
 	client->state = ANONYMOUS;
@@ -69,6 +71,7 @@ ssize_t receive_data(client_t *cl)
 
 bool evict_client(control_t *control, client_t *cl)
 {
+	team_remove_client(control, cl);
 	poll_rm(&control->list, cl->fd);
 	llist_clear(cl->pending, true);
 	llist_destroy(cl->pending);
@@ -172,8 +175,13 @@ bool consume_food(control_t *control, client_t *client)
 		client->food_delay = FOOD_DELAY;
 	}
 	if (client->food == 0)
-		; // TODO: Kill player
+		;// TODO evict_client(control, client);
 	return (true);
+}
+
+bool find_evicted(void *t, void *s, size_t l) {
+	(void)l;
+	return (s == t);
 }
 
 bool handle_request(control_t *control)
@@ -183,8 +191,11 @@ bool handle_request(control_t *control)
 
 	control->clients = llist_filter(control->clients,
 		(bool (*)(void *, void *, size_t))(handle_client), control);
-	llist_destroy(tmp);
-	// dprintf(1, "Client count: %lu\n", llist_size(control->clients));
+	for (size_t i = 0; i < tmp->length; ++i) {
+		cl = llist_at(tmp, i);
+		if (!llist_find(control->clients, find_evicted, cl))
+			evict_client(control, cl);
+	}
 	for (list_elem_t *it = control->clients->head; it; it = it->next) {
 		cl = it->payload;
 		cl->node->evt = POLLIN | (cl->pending->length ? POLLOUT : 0);
@@ -250,8 +261,6 @@ int main(int ac, const char **av)
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
 		proceed_clients(&ctrl);
-		printf("Tick !\n");
 	}
-	//FIXME Remove player from team on DC
 	return (0);
 }
