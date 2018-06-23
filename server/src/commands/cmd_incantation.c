@@ -16,14 +16,6 @@ static const size_t required[][7] = {[0] = {1, 0, 0, 0, 0, 0, 0},
 	[6] = {6, 1, 2, 3, 0, 1, 0},
 	[7] = {6, 2, 2, 2, 2, 2, 1}};
 
-void cmd_incantation(control_t *control, client_t *client)
-{
-	(void)(control);
-	client->task.time = 300;
-	client->task.type = INCANTATION;
-	event_incantation_start(control, client);
-}
-
 static bool *same_level(
 	client_t *client, bool *acc, client_t *elem, size_t idx)
 {
@@ -57,6 +49,32 @@ static list_t *validate_clients(control_t *control, client_t *client)
 		return (0);
 	}
 	return (count);
+}
+
+void cmd_incantation(control_t *control, client_t *client)
+{
+	list_t *count;
+
+	if (client->level == 8) {
+		add_pending(client, strdup(KO_MSG));
+		return;
+	}
+	count = validate_clients(control, client);
+	if (count == 0)
+		return;
+	for (size_t i = 1; i < ITEM_COUNT; ++i)
+		if (count_items(control, client->pos, i) !=
+			required[client->level][i]) {
+			add_pending(client, strdup(KO_MSG));
+			llist_destroy(count);
+			event_incantation_fail(control, client);
+			return;
+		}
+	client->task.time = 300;
+	client->task.type = INCANTATION;
+	llist_destroy(count);
+	add_pending(client, strdup(OK_MSG));
+	event_incantation_start(control, client);
 }
 
 void exec_incantation(control_t *control, client_t *client)

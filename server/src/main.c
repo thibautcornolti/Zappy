@@ -152,9 +152,6 @@ bool proceed_clients(control_t *ctrl)
 			proceed_cmd(ctrl, cl);
 		if (cl->task.type != NONE && !to_evict)
 			exec_task(ctrl, cl);
-		if (!to_evict && cl->pending->length &&
-			(cl->node->revt & POLLOUT))
-			write_to_client(ctrl, cl);
 		if (to_evict)
 			evict_client(ctrl, cl);
 	}
@@ -182,7 +179,6 @@ void free_player(control_t *control, client_t *client)
 	llist_destroy(client->pending);
 	team_remove_client(control, client);
 	free(client);
-	
 }
 
 bool consume_food(control_t *control)
@@ -245,11 +241,18 @@ bool ctrl_init(control_t *ctrl)
 
 static bool perfom_poll_actions(control_t *ctrl)
 {
+	client_t *client;
+
 	if (poll_canread(ctrl->list, ctrl->fd)) {
 		CHECK(add_new_client(ctrl), == false, 84);
 	}
 	else if (ctrl->clients->length)
 		handle_request(ctrl);
+	for (list_elem_t *it = ctrl->clients->head; it; it = it->next) {
+		client = it->payload;
+		if (client->pending->length && (client->node->revt & POLLOUT))
+			write_to_client(ctrl, client);
+	}
 	return (true);
 }
 
@@ -282,8 +285,9 @@ void consume_eggs(control_t *control)
 		egg = llist_at(control->eggs, i);
 		egg->delay -= 1;
 		if (egg->delay == 0) {
-			// TODO: Event egg-hatch.
-			// TODO: resize team to accept one more client.
+			egg->team->cl =
+				realloc(egg->team->cl, ++egg->team->size);
+			egg->team->av += 1;
 			event_egg_hatch(control, egg);
 			llist_remove(control->eggs, i);
 		}
@@ -308,7 +312,7 @@ int main(int ac, const char **av)
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
 		proceed_clients(&ctrl);
-		// consume_food(&ctrl);
+		consume_food(&ctrl);
 		consume_eggs(&ctrl);
 	}
 	return (0);

@@ -144,6 +144,7 @@ typedef struct team_s {
 	char *name;
 	client_t **cl;
 	size_t av;
+	size_t size;
 } team_t;
 
 typedef struct egg_s {

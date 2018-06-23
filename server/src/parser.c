@@ -78,6 +78,7 @@ static bool retrieve_cmd(client_t *client)
 	static char tmp[RBUFFER_SIZE];
 
 	for (; !loop && spos != epos; spos = (spos + 1) % len) {
+		dprintf(2, "In this loop %d !\n", rand());
 		tmp[csize] = rbuf[spos];
 		csize += 1;
 		loop = (rbuf[spos] == '\n');

@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-static const void (*fcmd[])(control_t *, client_t *) = {
+static void (*fcmd[])(control_t *, client_t *) = {
 	[NONE] = 0,
 	[FORWARD] = &exec_forward,
 	[RIGHT] = &exec_right,
