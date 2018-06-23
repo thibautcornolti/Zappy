@@ -114,4 +114,14 @@ export default class MainScene {
         data = (data as IPlayerEntity);
         this.map.playerDeath(data);
     }
+
+    public playerMove(data: any) {
+        data = (data as IPlayerEntity);
+        this.map.playerMove(data);
+    }
+
+    public playerTurn(data: any) {
+        data = (data as IPlayerEntity);
+        this.map.playerTurn(data);
+    }
 }

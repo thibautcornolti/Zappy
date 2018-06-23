@@ -26,7 +26,7 @@ let facingTable: {[index: string]: number} = {
     N: Math.PI / 2,
     E: 0,
     S: -Math.PI / 2,
-    O: Math.PI
+    W: Math.PI
 };
 
 let typeTable: {[index: string]: IType} = {
@@ -203,6 +203,20 @@ export default class MapEntity {
         if (this.player[data.id]) {
             this.player[data.id].obj.remove();
             delete this.player[data.id];
+        }
+    }
+
+    public playerMove(data: IPlayerEntity) {
+        if (this.player[data.id]) {
+            this.player[data.id].info.pos = data.pos;
+            this.player[data.id].obj.setPosition(this.convertPosition(new Vector2(data.pos.x, data.pos.y)));
+        }
+    }
+
+    public playerTurn(data: IPlayerEntity) {
+        if (this.player[data.id]) {
+            this.player[data.id].info.facing = data.facing;
+            this.player[data.id].obj.setRotation(new Vector3(0, facingTable[data.facing], 0));
         }
     }
 }
