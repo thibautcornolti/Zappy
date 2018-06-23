@@ -2,7 +2,7 @@ import * as THREE from "three"
 import StateShare from "../States/StateShare"
 import GUIManagger from "../GUIManager"
 import {Vector2, Vector3} from "three";
-import {IEntitiesResp, ITileResp} from "../ICom";
+import {IEntitiesResp, IPlayerEntity, ITileResp} from "../ICom";
 import MapEntity from "../Entity/MapEntity";
 
 export default class MainScene {
@@ -102,5 +102,11 @@ export default class MainScene {
             new Vector2(pos.x * scale.x + this.map.getPosStart().x, pos.y * scale.y + this.map.getPosStart().y),
             new Vector2((pos.x + 1) * scale.x + this.map.getPosStart().x, (pos.y + 1) * scale.y + this.map.getPosStart().y)
         );
+    }
+
+    // EVENT
+    public playerJoin(data: any) {
+        data = (data as IPlayerEntity);
+        this.map.playerJoin(data);
     }
 }

@@ -10,7 +10,7 @@ export default class Player {
             alert("Missing models: Chicken");
             window.location.href = "/";
         }
-        this.object = assetPool.getGltfAssets("chicken").scene;
+        this.object = assetPool.getGltfAssets("chicken").scene.clone();
         this.object.position.set(position.x, 0, position.y);
         GUIManagger.getInstance().getScene().add(this.object);
     }

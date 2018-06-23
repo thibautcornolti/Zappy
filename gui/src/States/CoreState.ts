@@ -11,6 +11,8 @@ export default class CoreState implements IState {
     private mainMap: MainScene;
     private camPos: Vector3;
 
+    private eventBinding: {[index: string]: (data: Object) => void };
+
     private tmp: boolean;
     private inc: number;
 
@@ -22,6 +24,9 @@ export default class CoreState implements IState {
 
         this.inc = 0;
         this.tmp = false;
+
+        this.eventBinding = {};
+        this.eventBinding["player-join"] = this.mainMap.playerJoin.bind(this.mainMap);
     }
 
     public init() {
@@ -66,6 +71,9 @@ export default class CoreState implements IState {
                     this.mainMap.setTile(json);
                 else if (json['response-type'] === "entities")
                     this.mainMap.initMapTile(json);
+            } else if (json.type === "event") {
+                if (this.eventBinding[json["event-type"]])
+                    this.eventBinding[json["event-type"]](json.data);
             }
         });
     };

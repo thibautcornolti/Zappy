@@ -39,6 +39,23 @@ export interface IEntitiesResp extends IGeneralResp {
     }]
 }
 
+export interface IPlayerEntity {
+    pos: {
+        x: number,
+        y: number
+    },
+    id: number,
+    team: string,
+    facing: "N" | "E" | "S" | "O",
+    level: number
+}
+
+
+
+
+
+
+
 export interface IGeneralCommandCom {
     command: string
 }
