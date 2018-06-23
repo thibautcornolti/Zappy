@@ -13,7 +13,7 @@ class WaitSlavesState(AAIState):
         self.size = size
         self.replacement_state = replacement_state
 
-    def broadcast_team(self, _):
+    def broadcast_team(self):
         safe_controller.execute(LookTransaction(self.look_for_players))
 
     def look_for_players(self, look):

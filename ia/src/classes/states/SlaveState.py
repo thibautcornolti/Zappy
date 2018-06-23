@@ -5,6 +5,7 @@ from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.ia_res.TrackableTransactions import LookTransaction, \
     BroadcastTransaction
+from src.classes.states.FollowQueenState import FollowQueenState
 from src.classes.states.SeekItemsState import SeekItemsState
 from src.classes.states.StateMachine import AAIState, statemachine
 from src.misc import my_print
@@ -17,12 +18,9 @@ class SlaveState(AAIState):
 
     def find_callback(self, _):
         for m in controller.msgQueue:
-            my_print('Searching lol msg: %s' % m.text)
-            my_print('ant queen uuid %s' % ant.queen.uuid)
             seek = MsgProtocol.is_seek_slave(m.text)
             if seek and seek['recipient'] == ant.uuid and seek['sender'] == ant.queen.uuid:
                 my_print('I have finally a real duty!! :')
-                my_print('{}'.format(seek['items']))
                 items = {
                     Resources(name): int(value)
                     for name, value in seek['items'].items()
@@ -37,9 +35,10 @@ class SlaveState(AAIState):
     def meet_callback(self, _):
         for m in controller.msgQueue:
             meet = MsgProtocol.is_meet_ants(m.text)
+            my_print(m.text)
             if meet and ant.uuid in meet['recipients'] and meet['sender'] == ant.queen.uuid:
                 my_print("My dear queen asked me to join her, let's go!")
-                # TODO: JOIN THE QUEEN WITH THE ANGLE OF THE BROADCAST LOL MDR
+                statemachine.closure = lambda ok=None: statemachine.replace(FollowQueenState())
                 return
         meet = LookTransaction(self.meet_callback)
         safe_controller.execute(meet)
@@ -52,11 +51,11 @@ class SlaveState(AAIState):
     def popped_over(self):
         super().popped_over()
 
-        def callback(_):
+        def callback():
             meet = LookTransaction(self.meet_callback)
             safe_controller.execute(meet)
 
         my_print('I accomplished my duty ! :)')
         msg = MsgProtocol.seek_end(ant.uuid, ant.queen.uuid)
-        transaction = BroadcastTransaction(msg, lambda: callback)
+        transaction = BroadcastTransaction(msg, callback)
         safe_controller.execute(transaction)
