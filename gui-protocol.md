@@ -135,11 +135,57 @@ Réponse:
 }
 ```
 
+### Infos de joueur
+
+Requête:
+```json
+{
+    "command": "player",
+    "id": 2
+}
+```
+
+Réponse:
+```json
+{
+    "type": "response",
+    "response-type": "player",
+    "data": {
+        "id": 2,
+        "team": "Eo",
+        "level": 5,
+        "facing": "N",
+        "pos": {
+            "x": 4,
+            "y": 3
+        }
+    }
+}
+```
+
 ## Événements
 
 Des événements peuvent surgir à n'importe quel moment et le serveur enverra les informations liés à ces événements à tous les GUIs connectés.
 
 ### Joueur
+
+Connexion de joueur:
+```json
+{
+    "type": "event",
+    "event-type": "player-join",
+    "data": {
+        "id": 2,
+        "team": "Eo",
+        "level": 5,
+        "facing": "N",
+        "pos": {
+            "x": 4,
+            "y": 3
+        }
+    }
+}
+```
 
 Mouvement de joueur:
 ```json
