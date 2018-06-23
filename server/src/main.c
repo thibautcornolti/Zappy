@@ -35,6 +35,7 @@ bool add_new_client(control_t *ctrl)
 	CHECK(client->pending = llist_init(), == 0, false);
 	client->id = ids++;
 	client->inventory[FOOD] = 10;
+	client->food_delay = FOOD_DELAY;
 	client->rbuf.size = RBUFFER_SIZE;
 	client->state = ANONYMOUS;
 	client->pos.x = rand() % ctrl->params.width;
@@ -188,10 +189,10 @@ bool consume_food(control_t *control)
 		client = llist_at(control->clients, i);
 		client->food_delay -= 1;
 		if (client->food_delay == 0) {
-			client->food -= 1;
+			client->inventory[FOOD] -= 1;
 			client->food_delay = FOOD_DELAY;
 		}
-		if (client->food == 0) {
+		if (client->inventory[FOOD] == 0) {
 			free_player(control, client);
 			llist_remove(control->clients, i);
 		}
@@ -220,7 +221,6 @@ bool handle_request(control_t *control)
 		cl = it->payload;
 		cl->node->evt = POLLIN | (cl->pending->length ? POLLOUT : 0);
 	}
-	consume_food(control);
 	return (true);
 }
 

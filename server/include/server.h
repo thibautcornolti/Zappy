@@ -131,7 +131,6 @@ typedef struct client_s {
 	size_t id;
 	vec2_t pos;
 	facing_t facing;
-	size_t food;
 	size_t food_delay;
 	poll_t *node;
 	list_t *pending;
