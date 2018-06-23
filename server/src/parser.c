@@ -63,7 +63,7 @@ static void extract_found_cmd(client_t *client, char *tmp, int csize)
 	}
 	client->rbuf.start = (client->rbuf.start + csize) % len;
 	((client->state == GUI) ? parse_json : parse_cmd)(cmd);
-	cmd->cmd[strlen(cmd->cmd) - 1] = 0;
+	cmd->cmd[strlen(cmd->cmd)] = 0;
 	llist_push(client->cmd, 1, cmd);
 }
 
@@ -78,13 +78,10 @@ static bool retrieve_cmd(client_t *client)
 	static char tmp[RBUFFER_SIZE];
 
 	for (; !loop && spos != epos; spos = (spos + 1) % len) {
-		dprintf(2, "In this loop %d !\n", csize);
 		tmp[csize] = rbuf[spos];
 		csize += 1;
 		loop = (rbuf[spos] == '\n');
-		printf("tmp: %s\n", tmp);
 	}
-	printf("Leaving\n");
 	tmp[csize] = 0;
 	if (loop && client->cmd)
 		extract_found_cmd(client, tmp, csize);
