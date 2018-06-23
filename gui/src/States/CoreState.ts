@@ -27,6 +27,7 @@ export default class CoreState implements IState {
 
         this.eventBinding = {};
         this.eventBinding["player-join"] = this.mainMap.playerJoin.bind(this.mainMap);
+        this.eventBinding["player-death"] = this.mainMap.playerDeath.bind(this.mainMap);
     }
 
     public init() {

@@ -184,4 +184,11 @@ export default class MapEntity {
         let player = this.initPlayerEntity(new Vector2(data.pos.x, data.pos.y), data.facing);
         this.player[data.id] = {info: data, obj: player};
     }
+
+    public playerDeath(data: IPlayerEntity) {
+        if (this.player[data.id]) {
+            this.player[data.id].obj.remove();
+            delete this.player[data.id];
+        }
+    }
 }

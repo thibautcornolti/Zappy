@@ -109,4 +109,9 @@ export default class MainScene {
         data = (data as IPlayerEntity);
         this.map.playerJoin(data);
     }
+
+    public playerDeath(data: any) {
+        data = (data as IPlayerEntity);
+        this.map.playerDeath(data);
+    }
 }
