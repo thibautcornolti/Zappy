@@ -281,6 +281,7 @@ void consume_eggs(control_t *control)
 		if (egg->delay == 0) {
 			// TODO: Event egg-hatch.
 			// TODO: resize team to accept one more client.
+			event_egg_hatch(control, egg);
 			llist_remove(control->eggs, i);
 		}
 	}

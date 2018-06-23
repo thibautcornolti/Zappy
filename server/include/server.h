@@ -253,6 +253,8 @@ void event_incantation_success(control_t *, client_t *);
 void event_item_drop(control_t *, client_t *, item_t);
 void event_item_pickup(control_t *, client_t *, item_t);
 void event_player_death(control_t *, client_t *, char *);
+void event_egg_drop(control_t *, client_t *);
+void event_egg_hatch(control_t *, egg_t *);
 
 bool display_object(object_t *);
 void *double_to_void_ptr(double);

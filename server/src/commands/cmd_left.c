@@ -22,5 +22,6 @@ void exec_left(control_t *control, client_t *client)
 	else
 		client->facing += 1;
 	add_pending(client, strdup(OK_MSG));
+	event_player_turn(control, client);
 	client->task.type = NONE;
 }

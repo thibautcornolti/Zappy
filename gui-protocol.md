@@ -139,8 +139,9 @@ Réponse:
 
 Des événements peuvent surgir à n'importe quel moment et le serveur enverra les informations liés à ces événements à tous les GUIs connectés.
 
-### Mouvement de joueur
+### Joueur
 
+Mouvement de joueur:
 ```json
 {
     "type": "event",
@@ -155,8 +156,19 @@ Des événements peuvent surgir à n'importe quel moment et le serveur enverra l
 }
 ```
 
-### Mort de joueur
+Orientation de joueur:
+```json
+{
+    "type": "event",
+    "event-type": "player-turn",
+    "data": {
+        "id": 2,
+        "facing": "N"
+    }
+}
+```
 
+Mort de joueur:
 ```json
 {
     "type": "event",
@@ -170,7 +182,7 @@ Des événements peuvent surgir à n'importe quel moment et le serveur enverra l
 
 ### Items
 
-Item drop:
+Dépôt d'item:
 ```json
 {
     "type": "event",
@@ -186,7 +198,7 @@ Item drop:
 }
 ```
 
-Item pickup:
+Ramassage d'item:
 ```json
 {
     "type": "event",
@@ -236,6 +248,39 @@ Echec de l'incantation:
     "data": {
         "id": 2,
         "current-level": 4
+    }
+}
+```
+
+### Oeuf
+
+Dépôt d'oeuf
+```json
+{
+    "type": "event",
+    "event-type": "egg-drop",
+    "data": {
+        "id": 2,
+        "team": "Eo",
+        "pos": {
+            "x": 3,
+            "y": 2
+        }
+    }
+}
+```
+
+Eclosion d'oeuf
+```json
+{
+    "type": "event",
+    "event-type": "egg-hatch",
+    "data": {
+        "team": "Eo",
+        "pos": {
+            "x": 3,
+            "y": 2
+        }
     }
 }
 ```
