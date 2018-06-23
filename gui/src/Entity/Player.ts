@@ -1,6 +1,7 @@
 import AssetsPool from "../AssetsPool";
 import { Object3D, Vector2, Vector3 } from "three";
 import GUIManagger from "../GUIManager";
+import AudioManager from "../AudioManager";
 
 export default class Player {
     private object: Object3D;
@@ -83,5 +84,8 @@ export default class Player {
 
     public remove() {
         GUIManagger.getInstance().getScene().remove(this.object);
+        let audio = AudioManager.getInstance().getSound("chickenDeath");
+        if (audio)
+            audio.play();
     }
 }
