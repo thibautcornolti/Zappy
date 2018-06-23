@@ -60,6 +60,8 @@ FILES		=	args					\
 			commands/cmd_right			\
 			commands/cmd_set			\
 			commands/cmd_take			\
+			events/event_egg_drop			\
+			events/event_egg_hatch			\
 			events/event_incantation_fail		\
 			events/event_incantation_start		\
 			events/event_incantation_success	\
@@ -67,6 +69,7 @@ FILES		=	args					\
 			events/event_item_pickup		\
 			events/event_player_death		\
 			events/event_player_move		\
+			events/event_player_turn		\
 			serializers/display_object		\
 			serializers/errors			\
 			serializers/events			\
