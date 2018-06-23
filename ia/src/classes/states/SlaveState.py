@@ -37,7 +37,7 @@ class SlaveState(AAIState):
         messages = controller.consultMessages()
         for m in messages:
             meet = MsgProtocol.is_meet_ants(m)
-            if meet and meet['recipient'] == ant.uuid and meet['sender'] == ant.queen:
+            if meet and ant.uuid in meet['recipients'] and meet['sender'] == ant.queen:
                 my_print("My dear queen asked me to join her, let's go!")
                 # TODO: JOIN THE QUEEN WITH THE ANGLE OF THE BROADCAST LOL MDR
                 return
