@@ -72,7 +72,7 @@ ssize_t receive_data(client_t *cl)
 
 bool evict_client(control_t *control, client_t *cl)
 {
-	event_player_death(control, cl, "starvation");
+	event_player_death(control, cl, "disconnection");
 	team_remove_client(control, cl);
 	poll_rm(&control->list, cl->fd);
 	llist_clear(cl->pending, true);
