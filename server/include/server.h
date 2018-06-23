@@ -17,7 +17,7 @@
 #define RBUFFER_SIZE 4096
 #define CMD_SIZE 2048
 #define PLAYER_CMD_COUNT 12
-#define GUI_CMD_COUNT 3
+#define GUI_CMD_COUNT 4
 #define ADMIN_CMD_COUNT 8
 #define FOOD_DELAY 126
 
@@ -247,6 +247,7 @@ object_t *serialize_position(vec2_t);
 ** Events
 */
 void event_player_move(control_t *, client_t *);
+void event_player_turn(control_t *, client_t *);
 void event_incantation_start(control_t *, client_t *);
 void event_incantation_fail(control_t *, client_t *);
 void event_incantation_success(control_t *, client_t *);
@@ -326,3 +327,4 @@ void adm_getids(control_t *, client_t *);
 void gui_map_size(control_t *, client_t *);
 void gui_entities(control_t *, client_t *);
 void gui_tile(control_t *, client_t *);
+void gui_player(control_t *, client_t *);

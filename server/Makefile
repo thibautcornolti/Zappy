@@ -38,6 +38,7 @@ FILES		=	args					\
 			admin/adm_lvlup				\
 			gui/gui_entities			\
 			gui/gui_map_size			\
+			gui/gui_player				\
 			gui/gui_tile				\
 			gui/gui_tile_helper			\
 			arguments/parse_clients			\

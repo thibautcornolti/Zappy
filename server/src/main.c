@@ -277,6 +277,7 @@ void consume_eggs(control_t *control)
 	egg_t *egg;
 
 	for (ssize_t i = size; i >= 0; i -= 1) {
+		egg = llist_at(control->eggs, i);
 		egg->delay -= 1;
 		if (egg->delay == 0) {
 			// TODO: Event egg-hatch.
