@@ -1,0 +1,4 @@
+MsgProtocol:
+  script:
+    - python3 ia/src/classes/ia_res/MsgProtocol.py
+

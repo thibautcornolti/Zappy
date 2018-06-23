@@ -5,7 +5,7 @@ import argparse
 import os
 import traceback
 
-from src.classes.com.Client import init_client
+from src.classes.com.Client import init_client, ClientException
 from src.classes.states.ConnectionState import ConnectionState
 from src.classes.ia_res.Ant import init_ant
 from src import config
@@ -51,6 +51,8 @@ def main():
         args = parse_arg()
         try:
             run(args)
+        except ClientException as e:
+            print(e)
         except Exception as e:
             traceback.print_tb(e.__traceback__)
             if process:
