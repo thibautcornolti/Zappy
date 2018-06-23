@@ -40,6 +40,7 @@ FILES		=	args					\
 			gui/gui_map_size			\
 			gui/gui_player				\
 			gui/gui_tile				\
+			gui/gui_tickrate			\
 			gui/gui_tile_helper			\
 			arguments/parse_clients			\
 			arguments/parse_freq			\
@@ -72,6 +73,7 @@ FILES		=	args					\
 			events/event_player_join		\
 			events/event_player_move		\
 			events/event_player_turn		\
+			events/event_tickrate_switchover	\
 			serializers/display_object		\
 			serializers/errors			\
 			serializers/events			\

@@ -18,6 +18,7 @@ void adm_tickrate(control_t *ctrl, client_t *cl)
 	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE | REG_EXTENDED);
 	if (cmd->nparam == 1 && !regexec(&preg, cmd->cmd, 0, NULL, 0)) {
 		ctrl->params.tickrate = strtoul(cmd->param[0], 0, 10);
+		event_tickrate_switchover(ctrl);
 		add_pending(cl, strdup("Command [TICKRATE] successful"));
 	} else
 		add_pending(cl, strdup(usage));
