@@ -2766,7 +2766,7 @@
     "buffers" : [
         {
             "byteLength" : 91275996,
-            "uri" : "test.bin"
+            "uri" : "https://s3.eu-west-3.amazonaws.com/thibaut-public-asset/map_zappy.bin"
         }
     ],
     "images" : [
