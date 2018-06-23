@@ -20,6 +20,7 @@ void move_forward(control_t *control, client_t *client)
 	client->pos.y += y;
 	client->pos.x %= control->params.width;
 	client->pos.y %= control->params.height;
+	event_player_move(control, client);
 }
 
 
@@ -36,6 +37,7 @@ void move_directed(control_t *control, client_t *client, facing_t direction)
 	client->pos.y += y;
 	client->pos.x %= control->params.width;
 	client->pos.y %= control->params.height;
+	event_player_move(control, client);
 }
 
 void cmd_forward(control_t *control, client_t *client)

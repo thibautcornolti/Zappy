@@ -36,11 +36,14 @@ void exec_take(control_t *control, client_t *client)
 		add_pending(client, strdup(KO_MSG));
 		return;
 	}
-	if (client->inventory[chosen] != 0) {
-		map_add(control, client->pos.x, client->pos.y, chosen);
-		client->inventory[chosen] -= 1;
+	if (llist_includes(map_get(control, client->pos.x, client->pos.y),
+		    (void *)(chosen))) {
+		map_remove(control, client->pos.x, client->pos.y, chosen);
+		client->inventory[chosen] += 1;
 		add_pending(client, strdup(OK_MSG));
-	} else
+		event_item_pickup(control, client, chosen);
+	}
+	else
 		add_pending(client, strdup(KO_MSG));
 	free(client->task.data);
 }

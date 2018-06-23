@@ -39,10 +39,10 @@ size_t count_items(control_t *control, vec2_t pos, item_t item)
 		0)));
 }
 
-void upgrade_level(control_t *ctx, client_t *client, size_t idx)
+void upgrade_level(control_t *control, client_t *client, size_t idx)
 {
-	(void)(ctx);
 	(void)(idx);
 	client->level += 1;
+	event_incantation_success(control, client);
 }
 
