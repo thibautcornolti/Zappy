@@ -285,9 +285,10 @@ void consume_eggs(control_t *control)
 		egg = llist_at(control->eggs, i);
 		egg->delay -= 1;
 		if (egg->delay == 0) {
-			egg->team->cl =
-				realloc(egg->team->cl, ++egg->team->size);
 			egg->team->av += 1;
+			egg->team->size += 1;
+			egg->team->cl = realloc(egg->team->cl,
+				egg->team->size * sizeof(client_t *));
 			event_egg_hatch(control, egg);
 			llist_remove(control->eggs, i);
 		}
@@ -313,7 +314,7 @@ int main(int ac, const char **av)
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
 		proceed_clients(&ctrl);
-		// consume_food(&ctrl);
+		consume_food(&ctrl);
 		consume_eggs(&ctrl);
 	}
 	return (0);

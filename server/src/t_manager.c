@@ -36,7 +36,7 @@ bool team_remove_client(control_t *ctrl, client_t *cl)
 				cl->team->cl[i] = 0;
 				ret = true;
 			}
-			else if (ret && i < cl->team->size - 1) {
+			else if (ret && i < (cl->team->size - 1)) {
 				cl->team->cl[i] = cl->team->cl[i + 1];
 				cl->team->cl[i + 1] = 0;
 			}
