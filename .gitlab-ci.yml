@@ -1,11 +1,36 @@
 before_script:
   - make -C server
+
 srv_compile:
   script:
     - make -C server
 
 srv_connect:
   script:
-    - ./server/zappy_server &
-    - timeout 1 nc -C 0 4242 > /tmp/zappy_output &
-    - '[ ! -s /tmp/zappy_output ]'
+    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - nc -C 0 4242 -w 1 < test/server/connect.input > /tmp/zappy_output &
+    - cat /tmp/zappy_output | grep "`cat test/server/connect.output`"
+
+srv_join:
+  script:
+    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - nc -C 0 4242 -w 1 < test/server/join.input > /tmp/zappy_output &
+    - cat /tmp/zappy_output | grep "`cat test/server/join.output`"
+
+srv_unknown:
+  script:
+    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - nc -C 0 4242 -w 1 < test/server/unknown.input > /tmp/zappy_output &
+    - cat /tmp/zappy_output | grep "`cat test/server/unknown.output`"
+
+srv_player_forward:
+  script:
+    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - nc -C 0 4242 -w 1 < test/server/forward.input > /tmp/zappy_output &
+    - cat /tmp/zappy_output | grep "`cat test/server/forward.output`"
+
+srv_player_death:
+  script:
+    - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
+    - nc -C 0 4242 -w 2 < test/server/death.input > /tmp/zappy_output &
+    - cat /tmp/zappy_output | grep "`cat test/server/death.output`"
