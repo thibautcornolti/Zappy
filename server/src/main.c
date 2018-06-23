@@ -51,7 +51,6 @@ bool add_new_client(control_t *ctrl)
 		== 0, false);
 	add_pending(client, strdup(WELCOME_MSG));
 	CHECK(llist_push(ctrl->clients, 1, client), == -1, false);
-	event_player_join(ctrl, client);
 	return (true);
 }
 
@@ -130,6 +129,7 @@ bool append_to_team(control_t *control, client_t *client)
 				LSTR_INT, (int)(control->params.height));
 			add_pending(client, str);
 			client->state = PLAYER;
+			event_player_join(control, client);
 			return (true);
 		}
 	add_pending(client, strdup(KO_MSG));

@@ -26,7 +26,9 @@ static void list_items(control_t *control, list_t **data, vec2_t pos)
 	for (size_t i = 0; i < ITEM_COUNT; i += 1) {
 		count = count_items(control, pos, i);
 		if (count != 0) {
-			ret = serialize_position(pos);
+			ret = lobj_init();
+			lobj_set(
+				ret, "pos", "object", serialize_position(pos));
 			lobj_set(ret, "amount", "number",
 				double_to_void_ptr(count));
 			llist_push(data[i], 1, lobj_elem_init("object", ret));
