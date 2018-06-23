@@ -42,7 +42,6 @@ class Mate(object):
 
     def __init__(self, uuid):
         self._uuid = uuid
-        self.roles = list()
 
     def __next__(self):
         self._uuid = HashManager.hash(self._uuid)
@@ -55,13 +54,3 @@ class Mate(object):
     @uuid.setter
     def uuid(self, uuid):
         raise Exception("Can't set UUID")
-
-    @property
-    def roles(self):
-        return self.roles
-
-    @roles.setter
-    def roles(self, roles):
-        if type(roles) != list():
-            raise Exception("Invalid role type")
-        self.roles = roles

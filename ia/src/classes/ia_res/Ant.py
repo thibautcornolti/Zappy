@@ -8,7 +8,8 @@ from src.classes.ia_res.Vector import Vector
 class Ant(object):
 
     def __init__(self, team):
-        self.queen = True
+        self.is_queen = True
+        self.queen = None
         self.team = team
         self.map_size = Vector()
         self.current_nbr = 0

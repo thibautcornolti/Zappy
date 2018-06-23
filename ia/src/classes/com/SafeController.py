@@ -21,7 +21,11 @@ class SafeController(object):
 
     def clear_state(self, cli):
         del cli
-        statemachine.block_trans_detect = False
+
+        def reset_trans():
+            statemachine.block_trans_detect = False
+
+        statemachine.closure = reset_trans
         self.safe = True
         self.safe_exec(self.save)
 

@@ -3,10 +3,12 @@ import enum
 
 from src.classes.com.Controller import controller
 from src.classes.ia_res.Ant import ant
+from src.classes.ia_res.Mate import Mate
 from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.misc import dup_me, my_print
 from src.classes.com.SafeController import safe_controller
-from src.classes.ia_res.TrackableTransactions import ForkTransaction, LookTransaction, ConnectNbrTransaction
+from src.classes.ia_res.TrackableTransactions import ForkTransaction, LookTransaction, ConnectNbrTransaction, \
+    BroadcastTransaction
 from src.classes.states.StateMachine import AAIState, statemachine
 
 
@@ -17,7 +19,8 @@ class WaitTeamState(AAIState):
         self._status_stack = [
             lambda: LookTransaction(self.fork),  # ForkTransaction(self.fork),
             lambda: ConnectNbrTransaction(self.connect_nbr),
-            lambda: LookTransaction(self.wait_msg),
+            lambda: LookTransaction(self.wait_enrol_msg),
+            lambda: LookTransaction(self.wait_accept_msg),
         ]
 
     def connect_nbr(self, *args):
@@ -30,13 +33,29 @@ class WaitTeamState(AAIState):
         self._status_stack.pop(0)
         self.template()
 
-    def wait_msg(self, *args):
+    def wait_accept_msg(self, *args):
+        messages = controller.consultMessages()
+        for m in messages:
+            allow = MsgProtocol.is_allowed_ants(m.text)
+            if allow and allow['sender'] == ant.queen.uuid:
+                if ant.uuid in allow['allowed_ants']:
+                    my_print("Je suis dans la team !")
+                else:
+                    my_print("Je suis pas dans la team :'(")
+                self._status_stack.pop(0)
+        self.template()
+
+    def wait_enrol_msg(self, *args):
         messages = controller.consultMessages()
         for m in messages:
             enr = MsgProtocol.is_enrolment(m.text)
             if enr and int(enr['level']) == ant.lvl + 1:
-                my_print("DETECT ENROL", statemachine._stack)
+                my_print("Apply for enrolment : ", enr['sender'])
                 self._status_stack.pop(0)
+                msg = MsgProtocol.apply(ant.uuid, enr['sender'])
+                safe_controller.execute(BroadcastTransaction(msg, self.wait_accept_msg))
+                ant.queen = Mate(enr['sender'])
+                return
         self.template()
 
     def template(self):

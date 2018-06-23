@@ -24,7 +24,7 @@ class LevelUpHandlingState(AAIState):
         super().on_push(cli)
         if requirement[self.lvl][0] == 1:
             statemachine.closure = lambda: statemachine.push(LevelUpAlone())
-        elif ant.queen:
+        elif ant.is_queen:
             statemachine.closure = lambda: statemachine.push(QueenState())
         else:
             statemachine.closure = lambda: statemachine.push(WaitTeamState())

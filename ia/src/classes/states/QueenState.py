@@ -16,5 +16,5 @@ class QueenState(AAIState):
 
     def popped_over(self):
         super().popped_over()
-        if not ant.queen:
+        if not ant.is_queen:
             statemachine.closure = lambda: statemachine.replace(WaitTeamState())
