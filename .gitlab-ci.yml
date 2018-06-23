@@ -5,7 +5,7 @@ stages:
 srv_compile:
   stage: build
   script:
-    - make server
+    - make -C server
   artifacts:
     paths:
       - server/zappy_server
