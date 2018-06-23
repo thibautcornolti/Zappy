@@ -187,6 +187,8 @@ bool consume_food(control_t *control)
 
 	for (ssize_t i = size; i >= 0; i -= 1) {
 		client = llist_at(control->clients, i);
+		if (client->state != PLAYER)
+			continue;
 		client->food_delay -= (client->food_delay != 0);
 		if (client->food_delay == 0) {
 			client->inventory[FOOD] -=
