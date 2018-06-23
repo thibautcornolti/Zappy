@@ -5,6 +5,7 @@ from src.classes.com.Controller import controller
 from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.Mate import Mate
 from src.classes.ia_res.MsgProtocol import MsgProtocol
+from src.classes.states.SlaveState import SlaveState
 from src.misc import dup_me, my_print
 from src.classes.com.SafeController import safe_controller
 from src.classes.ia_res.TrackableTransactions import ForkTransaction, LookTransaction, ConnectNbrTransaction, \
@@ -40,7 +41,7 @@ class WaitTeamState(AAIState):
             if allow and allow['sender'] == ant.queen.uuid:
                 if ant.uuid in allow['allowed_ants']:
                     my_print("Je suis dans la team !", statemachine._stack)
-                    #statemachine.closure = lambda: statemachine.replace(SlaveState())
+                    statemachine.closure = lambda: statemachine.replace(SlaveState())
                 else:
                     my_print("Je suis pas dans la team :'(", statemachine._stack)
                     self._status_stack.insert(0, lambda: LookTransaction(self.wait_enrol_msg))
