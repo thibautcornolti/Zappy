@@ -35,12 +35,14 @@ class QueenState(AAIState):
         statemachine.closure = lambda: statemachine.push(SeekTeamState())
 
     def resource_repart(self):
+        my_print("repartition des tâches : ")
         full_list = list(itertools.chain(*[[k.value] * v for k, v in requirement[ant.lvl + 1][1].items()]))
         full_list = split_seq(full_list, len(mates))
         full_dict = [dict(Counter(e)) for e in full_list]
         transaction = PackedTransaction(self.wait_answers)
         for m, items in zip(mates, full_dict):
-            my_print(m.uuid, items)
+            my_print(" - ", m.uuid, " : ", items)
+            m.inventory = items
             msg = MsgProtocol.seek_slave(ant.uuid, m.uuid, items)
             transaction.addTransaction(BroadcastTransaction(msg, lambda ok=None: None))
         safe_controller.execute(transaction)
@@ -49,7 +51,22 @@ class QueenState(AAIState):
         messages = controller.consultMessages()
         for m in messages:
             my_print(m.text)
-        transaction = LookTransaction(self.wait_answers)
+            end = MsgProtocol.is_seek_end(m.text)
+            if end and end['sender'] in (m.uuid for m in mates):
+                my_print(end['sender'], " finished all the tasks")
+                m.inventory = dict()
+
+        end = True
+        for mate in mates:
+            if len(mate.inventory):
+                end = False
+                break
+
+        if end:
+            msg = MsgProtocol.meet_ants(ant.uuid, [m.uuid for m in mates])
+            transaction = BroadcastTransaction(msg, lambda: exit(0))
+        else:
+            transaction = LookTransaction(self.wait_answers)
         safe_controller.execute(transaction)
 
     def popped_over(self):
@@ -57,8 +74,8 @@ class QueenState(AAIState):
         if not ant.is_queen:
             statemachine.closure = lambda: statemachine.replace(WaitTeamState())
         else:
-            self.resource_repart()
             my_print("IM THE QUEEN !!", statemachine._stack)
+            self.resource_repart()
 
 
 if __name__ == "__main__":

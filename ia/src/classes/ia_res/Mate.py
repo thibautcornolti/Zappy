@@ -42,6 +42,7 @@ class Mate(object):
 
     def __init__(self, uuid):
         self._uuid = uuid
+        self.inventory = dict()
 
     def __next__(self):
         self._uuid = HashManager.hash(self._uuid)
