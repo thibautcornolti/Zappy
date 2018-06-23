@@ -1,9 +1,8 @@
-before_script:
-  - make -C server
-
 srv_compile:
   script:
     - make -C server
+  cache:
+    - server/zappy_server
 
 srv_connect:
   script:
