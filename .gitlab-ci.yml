@@ -5,7 +5,7 @@ stages:
 srv_compile:
   stage: build
   script:
-    - make -C server
+    - make server
   artifacts:
     paths:
       - server/zappy_server
@@ -16,7 +16,7 @@ srv_connect:
     - srv_compile
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/connect.input > /tmp/zappy_output
+    - nc 0 4242 -w 5 < test/server/connect.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/connect.output`"
 
 srv_join:
@@ -25,7 +25,7 @@ srv_join:
     - srv_compile
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output
+    - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/join.output`"
 
 srv_unknown:
@@ -34,7 +34,7 @@ srv_unknown:
     - srv_compile
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/unknown.input > /tmp/zappy_output
+    - nc 0 4242 -w 5 < test/server/unknown.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/unknown.output`"
 
 srv_player_forward:
@@ -43,7 +43,7 @@ srv_player_forward:
     - srv_compile
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/forward.input > /tmp/zappy_output
+    - nc 0 4242 -w 5 < test/server/forward.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/forward.output`"
 
 srv_player_death:
@@ -52,7 +52,7 @@ srv_player_death:
     - srv_compile
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/death.input > /tmp/zappy_output
+    - nc 0 4242 -w 5 < test/server/death.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/death.output`"
 
 srv_player_broadcast:
@@ -61,8 +61,8 @@ srv_player_broadcast:
     - srv_compile
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output &
-    - nc -C 0 4242 -w 5 < test/server/broadcast.input
+    - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output &
+    - nc 0 4242 -w 5 < test/server/broadcast.input
     - cat /tmp/zappy_output | grep "`cat test/server/broadcast.output`"
 
 srv_player_connect_nbr:
@@ -71,7 +71,7 @@ srv_player_connect_nbr:
     - srv_compile
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/connect_nbr.input > /tmp/zappy_output
+    - nc 0 4242 -w 5 < test/server/connect_nbr.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/connect_nbr.output`"
 
 srv_player_fork:
@@ -80,8 +80,8 @@ srv_player_fork:
     - srv_compile
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
-    - nc -C 0 4242 -w 5 < test/server/fork.input
+    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 5 < test/server/fork.input
     - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/fork.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/fork.output`"
 
 srv_player_incantation_fail:
@@ -90,8 +90,8 @@ srv_player_incantation_fail:
     - srv_compile
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
-    - nc -C 0 4242 -w 5 < test/server/incantation_fail.input
+    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 5 < test/server/incantation_fail.input
     - cat /tmp/zappy_output | grep "`cat test/server/incantation_fail.output`"
 
 srv_player_inventory:
@@ -100,5 +100,5 @@ srv_player_inventory:
     - srv_compile
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
-    - nc -C 0 4242 -w 5 < test/server/inventory.input > /tmp/zappy_output
+    - nc 0 4242 -w 5 < test/server/inventory.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/inventory.output`"
