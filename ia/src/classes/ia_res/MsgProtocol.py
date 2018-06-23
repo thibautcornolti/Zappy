@@ -13,7 +13,7 @@ class MsgProtocol:
             return gn[1] if isinstance(gn, tuple) else lambda x: x
 
         res = re.findall(regex, msg)
-        if isinstance(res[0], str):
+        if len(res) and isinstance(res[0], str):
             res = [res]
         return {
             get_gn_name(n): get_gn_lambda(n)(res[0][i])

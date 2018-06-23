@@ -25,7 +25,7 @@ class SlaveState(AAIState):
                     Resources(name): int(value)
                     for name, value in seek['items'].items()
                 }
-                ant.request = items
+                ant.request = dict(items)
                 statemachine.closure = lambda: statemachine.push(
                     SeekItemsState(items))
                 return
@@ -35,7 +35,6 @@ class SlaveState(AAIState):
     def meet_callback(self, _):
         for m in controller.msgQueue:
             meet = MsgProtocol.is_meet_ants(m.text)
-            my_print(m.text)
             if meet and ant.uuid in meet['recipients'] and meet['sender'] == ant.queen.uuid:
                 my_print("My dear queen asked me to join her, let's go!")
                 statemachine.closure = lambda ok=None: statemachine.replace(FollowQueenState())

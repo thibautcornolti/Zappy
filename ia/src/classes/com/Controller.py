@@ -160,16 +160,19 @@ class Controller(object):
             COM.cli.write(value)
 
     def forward(self, callback):
+        #my_print("Forward")
         cmd = Cmd.Forward
         self._write(cmd.value)
         self._cmdQueue.append((cmd, callback, defaultError))
 
     def right(self, callback):
+        #my_print("Right")
         cmd = Cmd.Right
         self._write(cmd.value)
         self._cmdQueue.append((cmd, callback, defaultError))
 
     def left(self, callback):
+        #my_print("Left")
         cmd = Cmd.Left
         self._write(cmd.value)
         self._cmdQueue.append((cmd, callback, defaultError))

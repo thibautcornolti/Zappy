@@ -8,6 +8,7 @@ from src.classes.ia_res.Ant import ant, mates
 from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.ia_res.TrackableTransactions import PackedTransaction, BroadcastTransaction, LookTransaction
 from src.classes.states.IncantationState import IncantationState
+from src.classes.states.SeekEmptyTileState import SeekEmptyTileState
 from src.classes.states.SeekTeamState import SeekTeamState
 from src.classes.states.StateMachine import AAIState, statemachine
 from src.classes.states.WaitSlavesState import WaitSlavesState
@@ -37,13 +38,11 @@ class QueenState(AAIState):
         statemachine.closure = lambda: statemachine.push(SeekTeamState())
 
     def resource_repart(self):
-        my_print("repartition des tâches : ")
         full_list = list(itertools.chain(*[[k.value] * v for k, v in requirement[ant.lvl + 1][1].items()]))
         full_list = split_seq(full_list, len(mates))
         full_dict = [dict(Counter(e)) for e in full_list]
         transaction = PackedTransaction(self.wait_answers)
         for m, items in zip(mates, full_dict):
-            my_print(" - ", m.uuid, " : ", items)
             m.inventory = items
             msg = MsgProtocol.seek_slave(ant.uuid, m.uuid, items)
             transaction.addTransaction(BroadcastTransaction(msg, lambda ok=None: None))
@@ -51,12 +50,11 @@ class QueenState(AAIState):
 
     def ping(self):
         incantation = IncantationState()
-        state = WaitSlavesState(requirement[ant.lvl + 1][0], incantation)
+        state = SeekEmptyTileState(WaitSlavesState(requirement[ant.lvl + 1][0], incantation))
         statemachine.closure = lambda ok=None: statemachine.replace(state)
 
     def wait_answers(self, *args):
         for msg in controller.msgQueue:
-            my_print(msg.text)
             end = MsgProtocol.is_seek_end(msg.text)
             if end and end['sender'] in (mate.uuid for mate in mates):
                 my_print(end['sender'], " finished all the tasks")
@@ -80,7 +78,7 @@ class QueenState(AAIState):
         if not ant.is_queen:
             statemachine.closure = lambda: statemachine.replace(WaitTeamState())
         else:
-            my_print("IM THE QUEEN !!", statemachine._stack)
+            my_print("IM THE QUEEN !!")
             self.resource_repart()
 
 

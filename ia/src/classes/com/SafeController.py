@@ -30,13 +30,11 @@ class SafeController(object):
         statemachine.closure = reset_trans
         self.safe = True
         self.safe_exec(self.save, self.floor)
-        my_print("END EMERGENCY MOD")
 
     def estimate_food(self, inventory):
         from src.classes.states.SeekItemsState import SeekItemsState
         ant.inventory = inventory
         if inventory[Resources.Food] < self.save.get_estimated_time() / 126 or inventory[Resources.Food] < self.floor:
-            my_print("EMERGENCY MOD")
             statemachine.block_trans_detect = True
             self.safe = False
             state = SeekItemsState({Resources.Food: int(self.save.get_estimated_time() / 126 + 10)}, True)

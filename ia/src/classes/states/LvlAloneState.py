@@ -3,6 +3,7 @@ import enum
 from src.classes.com.Controller import requirement, controller, defaultError
 from src.classes.ia_res.Ant import ant
 from src.classes.states.IncantationState import IncantationState
+from src.classes.states.SeekEmptyTileState import SeekEmptyTileState
 from src.classes.states.SeekItemsState import SeekItemsState
 from src.classes.states.StateMachine import AAIState, statemachine
 from src.misc import my_print
@@ -33,7 +34,7 @@ class LevelUpAlone(AAIState):
     # region transition events
 
     def endFarming(self):
-        statemachine.push(IncantationState())
+        statemachine.push(SeekEmptyTileState(IncantationState()))
         self.status = Status.Casting
         pass
 

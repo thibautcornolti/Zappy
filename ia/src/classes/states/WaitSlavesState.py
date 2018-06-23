@@ -1,5 +1,6 @@
 # coding = utf-8
-from src.classes.ia_res.Ant import ant
+from src.classes.com.Controller import controller
+from src.classes.ia_res.Ant import ant, mates
 from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.ia_res.TrackableTransactions import LookTransaction, BroadcastTransaction
 from src.classes.com.SafeController import safe_controller
@@ -18,10 +19,18 @@ class WaitSlavesState(AAIState):
         safe_controller.execute(LookTransaction(self.look_for_players))
 
     def look_for_players(self, look):
-        if look[0].count("player") == self.size:
+        for msg in controller.msgQueue:
+            ready = MsgProtocol.is_ready_inc(msg.text)
+            if ready and ready["recipient"] == ant.uuid and ready['sender'] in (mate.uuid for mate in mates):
+                mates.get_mate(ready['sender']).ready = True
+        ok = True
+        for mate in mates:
+            if not mate.ready:
+                ok = False
+                break
+        if look[0].count("player") == self.size and ok:
             statemachine.closure = lambda: statemachine.replace(self.replacement_state)
         else:
-            my_print("I'm here minions")
             msg = MsgProtocol.ping_team(ant.uuid)
             safe_controller.execute(BroadcastTransaction(msg, self.broadcast_team))
 

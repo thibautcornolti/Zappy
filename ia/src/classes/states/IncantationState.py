@@ -42,7 +42,6 @@ class IncantationState(AAIState):
     def castIncantation(self, incantation):
         incant = IncantationTransaction(self.incantationStart, self.incantationStart, self.incantationEnd, self.incantationEnd, self.endIncantationState)
         incantation.addTransaction(LookTransaction(lambda ok: None))
-        # my_print("ON THE TILE : ", json.dumps(ok[0], indent=4))))
         incantation.addTransaction(incant)
         safe_controller.execute(incantation)
 
@@ -94,8 +93,6 @@ class IncantationState(AAIState):
 
     def store_look(self, look):
         ant.look = look
-        if look[0].count("player") > 1:
-                    my_print("INCANTATION FAILED BECAUSE PLAYER !!!")
         enum_values = [res.value for res_name, res in Resources.__members__.items()]
         look_converted = dict()
         for i in look[0]:
@@ -110,7 +107,6 @@ class IncantationState(AAIState):
     def on_push(self, cli):
         super().on_push(cli)
         transactions = PackedTransaction(self.execute_incantation)
-        transactions.addTransaction(ForwardTransaction(lambda ok=None: None))  # FIXME change the workaround
         transactions.addTransaction(LookTransaction(self.store_look))
         transactions.addTransaction(InventoryTransaction(self.store_inventory))
         safe_controller.execute(transactions)
