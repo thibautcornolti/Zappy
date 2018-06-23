@@ -155,6 +155,53 @@ Des événements peuvent surgir à n'importe quel moment et le serveur enverra l
 }
 ```
 
+### Mort de joueur
+
+```json
+{
+    "type": "event",
+    "event-type": "player-death",
+    "data": {
+        "id": 2,
+        "reason": "starvation"
+    }
+}
+```
+
+### Items
+
+Item drop:
+```json
+{
+    "type": "event",
+    "event-type": "item-drop",
+    "data": {
+        "id": 2,
+        "item": "sibur",
+        "pos": {
+            "x": 3,
+            "y": 2
+        }
+    }
+}
+```
+
+Item pickup:
+```json
+{
+    "type": "event",
+    "event-type": "item-pickup",
+    "data": {
+        "id": 2,
+        "item": "sibur",
+        "pos": {
+            "x": 3,
+            "y": 2
+        }
+    }
+}
+```
+
 ### Incantation
 
 Début d'incantation:
