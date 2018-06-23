@@ -44,8 +44,8 @@ void clear_cmd(cmd_t *cmd)
 		for (int i = 0; i < cmd->nparam && cmd->param[i]; ++i)
 			free(cmd->param[i]);
 		free(cmd->param);
-		free(cmd);
 	}
+	free(cmd);
 }
 
 void show_cmd(cmd_t *cmd)
