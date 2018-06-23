@@ -79,6 +79,19 @@ class MsgProtocol:
             msg
         )
 
+    @staticmethod
+    def meet_ants(self_uuid, ants_uuid):
+        return "%s | venez a moi bande de fourmi %s" % (
+            self_uuid, ','.join(ants_uuid))
+
+    @staticmethod
+    def is_meet_ants(msg):
+        return MsgProtocol._is_template(
+            ('sender', ('meet_ants', lambda x: x.split(','))),
+            r"^([0-9a-z]+) \| venez a moi bande de fourmi ([0-9a-z,]*)",
+            msg
+        )
+
 
 if __name__ == '__main__':
     fake_uuid = '48m0s5x2'
@@ -111,4 +124,10 @@ if __name__ == '__main__':
                                              'fake_item_4': 93})
     print(seek_slave_msg)
     print(MsgProtocol.is_seek_slave(seek_slave_msg))
+    print()
+
+    print('MEET ANTS:')
+    meet_ants_msg = MsgProtocol.meet_ants(fake_uuid, [fake_dest] * 4)
+    print(meet_ants_msg)
+    print(MsgProtocol.is_meet_ants(meet_ants_msg))
     print()
