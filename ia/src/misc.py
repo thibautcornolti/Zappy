@@ -6,6 +6,11 @@ import src.config as config
 process = None
 
 
+def my_log(*args, **kwargs):
+    #print("[{}]".format(os.getpid()), *args, **kwargs)
+    pass
+
+
 def my_print(*args, **kwargs):
     print("[{}]".format(os.getpid()), *args, **kwargs)
 

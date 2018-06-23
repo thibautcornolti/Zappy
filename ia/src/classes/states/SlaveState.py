@@ -8,7 +8,7 @@ from src.classes.ia_res.TrackableTransactions import LookTransaction, \
 from src.classes.states.FollowQueenState import FollowQueenState
 from src.classes.states.SeekItemsState import SeekItemsState
 from src.classes.states.StateMachine import AAIState, statemachine
-from src.misc import my_print
+from src.misc import my_log
 
 
 class SlaveState(AAIState):
@@ -20,7 +20,7 @@ class SlaveState(AAIState):
         for m in controller.msgQueue:
             seek = MsgProtocol.is_seek_slave(m.text)
             if seek and seek['recipient'] == ant.uuid and seek['sender'] == ant.queen.uuid:
-                my_print('I have finally a real duty!! :')
+                my_log('I have finally a real duty!! :')
                 items = {
                     Resources(name): int(value)
                     for name, value in seek['items'].items()
@@ -30,31 +30,31 @@ class SlaveState(AAIState):
                     SeekItemsState(items))
                 return
         find = LookTransaction(self.find_callback)
-        safe_controller.execute(find)
+        safe_controller.execute(find, rollback=False)
 
     def meet_callback(self, _):
         for m in controller.msgQueue:
             meet = MsgProtocol.is_meet_ants(m.text)
             if meet and ant.uuid in meet['recipients'] and meet['sender'] == ant.queen.uuid:
-                my_print("My dear queen asked me to join her, let's go!")
+                my_log("My dear queen asked me to join her, let's go!")
                 statemachine.closure = lambda ok=None: statemachine.replace(FollowQueenState())
                 return
         meet = LookTransaction(self.meet_callback)
-        safe_controller.execute(meet)
+        safe_controller.execute(meet, rollback=False)
 
     def on_push(self, cli):
         super().on_push(cli)
         find = LookTransaction(self.find_callback)
-        safe_controller.execute(find)
+        safe_controller.execute(find, rollback=False)
 
     def popped_over(self):
         super().popped_over()
 
         def callback():
             meet = LookTransaction(self.meet_callback)
-            safe_controller.execute(meet)
+            safe_controller.execute(meet, rollback=False)
 
-        my_print('I accomplished my duty ! :)')
+        my_log('I accomplished my duty ! :)')
         msg = MsgProtocol.seek_end(ant.uuid, ant.queen.uuid)
         transaction = BroadcastTransaction(msg, callback)
-        safe_controller.execute(transaction)
+        safe_controller.execute(transaction, rollback=False)

@@ -6,7 +6,7 @@ from src.classes.states.IncantationState import IncantationState
 from src.classes.states.SeekEmptyTileState import SeekEmptyTileState
 from src.classes.states.SeekItemsState import SeekItemsState
 from src.classes.states.StateMachine import AAIState, statemachine
-from src.misc import my_print
+from src.misc import my_log
 
 
 class Status(enum.Enum):

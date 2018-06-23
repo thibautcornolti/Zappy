@@ -13,7 +13,7 @@ from src.classes.states.SeekTeamState import SeekTeamState
 from src.classes.states.StateMachine import AAIState, statemachine
 from src.classes.states.WaitSlavesState import WaitSlavesState
 from src.classes.states.WaitTeamState import WaitTeamState
-from src.misc import my_print
+from src.misc import my_log
 
 
 def split_seq(seq, p):
@@ -46,7 +46,7 @@ class QueenState(AAIState):
             m.inventory = items
             msg = MsgProtocol.seek_slave(ant.uuid, m.uuid, items)
             transaction.addTransaction(BroadcastTransaction(msg, lambda ok=None: None))
-        safe_controller.execute(transaction)
+        safe_controller.execute(transaction, rollback=False)
 
     def ping(self):
         incantation = IncantationState()
@@ -57,7 +57,7 @@ class QueenState(AAIState):
         for msg in controller.msgQueue:
             end = MsgProtocol.is_seek_end(msg.text)
             if end and end['sender'] in (mate.uuid for mate in mates):
-                my_print(end['sender'], " finished all the tasks")
+                my_log(end['sender'], " finished all the tasks")
                 mates.get_mate(end['sender']).inventory.clear()
         end = True
         for mate in mates:
@@ -66,26 +66,26 @@ class QueenState(AAIState):
                 break
 
         if end:
-            my_print("All resources was found by slaves! Meeting required")
+            my_log("All resources was found by slaves! Meeting required")
             msg = MsgProtocol.meet_ants(ant.uuid, [m.uuid for m in mates])
             transaction = BroadcastTransaction(msg, self.ping)
         else:
             transaction = LookTransaction(self.wait_answers)
-        safe_controller.execute(transaction)
+        safe_controller.execute(transaction, rollback=False)
 
     def popped_over(self):
         super().popped_over()
         if not ant.is_queen:
             statemachine.closure = lambda: statemachine.replace(WaitTeamState())
         else:
-            my_print("IM THE QUEEN !!")
+            my_log("IM THE QUEEN !!")
             self.resource_repart()
 
 
 if __name__ == "__main__":
-    my_print(split_seq(range(10), 3))
-    my_print(split_seq(range(11), 3))
-    my_print(split_seq(range(1), 2))
-    my_print(split_seq(range(10), 5))
-    my_print(split_seq(range(10), 2))
+    my_log(split_seq(range(10), 3))
+    my_log(split_seq(range(11), 3))
+    my_log(split_seq(range(1), 2))
+    my_log(split_seq(range(10), 5))
+    my_log(split_seq(range(10), 2))
 

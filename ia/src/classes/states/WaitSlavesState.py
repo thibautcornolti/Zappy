@@ -5,7 +5,7 @@ from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.ia_res.TrackableTransactions import LookTransaction, BroadcastTransaction
 from src.classes.com.SafeController import safe_controller
 from src.classes.states.StateMachine import AAIState, statemachine
-from src.misc import my_print
+from src.misc import my_log
 
 
 class WaitSlavesState(AAIState):

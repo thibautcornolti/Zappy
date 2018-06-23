@@ -6,7 +6,7 @@ from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.Mate import Mate
 from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.states.SlaveState import SlaveState
-from src.misc import dup_me, my_print
+from src.misc import dup_me, my_log
 from src.classes.com.SafeController import safe_controller
 from src.classes.ia_res.TrackableTransactions import ForkTransaction, LookTransaction, ConnectNbrTransaction, \
     BroadcastTransaction
@@ -54,16 +54,16 @@ class WaitTeamState(AAIState):
         for m in controller.msgQueue:
             enr = MsgProtocol.is_enrolment(m.text)
             if enr and int(enr['level']) == ant.lvl + 1:
-                my_print("Apply for enrolment : ", enr['sender'])
+                my_log("Apply for enrolment : ", enr['sender'])
                 self._status_stack.pop(0)
                 msg = MsgProtocol.apply(ant.uuid, enr['sender'])
-                safe_controller.execute(BroadcastTransaction(msg, self.wait_accept_msg))
+                safe_controller.execute(BroadcastTransaction(msg, self.wait_accept_msg), rollback=False)
                 ant.queen = Mate(enr['sender'])
                 return
         self.template()
 
     def template(self):
-            safe_controller.execute(self._status_stack[0]())
+            safe_controller.execute(self._status_stack[0](), rollback=False)
 
     def on_push(self, cli):
         super().on_push(cli)

@@ -5,7 +5,7 @@ from src.classes.ia_res.Path import PathManipulator, Path
 from src.classes.ia_res.TrackableTransactions import EmptyPathTransaction, InventoryTransaction, LookTransaction
 from src.classes.ia_res.Vector import Vector
 from src.classes.states.StateMachine import AAIState, statemachine
-from src.misc import my_print
+from src.misc import my_log
 
 
 class SeekEmptyTileState(AAIState):
@@ -22,6 +22,7 @@ class SeekEmptyTileState(AAIState):
         found = False
         for i in range(len(look)):
             if 'player' not in look[i]:
+                my_log("Seek empty tile : ", look[i], " ", i)
                 found = True
                 event = InventoryTransaction(lambda ok=None: None)
                 path.addConePoint(i, event)
@@ -31,7 +32,7 @@ class SeekEmptyTileState(AAIState):
     def goNextPlace(self):
         path = Path()
         if self.progress == self.surface:
-            left_dist = ant.lvl - 1
+            left_dist = ant.lvl
             path.addPoint(Vector(-left_dist, 0), EmptyPathTransaction())
             path.addPoint(Vector(-left_dist, 1), LookTransaction(lambda value: None))
             self.progress = 0
@@ -39,6 +40,7 @@ class SeekEmptyTileState(AAIState):
             path.addPoint(Vector(0, 1), LookTransaction(lambda value: None))
             self.progress += 1
         path, look = path.generateOrder(False)
+        my_log(path)
         self.pathHandler = PathManipulator(path, self.updateAntLook)
         safe_controller.execute(self.pathHandler)
 
@@ -46,8 +48,10 @@ class SeekEmptyTileState(AAIState):
         ant.look = look
         found, path = self.findEmptyTile(look)
         if found:
+            save = path.generateOrder(False)[0]
+            my_log(save)
             self.pathHandler = PathManipulator(
-                path.generateOrder(True)[0],
+                save,
                 lambda ok=None: statemachine.replace(self.replacement_state)
             )
             safe_controller.execute(self.pathHandler)

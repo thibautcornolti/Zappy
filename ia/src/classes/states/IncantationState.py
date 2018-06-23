@@ -8,7 +8,7 @@ from collections import Counter
 from src.classes.ia_res.TrackableTransactions import TakeTransaction, SetTransaction, InventoryTransaction, \
     LookTransaction, PackedTransaction, IncantationTransaction, ForwardTransaction
 from src.classes.states.StateMachine import AAIState, statemachine
-from src.misc import my_print
+from src.misc import my_log, my_print
 
 
 # look + inventory chained => take set combo
@@ -38,14 +38,14 @@ class IncantationState(AAIState):
             my_print("Failed to LvL up !")
 
     def endIncantationState(self, *args):
-        my_print("INCANT ", statemachine._stack)
+        my_log("INCANT ", statemachine._stack)
         statemachine.closure = lambda: statemachine.pop()
 
     # endregion incantation callbacks
 
     def castIncantation(self, incantation):
         incant = IncantationTransaction(self.incantationStart, self.incantationStart, self.incantationEnd, self.incantationEnd, lambda ok=None: None)
-        incantation.addTransaction(LookTransaction(lambda ok: None))
+        incantation.addTransaction(LookTransaction(lambda ok: my_log(ok[0])))
         incantation.addTransaction(incant)
         safe_controller.execute(incantation)
 

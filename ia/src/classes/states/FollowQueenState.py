@@ -8,7 +8,7 @@ from src.classes.ia_res.TrackableTransactions import LookTransaction, PackedTran
     EmptyPathTransaction, BroadcastTransaction, IncantationTransaction
 from src.classes.ia_res.Vector import Vector
 from src.classes.states.StateMachine import AAIState, statemachine
-from src.misc import my_print
+from src.misc import my_log, my_print
 
 
 class BroadcastState(object):
@@ -38,7 +38,7 @@ class FollowQueenState(AAIState):
         else:
             my_print("Failed to LvL up !")
         statemachine.closure = lambda: statemachine.pop()
-        my_print(statemachine._stack)
+        my_log(statemachine._stack)
 
     def set_requested_items(self):
         transaction = PackedTransaction(self.wait_others)
@@ -68,7 +68,7 @@ class FollowQueenState(AAIState):
             self.last = save.dir
             save = None
         if save and save.dir.x == 0 and save.dir.y == 0:
-            #my_print("J'vais poser les res les gars !")
+            #my_log("J'vais poser les res les gars !")
             self.set_requested_items()
         elif save:
             self.follow_dir(save.dir)

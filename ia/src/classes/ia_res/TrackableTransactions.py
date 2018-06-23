@@ -3,7 +3,7 @@
 from src.classes.com.Controller import controller, CmdCost
 from src.classes.com.Transaction import TrackableTransaction
 from src.classes.ia_res.Vector import Vector
-from src.misc import my_print
+from src.misc import my_log
 
 
 class EmptyPathTransaction(TrackableTransaction):

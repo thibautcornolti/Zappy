@@ -6,7 +6,7 @@ import re
 import src.classes.com.Client as COM
 from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.Vector import Vector
-from src.misc import my_print
+from src.misc import my_log, my_print
 
 
 class Cmd(enum.Enum):
@@ -26,18 +26,18 @@ class Cmd(enum.Enum):
 
 
 class CmdCost(enum.Enum):
-    Forward = int(7)
-    Right = int(7)
-    Left = int(7)
-    Look = int(7)
-    Inventory = int(1)
-    Broadcast = int(7)
-    Connect_nbr = int(0)
-    Fork = int(300)#int(42)
-    Eject = int(7)
-    Take = int(7)
-    Set = int(7)
-    Incantation = int(300)
+    Forward = int(10)
+    Right = int(10)
+    Left = int(10)
+    Look = int(10)
+    Inventory = int(2)
+    Broadcast = int(10)
+    Connect_nbr = int(1)
+    Fork = int(45)
+    Eject = int(10)
+    Take = int(10)
+    Set = int(10)
+    Incantation = int(310)
 
 
 class Resources(enum.Enum):
@@ -160,19 +160,19 @@ class Controller(object):
             COM.cli.write(value)
 
     def forward(self, callback):
-        #my_print("Forward")
+        #my_log("Forward")
         cmd = Cmd.Forward
         self._write(cmd.value)
         self._cmdQueue.append((cmd, callback, defaultError))
 
     def right(self, callback):
-        #my_print("Right")
+        #my_log("Right")
         cmd = Cmd.Right
         self._write(cmd.value)
         self._cmdQueue.append((cmd, callback, defaultError))
 
     def left(self, callback):
-        #my_print("Left")
+        #my_log("Left")
         cmd = Cmd.Left
         self._write(cmd.value)
         self._cmdQueue.append((cmd, callback, defaultError))
@@ -197,6 +197,7 @@ class Controller(object):
 
     def broadcast(self, msg, callback):
         cmd = Cmd.Broadcast
+        #my_log("msg : ", msg)
         self._write(' '.join((cmd.value, msg)))
         self._cmdQueue.append((cmd, callback, defaultError))
 
@@ -307,13 +308,18 @@ class Controller(object):
             server_answer[i] = server_answer[i].split(' ')
             while '' in server_answer[i]:
                 server_answer[i].remove('')
-        items = {Resources(v[0]): int(v[1]) for v in server_answer}
+        try:
+            items = {Resources(v[0]): int(v[1]) for v in server_answer}
+        except Exception as e:
+            my_print(server_answer)
+            my_print(e)
         cmd_item[1](items)
 
     def applyTop(self, server_answer):
         try:
             match = re.findall("^message\s+(\d),\s+(.*)$", server_answer)
             if match:
+                #my_log("msg : ", server_answer)
                 self.msgQueue.append(Message(int(match[0][0]), match[0][1]))
             else:
                 value = self._cmdQueue.pop(0)

@@ -9,7 +9,7 @@ from src.classes.com.Client import init_client, ClientException
 from src.classes.states.ConnectionState import ConnectionState
 from src.classes.ia_res.Ant import init_ant
 from src import config
-from src.misc import process, my_print
+from src.misc import process, my_log, my_print
 
 
 def parse_arg():
@@ -54,10 +54,10 @@ def main():
         except ClientException as e:
             print(e)
         except Exception as e:
-            #traceback.print_tb(e.__traceback__)
-            #if process:
-                #process.wait()
-            my_print(e)
+            my_print("")
+            traceback.print_tb(e.__traceback__)
+            if process:
+                process.wait()
             exit(0)
     except Exception:
         if process:

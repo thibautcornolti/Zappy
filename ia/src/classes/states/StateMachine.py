@@ -4,7 +4,7 @@ import select
 import src.classes.com.Client as COM
 from src.classes.com.Controller import controller, Resources
 from src.classes.ia_res.Ant import ant
-from src.misc import my_print
+from src.misc import my_log
 
 
 class StateException(Exception):
@@ -69,8 +69,8 @@ class StateMachine(object):
     def closure(self, value):
         self._closure = value
 
-    def push(self, state: object) -> object:
-        #my_print("PUSH ", state)
+    def push(self, state):
+        #my_log("PUSH ", state)
         if not issubclass(type(state), AState) and not issubclass(type(state), AAIState):
             raise Exception("State is not a valid variable type")
         if self._stack and not self.block_trans_detect:
@@ -79,7 +79,7 @@ class StateMachine(object):
         self._stack[0].on_push(COM.cli)
 
     def pop(self):
-        #my_print("POP ", self._stack[0])
+        #my_log("POP ", self._stack[0])
         self._stack[0].on_pop(COM.cli)
         self._stack.pop(0)
         if self._stack and not self.block_trans_detect:
@@ -90,7 +90,7 @@ class StateMachine(object):
             raise Exception("State is not a valid variable type")
         save = self.block_trans_detect
         self.block_trans_detect = True
-        #my_print("REPLACE STATE ", self._stack[0], " -> ", state)
+        #my_log("REPLACE STATE ", self._stack[0], " -> ", state)
         self.pop()
         self.push(state)
         self.block_trans_detect = save

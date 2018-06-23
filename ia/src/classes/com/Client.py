@@ -85,14 +85,14 @@ class Client:
         if len(self._writeQueue) == 0:
             raise ClientException("Nothing to write in the buffer")
         msg = self._writeQueue.pop(0)
-        #my_print"-> write : ", msg)
+        #my_log"-> write : ", msg)
         os.write(self._sock.fileno(), str(str(msg) + '\n').encode())
         if len(self._writeQueue) == 0:
             self._poll.modify(self._sock.fileno(), PollStatus.DIN.value)
 
     def _read(self):
         msg = os.read(self._sock.fileno(), self._readSize)
-        #my_print"-> read : ", msg)
+        #my_log"-> read : ", msg)
         if len(msg) == 0:
             self._disconnection()
         self._buffer += msg.decode()
