@@ -62,7 +62,7 @@ srv_player_incantation_fail:
     - nc -C 0 4242 -w 5 < test/server/incantation_fail.input
     - cat /tmp/zappy_output | grep "`cat test/server/incantation_fail.output`"
 
-srv_player_connect_nbr:
+srv_player_inventory:
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc -C 0 4242 -w 5 < test/server/inventory.input > /tmp/zappy_output
