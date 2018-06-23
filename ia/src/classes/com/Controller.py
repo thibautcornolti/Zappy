@@ -107,6 +107,25 @@ class Message(object):
         return repr(self.dir.__repr__() + " : " + self.text)
 
 
+class MessageBox(object):
+    def __init__(self):
+        self._messages = []
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if len(self._messages):
+            return self._messages.pop(0)
+        raise StopIteration
+
+    def __getitem__(self, item):
+        return self.__messages[item]
+
+    def append(self, msg):
+        self._messages.append(msg)
+
+
 class Controller(object):
     """
     All callbacks take no arguments until it's specify
@@ -132,7 +151,7 @@ class Controller(object):
         self._takeQueue = []
         self._setQueue = []
         self._writeQueue = []
-        self._msgQueue = []
+        self.msgQueue = MessageBox()
 
     def _write(self, value):
         if len(self._cmdQueue) >= 10:
@@ -291,7 +310,7 @@ class Controller(object):
         try:
             match = re.findall("^message\s+(\d),\s+(.*)$", server_answer)
             if match:
-                self._msgQueue.append(Message(int(match[0][0]), match[0][1]))
+                self.msgQueue.append(Message(int(match[0][0]), match[0][1]))
             else:
                 value = self._cmdQueue.pop(0)
                 self._answersCallers[value[0]](server_answer, value)
@@ -312,12 +331,6 @@ class Controller(object):
         for elem in args:
             if elem == "dead":
                 raise GameException("You died")
-
-    def consultMessages(self):
-#        my_print("MESSAGE : ", self._msgQueue)
-        res = self._msgQueue
-        self._msgQueue = list()
-        return res
 
 
 controller = Controller()

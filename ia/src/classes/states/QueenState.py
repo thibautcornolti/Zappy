@@ -48,8 +48,7 @@ class QueenState(AAIState):
         safe_controller.execute(transaction)
 
     def wait_answers(self, *args):
-        messages = controller.consultMessages()
-        for m in messages:
+        for m in controller.msgQueue:
             my_print(m.text)
             end = MsgProtocol.is_seek_end(m.text)
             if end and end['sender'] in (m.uuid for m in mates):

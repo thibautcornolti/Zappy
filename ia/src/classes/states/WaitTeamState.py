@@ -35,8 +35,7 @@ class WaitTeamState(AAIState):
         self.template()
 
     def wait_accept_msg(self, *args):
-        messages = controller.consultMessages()
-        for m in messages:
+        for m in controller.msgQueue:
             allow = MsgProtocol.is_allowed_ants(m.text)
             if allow and allow['sender'] == ant.queen.uuid:
                 if ant.uuid in allow['allowed_ants']:
@@ -49,8 +48,7 @@ class WaitTeamState(AAIState):
         self.template()
 
     def wait_enrol_msg(self, *args):
-        messages = controller.consultMessages()
-        for m in messages:
+        for m in controller.msgQueue:
             enr = MsgProtocol.is_enrolment(m.text)
             if enr and int(enr['level']) == ant.lvl + 1:
                 my_print("Apply for enrolment : ", enr['sender'])

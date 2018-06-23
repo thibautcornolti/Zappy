@@ -23,8 +23,7 @@ class SeekTeamState(AAIState):
 
     def popped_over(self):
         super().popped_over()
-        messages = controller.consultMessages()
-        for m in messages:
+        for m in controller.msgQueue:
             enr = MsgProtocol.is_apply(m.text)
             if enr and enr['recipient'] == ant.uuid:
                 mates.add_mate(enr['sender'])
