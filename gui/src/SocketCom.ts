@@ -61,7 +61,7 @@ export default class SocketCom {
     }
 
     public sendJSON(json: ITileCommand | IGeneralCommandCom) {
-        let str = JSON.stringify(json) + '\r\n';
+        let str = JSON.stringify(json) + '\n';
         this.sock.emit('my_data', str);
     }
 }
