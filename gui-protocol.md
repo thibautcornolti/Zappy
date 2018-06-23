@@ -46,6 +46,24 @@ Réponse:
 }
 ```
 
+### Tickrate du serveur
+
+Requête:
+```json
+{
+    "command": "tickrate"
+}
+```
+
+Réponse:
+```json
+{
+    "type": "response",
+    "response-type": "map-size",
+    "tickrate": 10
+}
+```
+
 ### Liste d'entités
 
 Requête:
@@ -327,6 +345,18 @@ Eclosion d'oeuf
             "x": 3,
             "y": 2
         }
+    }
+}
+```
+
+### Tickrate
+
+```json
+{
+    "type": "event",
+    "event-type": "tickrate-switchhover",
+    "data": {
+        "tickrate": 10
     }
 }
 ```
