@@ -54,10 +54,10 @@ class SeekItemsState(AAIState):
             self.goNextPlace()
 
     def take_ko(self, value):
-        import json
-        my_print("TAKE ITEM KO : ", value)
-        my_print(json.dumps(ant.look, indent=4))
-        exit(0)
+        #import json
+        #my_print("TAKE ITEM KO : ", value)
+        #my_print(json.dumps(ant.look, indent=4))
+        #exit(0)
         del value
 
     def take_ok(self, value):

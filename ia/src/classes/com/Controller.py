@@ -33,7 +33,7 @@ class CmdCost(enum.Enum):
     Inventory = int(1)
     Broadcast = int(7)
     Connect_nbr = int(0)
-    Fork = int(42)
+    Fork = int(300)#int(42)
     Eject = int(7)
     Take = int(7)
     Set = int(7)
@@ -243,7 +243,7 @@ class Controller(object):
         self._cmdQueue.append((cmd, ok, ko))
         self._setQueue.append(object.value)
 
-    def incantation(self, ok_start, ko_start, ok_end, ko_end):
+    def incantation(self, ok_start, ko_start, ok_end, ko_end, write=True):
         """
         :param ok_start: () -> void
         :param ko_start: () -> void
@@ -252,7 +252,8 @@ class Controller(object):
         :return:
         """
         cmd = Cmd.IncantationStart
-        self._write(cmd.value)
+        if write:
+            self._write(cmd.value)
         self._cmdQueue.append((cmd, ok_start, ko_start))
         self._cmdQueue.append((Cmd.IncantationStop, ok_end, ko_end))
 

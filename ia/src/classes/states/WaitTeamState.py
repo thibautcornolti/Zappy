@@ -17,9 +17,13 @@ class WaitTeamState(AAIState):
 
     def __init__(self):
         super().__init__("Wait")
-        self._status_stack = [
-            lambda:  ForkTransaction(self.fork),
-            lambda: ConnectNbrTransaction(self.connect_nbr),
+        self._status_stack = list()
+        if not ant.forked:
+            self._status_stack = [
+                lambda: ForkTransaction(self.fork),
+                lambda: ConnectNbrTransaction(self.connect_nbr)
+            ]
+        self._status_stack += [
             lambda: LookTransaction(self.wait_enrol_msg),
             lambda: LookTransaction(self.wait_accept_msg),
         ]
@@ -31,6 +35,7 @@ class WaitTeamState(AAIState):
         self.template()
 
     def fork(self, *args):
+        ant.forked = True
         self._status_stack.pop(0)
         self.template()
 

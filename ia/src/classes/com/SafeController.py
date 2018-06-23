@@ -27,6 +27,7 @@ class SafeController(object):
         def reset_trans():
             statemachine.block_trans_detect = False
 
+        #my_print("\tEND EMERGENCY MOD")
         statemachine.closure = reset_trans
         self.safe = True
         self.safe_exec(self.save, self.floor)
@@ -35,9 +36,10 @@ class SafeController(object):
         from src.classes.states.SeekItemsState import SeekItemsState
         ant.inventory = inventory
         if inventory[Resources.Food] < self.save.get_estimated_time() / 126 or inventory[Resources.Food] < self.floor:
+            #my_print("\tEMERGENCY MOD")
             statemachine.block_trans_detect = True
             self.safe = False
-            state = SeekItemsState({Resources.Food: int(self.save.get_estimated_time() / 126 + 10)}, True)
+            state = SeekItemsState({Resources.Food: int(self.save.get_estimated_time() / 126 + 4)}, True)
             state.on_pop = self.clear_state
             statemachine.push(state)
         else:
@@ -50,7 +52,7 @@ class SafeController(object):
         self.floor = floor
         InventoryTransaction(self.estimate_food).execute()
 
-    def execute(self, transaction, floor=7):
+    def execute(self, transaction, floor=9):
         if self.save and self.safe:
             raise Exception("Invalid Concurrent transaction : {} vs {}".format(self.save.__repr__(), transaction.__repr__()))
         if self.safe:

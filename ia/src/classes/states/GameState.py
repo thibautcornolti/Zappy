@@ -1,5 +1,7 @@
 # coding = utf-8
-from src.classes.ia_res.Ant import ant
+from src.classes.com.SafeController import safe_controller
+from src.classes.ia_res.Ant import ant, mates
+from src.classes.ia_res.TrackableTransactions import ForkTransaction
 from src.classes.states.LevelUpHandlingState import LevelUpHandlingState
 from src.classes.states.StateMachine import AState, statemachine
 from src.misc import my_print
@@ -23,5 +25,7 @@ class GameState(AState):
 
     def popped_over(self):
         super().popped_over()
+        mates.clear()
+        my_print("RESETTING ...")
         self.check()
 

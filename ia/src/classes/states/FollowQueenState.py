@@ -5,9 +5,9 @@ from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.ia_res.Path import Path, PathManipulator
 from src.classes.ia_res.TrackableTransactions import LookTransaction, PackedTransaction, SetTransaction, \
-    EmptyPathTransaction, BroadcastTransaction
+    EmptyPathTransaction, BroadcastTransaction, IncantationTransaction
 from src.classes.ia_res.Vector import Vector
-from src.classes.states.StateMachine import AAIState
+from src.classes.states.StateMachine import AAIState, statemachine
 from src.misc import my_print
 
 
@@ -31,18 +31,32 @@ class FollowQueenState(AAIState):
         path.addPoint(real_dir, EmptyPathTransaction())
         safe_controller.execute(PathManipulator(path.generateOrder()[0], self.listen_the_queen))
 
-    def wait_others(self):
-        my_print("On the queen position, waiting for queen signal")
+    def wait_others(self, level=None):
+        if level:
+            ant.lvl = level
+            my_print("LvL up : ", level)
+        else:
+            my_print("Failed to LvL up !")
+        statemachine.closure = lambda: statemachine.pop()
+        my_print(statemachine._stack)
 
     def set_requested_items(self):
         transaction = PackedTransaction(self.wait_others)
         for k, v in ant.request.items():
-            #my_print(k, " : ", v)
             sub_transaction = SetTransaction(k, v, lambda ok=None: None, lambda ok=None: None, lambda ok=None: None)
             transaction.addTransaction(sub_transaction)
         msg = MsgProtocol.ready_inc(ant.uuid, ant.queen.uuid)
         transaction.addTransaction(BroadcastTransaction(msg, lambda ok=None: None))
-        safe_controller.execute(transaction)
+        incant = IncantationTransaction(
+            lambda ok=None: None,
+            lambda ok=None: None,
+            lambda ok=None: None,
+            lambda ok=None: None,
+            lambda ok=None: None,
+            write=False
+        )
+        transaction.addTransaction(incant)
+        safe_controller.execute(transaction, floor=0)
 
     def listen_the_queen(self, _=None):
         save = None

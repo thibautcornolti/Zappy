@@ -66,9 +66,9 @@ class QueenState(AAIState):
                 break
 
         if end:
+            my_print("All resources was found by slaves! Meeting required")
             msg = MsgProtocol.meet_ants(ant.uuid, [m.uuid for m in mates])
             transaction = BroadcastTransaction(msg, self.ping)
-            my_print("All resources was found by slaves! Meeting required")
         else:
             transaction = LookTransaction(self.wait_answers)
         safe_controller.execute(transaction)

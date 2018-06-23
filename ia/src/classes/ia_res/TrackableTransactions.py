@@ -183,7 +183,7 @@ class PackedTransaction(TrackableTransaction):
 class IncantationTransaction(TrackableTransaction):
 
     def execute(self):
-        controller.incantation(self.sok, self.sko, self.end_ok, self.end_ko)
+        controller.incantation(self.sok, self.sko, self.end_ok, self.end_ko, self.write)
 
     def end_ko(self, *args):
         self.eko(*args)
@@ -193,12 +193,13 @@ class IncantationTransaction(TrackableTransaction):
         self.eok(*args)
         self.end(*args)
 
-    def __init__(self, sok, sko, eok, eko, end,  pos=Vector()):
+    def __init__(self, sok, sko, eok, eko, end,  pos=Vector(), write=True):
         super().__init__(CmdCost.Incantation.value, end, pos)
         self.sok = sok
         self.sko = sko
         self.eok = eok
         self.eko = eko
+        self.write = write
 
     def __repr__(self):
         return repr(super().__repr__() + " -> Incantation")

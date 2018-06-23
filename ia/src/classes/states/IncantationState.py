@@ -30,17 +30,21 @@ class IncantationState(AAIState):
     def incantationStart(self):
         pass
 
-    def incantationEnd(self, value=None):
-        if value:
-            ant.lvl = value
+    def incantationEnd(self, level=None):
+        if level:
+            ant.lvl = level
+            my_print("LvL up : ", level)
+        else:
+            my_print("Failed to LvL up !")
 
     def endIncantationState(self, *args):
+        my_print("INCANT ", statemachine._stack)
         statemachine.closure = lambda: statemachine.pop()
 
     # endregion incantation callbacks
 
     def castIncantation(self, incantation):
-        incant = IncantationTransaction(self.incantationStart, self.incantationStart, self.incantationEnd, self.incantationEnd, self.endIncantationState)
+        incant = IncantationTransaction(self.incantationStart, self.incantationStart, self.incantationEnd, self.incantationEnd, lambda ok=None: None)
         incantation.addTransaction(LookTransaction(lambda ok: None))
         incantation.addTransaction(incant)
         safe_controller.execute(incantation)

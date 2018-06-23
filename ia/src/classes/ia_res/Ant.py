@@ -14,6 +14,7 @@ class Ant(object):
         self.map_size = Vector()
         self.current_nbr = 0
         self.lvl = 1
+        self.forked = False
         self.look = []
         self.inventory = {}
         self.request = {}

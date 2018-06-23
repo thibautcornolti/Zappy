@@ -39,10 +39,6 @@ class LevelUpAlone(AAIState):
         pass
 
     def endCasting(self):
-        if ant.lvl == self.aimed_lvl:
-            my_print("LvL up : ", self.aimed_lvl)
-        else:
-            my_print("Failed to LvL up !")
         statemachine.closure = lambda: statemachine.pop()
 
     # endregion
