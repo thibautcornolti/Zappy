@@ -21,6 +21,7 @@ void cmd_incantation(control_t *control, client_t *client)
 	(void)(control);
 	client->task.time = 300;
 	client->task.type = INCANTATION;
+	event_incantation_start(control, client);
 }
 
 static bool *same_level(
@@ -37,8 +38,8 @@ static void incantation_success(
 	for (size_t i = 1; i < ITEM_COUNT; ++i)
 		for (size_t c = 0; c < required[client->level][i]; ++c)
 			map_remove(control, client->pos.x, client->pos.y, i);
-	llist_for_each(
-		count, (void (*)(void *, void *, size_t))(upgrade_level), 0);
+	llist_for_each(count,
+		(void (*)(void *, void *, size_t))(upgrade_level), control);
 	llist_destroy(count);
 }
 
@@ -75,6 +76,7 @@ void exec_incantation(control_t *control, client_t *client)
 			required[client->level][i]) {
 			add_pending(client, strdup(KO_MSG));
 			llist_destroy(count);
+			event_incantation_fail(control, client);
 			return;
 		}
 	incantation_success(control, client, count);

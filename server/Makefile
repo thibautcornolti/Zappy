@@ -19,54 +19,62 @@ NAME		=	zappy_server
 SRCDIR		=	src
 OBJDIR		=	build
 
-FILES		=	args				\
-			assigner			\
-			main				\
-			parser				\
-			t_manager			\
-			t_tools				\
-			map				\
-			exec				\
-			resource_gen			\
-			admin/adm_getids		\
-			admin/adm_teams			\
-			admin/adm_spawn			\
-			admin/adm_tickrate		\
-			admin/adm_move			\
-			admin/adm_cast			\
-			admin/adm_killall		\
-			admin/adm_lvlup			\
-			gui/gui_entities		\
-			gui/gui_map_size		\
-			gui/gui_tile			\
-			gui/gui_tile_helper		\
-			arguments/parse_clients		\
-			arguments/parse_freq		\
-			arguments/parse_height		\
-			arguments/parse_help		\
-			arguments/parse_names		\
-			arguments/parse_port		\
-			arguments/parse_width		\
-			commands/cmd_broadcast		\
-			commands/cmd_connect_nbr	\
-			commands/cmd_eject		\
-			commands/cmd_fork		\
-			commands/cmd_forward		\
-			commands/cmd_incantation	\
-			commands/cmd_incantation_helper	\
-			commands/cmd_inventory		\
-			commands/cmd_left		\
-			commands/cmd_look		\
-			commands/cmd_right		\
-			commands/cmd_set		\
-			commands/cmd_take		\
-			serializers/display_object	\
-			serializers/errors		\
-			serializers/finalize_json	\
-			serializers/free_list		\
-			serializers/free_object		\
-			serializers/free_json		\
-			serializers/serialize_player	\
+FILES		=	args					\
+			assigner				\
+			main					\
+			parser					\
+			t_manager				\
+			t_tools					\
+			map					\
+			exec					\
+			resource_gen				\
+			admin/adm_getids			\
+			admin/adm_teams				\
+			admin/adm_spawn				\
+			admin/adm_tickrate			\
+			admin/adm_move				\
+			admin/adm_cast				\
+			admin/adm_killall			\
+			admin/adm_lvlup				\
+			gui/gui_entities			\
+			gui/gui_map_size			\
+			gui/gui_tile				\
+			gui/gui_tile_helper			\
+			arguments/parse_clients			\
+			arguments/parse_freq			\
+			arguments/parse_height			\
+			arguments/parse_help			\
+			arguments/parse_names			\
+			arguments/parse_port			\
+			arguments/parse_width			\
+			commands/cmd_broadcast			\
+			commands/cmd_connect_nbr		\
+			commands/cmd_eject			\
+			commands/cmd_fork			\
+			commands/cmd_forward			\
+			commands/cmd_incantation		\
+			commands/cmd_incantation_helper		\
+			commands/cmd_inventory			\
+			commands/cmd_left			\
+			commands/cmd_look			\
+			commands/cmd_right			\
+			commands/cmd_set			\
+			commands/cmd_take			\
+			events/event_incantation_fail		\
+			events/event_incantation_start		\
+			events/event_incantation_success	\
+			events/event_item_drop			\
+			events/event_item_pickup		\
+			events/event_player_death		\
+			events/event_player_move		\
+			serializers/display_object		\
+			serializers/errors			\
+			serializers/events			\
+			serializers/finalize_json		\
+			serializers/free_list			\
+			serializers/free_object			\
+			serializers/free_json			\
+			serializers/serialize_player		\
 			serializers/serialize_position
 
 SORTEDFILES	=	$(sort $(FILES))
@@ -80,6 +88,7 @@ LDFLAGS		+=	-Llib/list -llist -Llib/str -lstr -lm
 DIRS		=	admin			\
 			arguments		\
 			commands		\
+			events			\
 			gui			\
 			serializers
 

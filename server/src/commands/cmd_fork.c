@@ -23,5 +23,6 @@ void exec_fork(control_t *control, client_t *client)
 	egg->pos = client->pos;
 	llist_push(control->eggs, 1, egg);
 	add_pending(client, strdup(OK_MSG));
+	event_egg_drop(control, client);
 	client->task.type = NONE;
 }

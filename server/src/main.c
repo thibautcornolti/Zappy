@@ -72,6 +72,7 @@ ssize_t receive_data(client_t *cl)
 
 bool evict_client(control_t *control, client_t *cl)
 {
+	event_player_death(control, cl, "starvation");
 	team_remove_client(control, cl);
 	poll_rm(&control->list, cl->fd);
 	llist_clear(cl->pending, true);
@@ -171,13 +172,15 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 
 void free_player(control_t *control, client_t *client)
 {
-	dprintf(client->fd, "dead");
+	event_player_death(control, client, "starvation");
+	dprintf(client->fd, "dead\n");
 	close(client->fd);
 	poll_rm(&control->list, client->fd);
 	llist_clear(client->pending, true);
 	llist_destroy(client->pending);
 	team_remove_client(control, client);
 	free(client);
+	
 }
 
 bool consume_food(control_t *control)
@@ -187,6 +190,8 @@ bool consume_food(control_t *control)
 
 	for (ssize_t i = size; i >= 0; i -= 1) {
 		client = llist_at(control->clients, i);
+		if (client->state != PLAYER)
+			continue;
 		client->food_delay -= (client->food_delay != 0);
 		if (client->food_delay == 0) {
 			client->inventory[FOOD] -=
@@ -276,6 +281,7 @@ void consume_eggs(control_t *control)
 		if (egg->delay == 0) {
 			// TODO: Event egg-hatch.
 			// TODO: resize team to accept one more client.
+			event_egg_hatch(control, egg);
 			llist_remove(control->eggs, i);
 		}
 	}

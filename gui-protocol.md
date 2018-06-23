@@ -139,8 +139,9 @@ Réponse:
 
 Des événements peuvent surgir à n'importe quel moment et le serveur enverra les informations liés à ces événements à tous les GUIs connectés.
 
-### Mouvement de joueur
+### Joueur
 
+Mouvement de joueur:
 ```json
 {
     "type": "event",
@@ -150,6 +151,64 @@ Des événements peuvent surgir à n'importe quel moment et le serveur enverra l
         "pos": {
             "x": 10,
             "y": 11
+        }
+    }
+}
+```
+
+Orientation de joueur:
+```json
+{
+    "type": "event",
+    "event-type": "player-turn",
+    "data": {
+        "id": 2,
+        "facing": "N"
+    }
+}
+```
+
+Mort de joueur:
+```json
+{
+    "type": "event",
+    "event-type": "player-death",
+    "data": {
+        "id": 2,
+        "reason": "starvation"
+    }
+}
+```
+
+### Items
+
+Dépôt d'item:
+```json
+{
+    "type": "event",
+    "event-type": "item-drop",
+    "data": {
+        "id": 2,
+        "item": "sibur",
+        "pos": {
+            "x": 3,
+            "y": 2
+        }
+    }
+}
+```
+
+Ramassage d'item:
+```json
+{
+    "type": "event",
+    "event-type": "item-pickup",
+    "data": {
+        "id": 2,
+        "item": "sibur",
+        "pos": {
+            "x": 3,
+            "y": 2
         }
     }
 }
@@ -189,6 +248,39 @@ Echec de l'incantation:
     "data": {
         "id": 2,
         "current-level": 4
+    }
+}
+```
+
+### Oeuf
+
+Dépôt d'oeuf
+```json
+{
+    "type": "event",
+    "event-type": "egg-drop",
+    "data": {
+        "id": 2,
+        "team": "Eo",
+        "pos": {
+            "x": 3,
+            "y": 2
+        }
+    }
+}
+```
+
+Eclosion d'oeuf
+```json
+{
+    "type": "event",
+    "event-type": "egg-hatch",
+    "data": {
+        "team": "Eo",
+        "pos": {
+            "x": 3,
+            "y": 2
+        }
     }
 }
 ```

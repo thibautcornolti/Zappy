@@ -229,30 +229,44 @@ bool parse_help(size_t, const char **, params_t *, size_t *);
 /*
 ** JSON free utilities
 */
-void free_elem_str(char *value);
-void free_list(void *ctx, elem_t *elem, size_t idx);
-void free_elem_list(list_t *value);
-void free_object(void *ctx, char *key, elem_t *value);
-void free_elem_obj(object_t *value);
-void free_elem(elem_t *elem, bool free_only_data);
-void free_json(json_t *json);
+void free_elem_str(char *);
+void free_list(void *, elem_t *, size_t);
+void free_elem_list(list_t *);
+void free_object(void *, char *, elem_t *);
+void free_elem_obj(object_t *);
+void free_elem(elem_t *, bool);
+void free_json(json_t *);
 
 /*
 ** Data serializers
 */
-object_t *serialize_player(client_t *client);
-object_t *serialize_position(vec2_t pos);
+object_t *serialize_player(client_t *);
+object_t *serialize_position(vec2_t);
 
-bool display_object(object_t *obj);
-void *double_to_void_ptr(double d);
+/*
+** Events
+*/
+void event_player_move(control_t *, client_t *);
+void event_incantation_start(control_t *, client_t *);
+void event_incantation_fail(control_t *, client_t *);
+void event_incantation_success(control_t *, client_t *);
+void event_item_drop(control_t *, client_t *, item_t);
+void event_item_pickup(control_t *, client_t *, item_t);
+void event_player_death(control_t *, client_t *, char *);
+void event_egg_drop(control_t *, client_t *);
+void event_egg_hatch(control_t *, egg_t *);
+
+bool display_object(object_t *);
+void *double_to_void_ptr(double);
 bool extract_rbuf_cmd(client_t *);
 void proceed_cmd(control_t *, client_t *);
 bool exec_task(control_t *, client_t *);
 bool place_resources(control_t *);
 void finalize_json(client_t *, object_t *, cmd_t *);
-object_t *emit_command_error(char *reason);
-object_t *emit_syntax_error(char *reason);
-list_t *create_tile_data(control_t *control, vec2_t pos);
+object_t *emit_command_error(char *);
+object_t *emit_syntax_error(char *);
+list_t *create_tile_data(control_t *, vec2_t);
+void forward_event(control_t *, object_t *);
 
 /*
 ** Teams
