@@ -20,9 +20,12 @@ static const float bounds[][2] = {[1] = {1.249046, 1.892547},
 
 void cmd_broadcast(control_t *control, client_t *client)
 {
+	cmd_t *cmd = client->cmd->head->payload;
+
 	(void)(control);
 	client->task.time = 7;
 	client->task.type = BROADCAST;
+	client->task.data = (cmd->nparam == 1) ? strdup(cmd->param[0]) : 0;
 }
 
 float get_angle(control_t *control, vec2_t pos1, vec2_t pos2)
@@ -69,13 +72,13 @@ void send_message(control_t *control, client_t *client, char *message)
 
 void exec_broadcast(control_t *control, client_t *client)
 {
-	cmd_t *cmd = client->cmd->head->payload;
-
 	client->task.type = NONE;
-	if (cmd->nparam != 1) {
+	if (client->task.data == 0) {
 		add_pending(client, strdup("ko"));
 		return;
 	}
-	send_message(control, client, cmd->param[0]);
+	send_message(control, client, client->task.data);
 	add_pending(client, strdup("ok"));
+	free(client->task.data);
+	client->task.data = 0;
 }

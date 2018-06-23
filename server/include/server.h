@@ -254,6 +254,7 @@ void event_incantation_success(control_t *, client_t *);
 void event_item_drop(control_t *, client_t *, item_t);
 void event_item_pickup(control_t *, client_t *, item_t);
 void event_player_death(control_t *, client_t *, char *);
+void event_player_join(control_t *, client_t *);
 void event_egg_drop(control_t *, client_t *);
 void event_egg_hatch(control_t *, egg_t *);
 

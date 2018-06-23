@@ -51,6 +51,7 @@ bool add_new_client(control_t *ctrl)
 		== 0, false);
 	add_pending(client, strdup(WELCOME_MSG));
 	CHECK(llist_push(ctrl->clients, 1, client), == -1, false);
+	event_player_join(ctrl, client);
 	return (true);
 }
 
