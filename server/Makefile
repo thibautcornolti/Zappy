@@ -62,6 +62,7 @@ FILES		=	args					\
 			commands/cmd_right			\
 			commands/cmd_set			\
 			commands/cmd_take			\
+			events/event_broadcast			\
 			events/event_egg_drop			\
 			events/event_egg_hatch			\
 			events/event_incantation_fail		\

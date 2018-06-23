@@ -261,6 +261,7 @@ void event_player_death(control_t *, client_t *, char *);
 void event_player_join(control_t *, client_t *);
 void event_egg_drop(control_t *, client_t *);
 void event_egg_hatch(control_t *, egg_t *);
+void event_broadcast(control_t *, client_t *, char *);
 
 bool display_object(object_t *);
 void *double_to_void_ptr(double);

@@ -361,6 +361,19 @@ Eclosion d'oeuf
 }
 ```
 
+### Broadcasts
+
+```json
+{
+    "type": "event",
+    "event-type": "broadcast",
+    "data": {
+        "id": 2,
+        "message": "Please help me !"
+    }
+}
+```
+
 ## Erreurs
 
 Lors d'une erreur, une réponse spéciale sera renvoyé au client par le serveur.

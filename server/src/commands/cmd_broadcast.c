@@ -55,7 +55,7 @@ void send_message(control_t *control, client_t *client, char *message)
 
 	for (list_elem_t *it = control->clients->head; it; it = it->next) {
 		cl = it->payload;
-		if (cl->fd == client->fd)
+		if (cl->state != PLAYER || cl->fd == client->fd)
 			continue;
 		angle = get_angle(control, client->pos, cl->pos);
 		for (size_t i = 1; i < 9; ++i)
@@ -78,6 +78,7 @@ void exec_broadcast(control_t *control, client_t *client)
 		return;
 	}
 	send_message(control, client, client->task.data);
+	event_broadcast(control, client, client->task.data);
 	add_pending(client, strdup("ok"));
 	free(client->task.data);
 	client->task.data = 0;
