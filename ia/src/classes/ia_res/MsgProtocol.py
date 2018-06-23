@@ -25,13 +25,14 @@ class MsgProtocol:
 
     @staticmethod
     def enrolment(self_uuid, lvl_required):
-        return "%s | Vend place PL 42sh!! No noob lvl %d plz" % (
+        lvl_required = str(lvl_required)
+        return "%s | Vend place PL 42sh!! No noob lvl %s plz" % (
             self_uuid, lvl_required)
 
     @staticmethod
     def is_enrolment(msg):
         return MsgProtocol._is_template(
-            ('sender', 'level'),
+            ['sender', 'level'],
             r"^([0-9a-z]+) \| Vend place PL 42sh!! No noob lvl ([3-8]) plz$",
             msg
         )
@@ -44,7 +45,7 @@ class MsgProtocol:
     @staticmethod
     def is_apply(msg):
         return MsgProtocol._is_template(
-            ('sender', 'recipient'),
+            ['sender', 'recipient'],
             r"^([0-9a-z]+) \| stp ([0-9a-z]+) achete 5 kama avant apres !! no fak$",
             msg
         )
@@ -57,7 +58,7 @@ class MsgProtocol:
     @staticmethod
     def is_allowed_ants(msg):
         return MsgProtocol._is_template(
-            ('sender', ('allowed_ants', lambda x: x.split(','))),
+            ['sender', ('allowed_ants', lambda x: x.split(','))],
             r"^([0-9a-z]+) \| mes esclaves ([0-9a-z,]*)",
             msg
         )
@@ -71,10 +72,10 @@ class MsgProtocol:
     @staticmethod
     def is_seek_slave(msg):
         return MsgProtocol._is_template(
-            ('sender', 'recipient', ('items', lambda x: {
+            ['sender', 'recipient', ('items', lambda x:{
                 o.split(' ')[0]: o.split(' ')[1]
                 for o in x.split(',')
-            })),
+            })],
             r"^([0-9a-z]+) \| va chercher ([0-9a-z]+) : ([a-z0-9_ ,]*)",
             msg
         )
@@ -87,7 +88,7 @@ class MsgProtocol:
     @staticmethod
     def is_seek_end(msg):
         return MsgProtocol._is_template(
-            ('sender', 'recipient'),
+            ['sender', 'recipient'],
             r"^([0-9a-z]+) \| j'ai fini reine ([0-9a-z]+)",
             msg
         )
@@ -100,46 +101,76 @@ class MsgProtocol:
     @staticmethod
     def is_meet_ants(msg):
         return MsgProtocol._is_template(
-            ('sender', ('recipients', lambda x: x.split(','))),
+            ['sender', ('recipients', lambda x: x.split(','))],
             r"^([0-9a-z]+) \| venez a moi bande d'insecte ([0-9a-z,]*)",
+            msg
+        )
+
+    @staticmethod
+    def ping_team(self_uuid):
+        return "%s | j'existe les gars!" % self_uuid
+
+    @staticmethod
+    def is_ping_team(msg):
+        return MsgProtocol._is_template(
+            ['sender'],
+            r"^([0-9a-z]+) \| j'existe les gars!$",
             msg
         )
 
 
 if __name__ == '__main__':
-    def test(test_name, fct, is_fct, args):
-        header = '===== %s =====' % test_name
+    def test(test_name, fct, is_fct, args, args_name):
+        header = '========== %s ==========' % test_name
         print(header)
         msg = fct(*args)
         print(msg)
-        print(is_fct(msg))
-        print('=' * len(header))
+        res = is_fct(msg)
+        print(res)
+        try:
+            assert res
+            for arg, arg_name in zip(args, args_name):
+                assert arg_name in res
+                assert res[arg_name] == arg
+        except AssertionError as e:
+            print("  FAILED")
+            print('=' * len(header))
+            exit(1)
+        else:
+            print("  PASSED")
+            print('=' * len(header))
         print()
 
 
     fake_uuid = '48m0s5x2'
     fake_dest = fake_uuid[::-1]
-    fake_lvl = 4
+    fake_lvl = '4'
 
     args = [fake_uuid, fake_lvl]
-    test('ENROLMENT', MsgProtocol.enrolment, MsgProtocol.is_enrolment, args)
+    args_name = ['sender', 'level']
+    test('ENROLMENT', MsgProtocol.enrolment, MsgProtocol.is_enrolment, args, args_name)
 
     args = [fake_uuid, fake_dest]
-    test('APPLY', MsgProtocol.apply, MsgProtocol.is_apply, args)
+    args_name = ['sender', 'recipient']
+    test('APPLY', MsgProtocol.apply, MsgProtocol.is_apply, args, args_name)
 
     args = [fake_uuid, [fake_dest] * 4]
+    args_name = ['sender', 'allowed_ants']
     test('ALLOWED ANTS', MsgProtocol.allowed_ants, MsgProtocol.is_allowed_ants,
-         args)
+         args, args_name)
 
     args = [fake_uuid, fake_dest,
-            {'fake_item_1': 45,
-             'fake_item_2': 39,
-             'fake_item_3': 2,
-             'fake_item_4': 93}]
-    test('SEEK SLAVE', MsgProtocol.seek_slave, MsgProtocol.is_seek_slave, args)
+            {'fake_item_1': '45',
+             'fake_item_2': '39',
+             'fake_item_3': '2',
+             'fake_item_4': '93'}]
+    args_name = ['sender', 'recipient', 'items']
+    test('SEEK SLAVE', MsgProtocol.seek_slave, MsgProtocol.is_seek_slave, args, args_name)
 
     args = [fake_uuid, fake_dest]
-    test('SEEK END', MsgProtocol.seek_end, MsgProtocol.is_seek_end, args)
+    args_name = ['sender', 'recipient']
+    test('SEEK END', MsgProtocol.seek_end, MsgProtocol.is_seek_end, args, args_name)
 
     args = [fake_uuid, [fake_dest] * 4]
-    test('MEET ANTS', MsgProtocol.meet_ants, MsgProtocol.is_meet_ants, args)
+    args_name = ['sender', 'recipients']
+    test('MEET ANTS', MsgProtocol.meet_ants, MsgProtocol.is_meet_ants, args, args_name)
