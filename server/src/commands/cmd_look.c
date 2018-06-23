@@ -68,13 +68,15 @@ void exec_look(control_t *control, client_t *client)
 	char *tmp;
 	vec2_t pos;
 
-	for (size_t i = 0; i <= client->level; ++i) {
+	for (long i = 0; i <= (long)(client->level); ++i) {
 		for (long j = -radius; j <= radius; ++j) {
 			pos.x = (((long)(client->pos.x)) + axis[0] * i +
-					sidestep[0] * j) %
+					sidestep[0] * j +
+					control->params.width) %
 				control->params.width;
 			pos.y = (((long)(client->pos.y)) + axis[1] * i +
-					sidestep[1] * j) %
+					sidestep[1] * j +
+					control->params.height) %
 				control->params.height;
 			dprintf(2, "POS: {%lu,%lu}\n", pos.x, pos.y);
 			tmp = list_items(control, pos);
