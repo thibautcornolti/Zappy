@@ -34,6 +34,7 @@ bool add_new_client(control_t *ctrl)
 	CHECK(client->cmd = llist_init(), == 0, false);
 	CHECK(client->pending = llist_init(), == 0, false);
 	client->id = ids++;
+	client->level = 1;
 	client->inventory[FOOD] = 10;
 	client->food_delay = FOOD_DELAY;
 	client->rbuf.size = RBUFFER_SIZE;
@@ -307,7 +308,7 @@ int main(int ac, const char **av)
 	while (1) {
 		CHECK(ret = cycle_adjustment(&ctrl), == false, 84);
 		proceed_clients(&ctrl);
-		consume_food(&ctrl);
+		// consume_food(&ctrl);
 		consume_eggs(&ctrl);
 	}
 	return (0);

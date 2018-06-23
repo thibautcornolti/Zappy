@@ -21,6 +21,7 @@ static bool move_player(control_t *ctrl, client_t *cl, size_t y, size_t x)
 			return (true);
 		}
 	}
+	event_player_move(ctrl, cl);
 	return (false);
 }
 

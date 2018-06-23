@@ -23,7 +23,6 @@ void move_forward(control_t *control, client_t *client)
 	event_player_move(control, client);
 }
 
-
 void move_directed(control_t *control, client_t *client, facing_t direction)
 {
 	long x = 0;
