@@ -2,7 +2,7 @@ import * as THREE from "three"
 import StateShare from "../States/StateShare"
 import GUIManagger from "../GUIManager"
 import {Vector2, Vector3} from "three";
-import {ITileResp} from "../ICom";
+import {IEntitiesResp, ITileResp} from "../ICom";
 import MapEntity from "../Entity/MapEntity";
 
 export default class MainScene {
@@ -59,14 +59,6 @@ export default class MainScene {
         GUIManagger.getInstance().getScene().add(light);
     }
 
-    private setMap() {
-        let map = this.state.getAssetsPool().getGltfAssets("map");
-
-        map.scene.position.set(0, -3.6, 0);
-        map.scene.rotation.y = (Math.PI / 2) * 3;
-        this.manager.getScene().add(map.scene);
-    }
-
     private generateSkyBox() {
         let reflectionCube = this.state.getAssetsPool().getCubeTexture("skybox");
 
@@ -89,18 +81,15 @@ export default class MainScene {
     }
 
     public generate() {
-        // let chicken1 = this.state.getAssetsPool().getGltfAssets("chicken").scene.clone();
-        // let chicken2 = this.state.getAssetsPool().getGltfAssets("chicken").scene.clone();
-
-        // chicken1.position.set(10, 0, 10);
-        // chicken1.rotateY(-Math.PI / 2);
-        // this.manager.getScene().add(chicken1);
-        // this.manager.getScene().add(chicken2);
-
-        // this.setMap();
         this.setCamera();
         this.setLight();
         this.generateSkyBox();
+    }
+
+    public initMapTile(resp: IEntitiesResp) {
+        resp.data.forEach((elem) => {
+            this.map.initEntitiesTile(elem);
+        });
     }
 
     public setTile(data: ITileResp) {

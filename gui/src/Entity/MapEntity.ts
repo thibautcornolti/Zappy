@@ -3,15 +3,44 @@ import {Vector2, Vector3} from "three";
 import AssetsPool from "../AssetsPool";
 import {GLTF} from "three-gltf-loader";
 import GUIManagger from "../GUIManager";
-import {IDataResp, ITileResp} from "../ICom";
+import {IDataResp, IEntitiesResp, ITileResp} from "../ICom";
 import Dropable from "./Dropable";
+import Player from "./Player";
 
 interface IType {
     name: string,
     id: number
 }
 
-let typeTable: {[index:string]: IType} = {
+interface IEntitiesContent {
+    type: string
+    data: [{
+        pos: {
+            x: number,
+            y: number,
+        }
+    }]
+}
+
+interface IPlayerEntity {
+    pos: {
+        x: number,
+        y: number
+    },
+    id: number,
+    team: string,
+    facing: "N" | "E" | "S" | "O",
+    level: number
+}
+
+let facingTable: {[index: string]: number} = {
+    N: Math.PI / 2,
+    E: 0,
+    S: -Math.PI / 2,
+    O: Math.PI
+};
+
+let typeTable: {[index: string]: IType} = {
     linemate: {
         name: "coal",
         id: 0
@@ -39,6 +68,10 @@ let typeTable: {[index:string]: IType} = {
     food: {
         name: "food",
         id: 6
+    },
+    player: {
+        name: "chicken",
+        id: 7
     }
 };
 
@@ -49,7 +82,6 @@ export default class MapEntity {
     private assetPool: AssetsPool;
     private mapSize: Vector2;
 
-    // private content: Map<Vector2, Array<IDataResp>>;
     private content: Map<{ x: number, y: number }, Object>;
 
     constructor(assetsPool: AssetsPool, mapSize: Vector2) {
@@ -99,20 +131,55 @@ export default class MapEntity {
             }
             if (type.id >= 0 && type.id <= 6)
                 this.setPosDragable(drop, posStart, posEnd, new Vector2(type.id % 3, Math.floor(type.id / 3)));
-                // console.log(type.id, new Vector2(type.id % 3, Math.floor(type.id / 3)));
-                // drop.setPosition(new )
-                // else
+            // console.log(type.id, new Vector2(type.id % 3, Math.floor(type.id / 3)));
+            // drop.setPosition(new )
+            // else
             // drop.setPosition(new Vector3(posStart.x, 0, posStart.y));
             obj.push(drop);
         });
         this.content.set({x: data.pos.x, y: data.pos.y}, {data: data.data, obj: obj});
+    }
 
-        // let geometry = new THREE.BoxGeometry(1, 1, 1);
-        // let material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-        // let cube = new THREE.Mesh(geometry, material);
+    private calcPosEntity(id: number, pos: Vector2) : Vector2 {
+        let ret = new Vector2();
+        let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
+            (this.posEnd.y - this.posStart.y) / this.mapSize.y);
+        let tileStart = new Vector2(mapRatio.x * pos.x, mapRatio.y * pos.y);
+        let tileEnd = new Vector2(mapRatio.x * (pos.x + 1), mapRatio.y * (pos.y + 1));
+        let posInTile = new Vector2(id % 3, Math.floor(id / 3));
+        let tileScale = new Vector2((tileEnd.x - tileStart.x) / 3, (tileEnd.y - tileStart.y) / 3);
 
-        // cube.position.set(posStart.x, 0, posStart.y);
+        ret.x = this.posStart.x + tileStart.x + posInTile.x * tileScale.x;
+        ret.y = this.posStart.y + tileStart.y + posInTile.y * tileScale.y;
+        return ret;
+    }
 
-        // GUIManagger.getInstance().getScene().add(cube);
+    private initPlayerEntity(pos: Vector2, facing: string) {
+        let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
+            (this.posEnd.y - this.posStart.y) / this.mapSize.y);
+        let posStart = new Vector2(this.posStart.x + pos.x * mapRatio.x, this.posStart.y + pos.y * mapRatio.y);
+        let posEnd = new Vector2(this.posStart.x + (pos.x + 1) * mapRatio.x, this.posStart.y + (pos.y + 1) * mapRatio.y);
+        let player = new Player(this.assetPool, new Vector2(posStart.x + (posEnd.x - posStart.x) / 2, posStart.y + (posEnd.y - posStart.y) / 2));
+        player.setRotation(new Vector3(0, facingTable[facing], 0));
+    }
+
+    public initEntitiesTile(resp: IEntitiesContent) {
+        let type = (typeTable[resp.type] || {name: resp.type, id: -1});
+        resp.data.forEach((elem) => {
+            if (type.id >= 0 && type.id < 7) {
+                let drop;
+                try {
+                    drop = new Dropable(this.assetPool, type.name);
+                } catch (e) {
+                    console.warn("Unable to create a \"" + ((type) ? type.name : "Undefined") + "\" Dropable");
+                    return;
+                }
+                let pos = this.calcPosEntity(type.id, new Vector2(elem.pos.x, elem.pos.y));
+                drop.setPosition(new Vector3(pos.x, 0, pos.y));
+            } else if (type.id === 7) {
+                let info = (elem as IPlayerEntity);
+                this.initPlayerEntity(new Vector2(info.pos.x, info.pos.y), info.facing);
+            }
+        });
     }
 }

@@ -29,9 +29,10 @@ export default class CoreState implements IState {
         this.camPos = Object.assign({}, this.manager.getCamera().position);
         this.state.getSocket().setOnData(this.onSocketData);
 
-        var geometry = new THREE.BoxGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-        var cube = new THREE.Mesh(geometry, material);
+        //TODO rm this
+        let geometry = new THREE.BoxGeometry(1, 1, 1);
+        let material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+        let cube = new THREE.Mesh(geometry, material);
         cube.position.set(-6, 0, -3);
         let cube2 = cube.clone();
         cube2.position.set(-6, 0, 27);
@@ -49,6 +50,7 @@ export default class CoreState implements IState {
         let resp = data.split('\n');
 
         resp.forEach((elem) => {
+            console.log(elem);
             let json;
 
             if (!elem.length)
@@ -62,6 +64,8 @@ export default class CoreState implements IState {
             if (json.type === "response") {
                 if (json['response-type'] === "tile")
                     this.mainMap.setTile(json);
+                else if (json['response-type'] === "entities")
+                    this.mainMap.initMapTile(json);
             }
         });
     };
@@ -91,12 +95,13 @@ export default class CoreState implements IState {
 
         if (!this.tmp) {
             this.tmp = true;
-            let sizeMap = this.state.getMapSize();
-            for (let y = 0; y < sizeMap.y; y++)
-                for (let x = 0; x < sizeMap.x; x++) {
-                    this.state.getSocket().sendJSON({command: "tile", pos: {x: x, y: y}});
-                    await this.wait(10);
-                }
+            this.state.getSocket().sendJSON({"command": "entities"});
+            // let sizeMap = this.state.getMapSize();
+            // for (let y = 0; y < sizeMap.y; y++)
+            //     for (let x = 0; x < sizeMap.x; x++) {
+            //         this.state.getSocket().sendJSON({command: "tile", pos: {x: x, y: y}});
+            //         await this.wait(10);
+            //     }
         }
     }
 

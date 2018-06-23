@@ -29,6 +29,8 @@ io.on('connection', function (sock) {
     let cli = null;
     let isConnected = false;
 
+    let buffer = "";
+
     cli = net.connect(portZappy, ipZappy, () => {
         isConnected = true;
     });
@@ -39,7 +41,11 @@ io.on('connection', function (sock) {
     });
 
     cli.on('data', (msg) => {
-        sock.emit('my_data', msg.toString());
+        buffer += msg.toString();
+        if (buffer.indexOf('\n') !== -1) {
+            sock.emit('my_data', buffer);
+            buffer = "";
+        }
     });
 
     cli.on('close', () => {

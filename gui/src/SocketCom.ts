@@ -1,5 +1,5 @@
 import * as io from "socket.io-client"
-import {ITileCommand} from "./ICom";
+import {IGeneralCommandCom, ITileCommand} from "./ICom";
 
 interface Error {
     code: string
@@ -28,6 +28,11 @@ export default class SocketCom {
             this.isError = true;
             this.onError(error);
         });
+        this.sock.on('disconnect', (reason: string) => {
+           console.log(reason);
+           // alert('disconnect');
+        });
+
         if (onData)
             this.sock.on('my_data', onData);
     }
@@ -55,7 +60,7 @@ export default class SocketCom {
         this.sock.emit('my_data', str);
     }
 
-    public sendJSON(json: ITileCommand) {
+    public sendJSON(json: ITileCommand | IGeneralCommandCom) {
         let str = JSON.stringify(json) + '\r\n';
         this.sock.emit('my_data', str);
     }

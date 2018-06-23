@@ -41,8 +41,8 @@ export default class Dropable {
         let rotation = this.object.rotation.toVector3();
 
         // this.object.rotation.set(0, rotation.y - 0.01, 0);
-        position.y = this.startPos.y + (Math.sin(this.factor * this.frame) / 2);
-        this.object.position.set(position.x, position.y, position.z);
+        // position.y = this.startPos.y + (Math.sin(this.factor * this.frame) / 2);
+        // this.object.position.set(position.x, position.y, position.z);
         this.frame += 1;
     };
 }
