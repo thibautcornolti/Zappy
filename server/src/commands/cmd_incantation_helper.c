@@ -41,8 +41,12 @@ size_t count_items(control_t *control, vec2_t pos, item_t item)
 
 void upgrade_level(control_t *control, client_t *client, size_t idx)
 {
+	char *str = 0;
+
 	(void)(idx);
 	client->level += 1;
+	asprintf(&str, LVLUP_MSG, client->level);
+	add_pending(client, str);
 	event_incantation_success(control, client);
 }
 

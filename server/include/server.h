@@ -24,6 +24,8 @@
 #define OK_MSG "ok"
 #define KO_MSG "ko"
 #define WELCOME_MSG "WELCOME"
+#define ELEVATION_MSG "Elevation underway"
+#define LVLUP_MSG "Current level: %lu"
 #define HELP_MSG                                                              \
 	"USAGE: %s -p port -x width -y height -n name1 name2 ... -c "         \
 	"clientsNb -f freq\n"                                                 \
