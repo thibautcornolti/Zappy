@@ -171,7 +171,7 @@ bool handle_client(control_t *control, client_t *cl, size_t idx)
 
 void free_player(control_t *control, client_t *client)
 {
-	dprintf(client->fd, "dead");
+	dprintf(client->fd, "dead\n");
 	close(client->fd);
 	poll_rm(&control->list, client->fd);
 	llist_clear(client->pending, true);
