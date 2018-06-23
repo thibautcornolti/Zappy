@@ -74,7 +74,7 @@ class MsgProtocol:
     @staticmethod
     def is_seek_slave(msg):
         return MsgProtocol._is_template(
-            ['sender', 'recipient', ('items', lambda x:{
+            ['sender', 'recipient', ('items', lambda x: {
                 o.split(' ')[0]: o.split(' ')[1]
                 for o in x.split(',')
             })],
@@ -120,6 +120,19 @@ class MsgProtocol:
             msg
         )
 
+    @staticmethod
+    def ready_inc(self_uuid, dest_uuid):
+        return "%s | jsuis pret balance le saucage Maxime Jenny %s" % (
+        self_uuid, dest_uuid)
+
+    @staticmethod
+    def is_ready_inc(msg):
+        return MsgProtocol._is_template(
+            ['sender', 'recipient'],
+            r"^([0-9a-z]+) \| jsuis pret balance le saucage Maxime Jenny ([0-9a-z]+)",
+            msg
+        )
+
 
 if __name__ == '__main__':
     def test(test_name, fct, is_fct, args, args_name):
@@ -150,7 +163,8 @@ if __name__ == '__main__':
 
     args = [fake_uuid, fake_lvl]
     args_name = ['sender', 'level']
-    test('ENROLMENT', MsgProtocol.enrolment, MsgProtocol.is_enrolment, args, args_name)
+    test('ENROLMENT', MsgProtocol.enrolment, MsgProtocol.is_enrolment, args,
+         args_name)
 
     args = [fake_uuid, fake_dest]
     args_name = ['sender', 'recipient']
@@ -167,16 +181,25 @@ if __name__ == '__main__':
              'fake_item_3': '2',
              'fake_item_4': '93'}]
     args_name = ['sender', 'recipient', 'items']
-    test('SEEK SLAVE', MsgProtocol.seek_slave, MsgProtocol.is_seek_slave, args, args_name)
+    test('SEEK SLAVE', MsgProtocol.seek_slave, MsgProtocol.is_seek_slave, args,
+         args_name)
 
     args = [fake_uuid, fake_dest]
     args_name = ['sender', 'recipient']
-    test('SEEK END', MsgProtocol.seek_end, MsgProtocol.is_seek_end, args, args_name)
+    test('SEEK END', MsgProtocol.seek_end, MsgProtocol.is_seek_end, args,
+         args_name)
 
     args = [fake_uuid, [fake_dest] * 4]
     args_name = ['sender', 'recipients']
-    test('MEET ANTS', MsgProtocol.meet_ants, MsgProtocol.is_meet_ants, args, args_name)
+    test('MEET ANTS', MsgProtocol.meet_ants, MsgProtocol.is_meet_ants, args,
+         args_name)
 
     args = [fake_uuid]
     args_name = ['sender']
-    test('PING TEAM', MsgProtocol.ping_team, MsgProtocol.is_ping_team, args, args_name)
+    test('PING TEAM', MsgProtocol.ping_team, MsgProtocol.is_ping_team, args,
+         args_name)
+
+    args = [fake_uuid, fake_dest]
+    args_name = ['sender', 'recipient']
+    test('READY INC', MsgProtocol.ready_inc, MsgProtocol.is_ready_inc, args,
+         args_name)
