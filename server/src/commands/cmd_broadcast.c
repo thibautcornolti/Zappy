@@ -25,7 +25,7 @@ void cmd_broadcast(control_t *control, client_t *client)
 	(void)(control);
 	client->task.time = 7;
 	client->task.type = BROADCAST;
-	client->task.data = (cmd->nparam == 1) ? strdup(cmd->param[0]) : 0;
+	client->task.data = (cmd->nparam != 0) ? strdup(cmd->cmd + 10) : 0;
 }
 
 float get_angle(control_t *control, vec2_t pos1, vec2_t pos2)
