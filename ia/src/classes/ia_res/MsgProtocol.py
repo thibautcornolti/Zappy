@@ -133,6 +133,18 @@ class MsgProtocol:
             msg
         )
 
+    @staticmethod
+    def we_need_an_upgrade(self_uuid):
+        return "%s | on va level up !!" % self_uuid
+
+    @staticmethod
+    def is_an_upgrade(msg):
+        return MsgProtocol._is_template(
+            ['sender'],
+            r"^([0-9a-z]+) \| on va level up !!",
+            msg
+        )
+
 
 if __name__ == '__main__':
     def test(test_name, fct, is_fct, args, args_name):
