@@ -29,12 +29,12 @@ class Mates(object):
 
     def get_mate(self, uuid):
         for mate in self:
-            if mate.uuid() == uuid:
+            if mate.uuid == uuid:
                 return mate
 
     def pop_mate(self, uuid):
         for mate in self:
-            if mate.uuid() == uuid:
+            if mate.uuid == uuid:
                 self.mates.pop()
 
 

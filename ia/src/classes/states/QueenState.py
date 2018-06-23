@@ -48,22 +48,23 @@ class QueenState(AAIState):
         safe_controller.execute(transaction)
 
     def wait_answers(self, *args):
-        for m in controller.msgQueue:
-            my_print(m.text)
-            end = MsgProtocol.is_seek_end(m.text)
-            if end and end['sender'] in (m.uuid for m in mates):
+        for msg in controller.msgQueue:
+            my_print(msg.text)
+            end = MsgProtocol.is_seek_end(msg.text)
+            if end and end['sender'] in (mate.uuid for mate in mates):
                 my_print(end['sender'], " finished all the tasks")
-                m.inventory = dict()
+                mates.get_mate(end['sender']).inventory.clear()
 
         end = True
         for mate in mates:
+            my_print(mate.inventory)
             if len(mate.inventory):
                 end = False
                 break
 
         if end:
             msg = MsgProtocol.meet_ants(ant.uuid, [m.uuid for m in mates])
-            transaction = BroadcastTransaction(msg, lambda: exit(0))
+            transaction = BroadcastTransaction(msg, lambda: my_print("WE CAN LVL UP NOW !"))
         else:
             transaction = LookTransaction(self.wait_answers)
         safe_controller.execute(transaction)
