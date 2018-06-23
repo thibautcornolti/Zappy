@@ -6,7 +6,6 @@ gui_compile:
     - npm install --progress=false
     - npm install -g webpack webpack-cli --progress=false
   script:
-    - cd gui
     - webpack --verbose
 
 #before_script:
