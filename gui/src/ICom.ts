@@ -53,9 +53,6 @@ export interface IPlayerEntity {
 
 
 
-
-
-
 export interface IGeneralCommandCom {
     command: string
 }

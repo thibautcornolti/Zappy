@@ -9,12 +9,14 @@ import GUIManagger from "../GUIManager";
 import LoadingBar from "../LoadingBar";
 import {IMapSize} from "../ICom";
 import {Vector3} from "three";
+import AudioManager from "../AudioManager";
 
 export default class InitState implements IState {
     private share: StateShare;
     private loadCore: boolean;
     private isMapLoaded: boolean;
     private isSocketConnected: boolean;
+    private isSoundLoad: boolean;
     private loading: LoadingBar;
     private socket: SocketCom | null;
 
@@ -22,22 +24,25 @@ export default class InitState implements IState {
         this.loadCore = false;
         this.isMapLoaded = false;
         this.isSocketConnected = false;
+        this.isSoundLoad = false;
         this.share = share;
         this.loading = new LoadingBar();
         this.socket = null;
     }
 
     private loadMusic() {
-        let sound = new THREE.Audio(GUIManagger.getInstance().getAudio());
-        let audioLoader = new THREE.AudioLoader();
-        audioLoader.load('sounds/music.ogg', function (buffer: THREE.AudioBuffer) {
-            sound.setBuffer(buffer);
-            sound.setLoop(true);
-            sound.setVolume(0.5);
-            sound.play();
-        }, () => {
-        }, () => {
-        });
+        let sounds = [
+            AudioManager.getInstance().loadSoundProm("chickenDeath", "sounds/chicken/hurt.ogg"),
+            // AudioManager.getInstance().loadSoundProm()
+        ];
+
+        Promise.all(sounds)
+            .then(() => {
+                this.isSoundLoad = true;
+            })
+            .catch(() => {
+                this.loading.setError('Impossible de charger les sons');
+            });
     }
 
     private onData(data: string) {
@@ -158,11 +163,11 @@ export default class InitState implements IState {
         this.initSocket();
         // this.initAssets();
 
-        // this.loadMusic();
+        this.loadMusic();
     }
 
     public update() {
-        if (this.isMapLoaded && this.isSocketConnected && !this.loadCore) {
+        if (this.isMapLoaded && this.isSocketConnected && this.isSoundLoad && !this.loadCore) {
             console.log("Loaded");
             this.loading.hide();
             this.loadCore = true;
