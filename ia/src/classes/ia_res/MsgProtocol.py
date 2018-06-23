@@ -80,54 +80,66 @@ class MsgProtocol:
         )
 
     @staticmethod
-    def meet_ants(self_uuid, ants_uuid):
-        return "%s | venez a moi bande de fourmi %s" % (
-            self_uuid, ','.join(ants_uuid))
+    def seek_end(self_uuid, dest_uuid):
+        return "%s | j'ai fini reine %s" % (
+            self_uuid, dest_uuid)
+
+    @staticmethod
+    def is_seek_end(msg):
+        return MsgProtocol._is_template(
+            ('sender', 'recipient'),
+            r"^([0-9a-z]+) \| j'ai fini reine ([0-9a-z]+)",
+            msg
+        )
+
+    @staticmethod
+    def meet_ants(self_uuid, dest_uuids):
+        return "%s | venez a moi bande d'insecte %s" % (
+            self_uuid, ','.join(dest_uuids))
 
     @staticmethod
     def is_meet_ants(msg):
         return MsgProtocol._is_template(
-            ('sender', ('meet_ants', lambda x: x.split(','))),
-            r"^([0-9a-z]+) \| venez a moi bande de fourmi ([0-9a-z,]*)",
+            ('sender', ('recipients', lambda x: x.split(','))),
+            r"^([0-9a-z]+) \| venez a moi bande d'insecte ([0-9a-z,]*)",
             msg
         )
 
 
 if __name__ == '__main__':
+    def test(test_name, fct, is_fct, args):
+        header = '===== %s =====' % test_name
+        print(header)
+        msg = fct(*args)
+        print(msg)
+        print(is_fct(msg))
+        print('=' * len(header))
+        print()
+
+
     fake_uuid = '48m0s5x2'
     fake_dest = fake_uuid[::-1]
     fake_lvl = 4
 
-    print('ENROLMENT')
-    enrolment_msg = MsgProtocol.enrolment(fake_uuid, 8)
-    print(enrolment_msg)
-    print(MsgProtocol.is_enrolment(enrolment_msg))
-    print()
+    args = [fake_uuid, fake_lvl]
+    test('ENROLMENT', MsgProtocol.enrolment, MsgProtocol.is_enrolment, args)
 
-    print('APPLY:')
-    apply_msg = MsgProtocol.apply(fake_uuid, fake_dest)
-    print(apply_msg)
-    print(MsgProtocol.is_apply(apply_msg))
-    print()
+    args = [fake_uuid, fake_dest]
+    test('APPLY', MsgProtocol.apply, MsgProtocol.is_apply, args)
 
-    print('ALLOWED ANTS:')
-    allowed_ants_msg = MsgProtocol.allowed_ants(fake_uuid, [fake_dest] * 4)
-    print(allowed_ants_msg)
-    print(MsgProtocol.is_allowed_ants(allowed_ants_msg))
-    print()
+    args = [fake_uuid, [fake_dest] * 4]
+    test('ALLOWED ANTS', MsgProtocol.allowed_ants, MsgProtocol.is_allowed_ants,
+         args)
 
-    print('SEEK SLAVE:')
-    seek_slave_msg = MsgProtocol.seek_slave(fake_uuid, fake_dest,
-                                            {'fake_item_1': 45,
-                                             'fake_item_2': 39,
-                                             'fake_item_3': 2,
-                                             'fake_item_4': 93})
-    print(seek_slave_msg)
-    print(MsgProtocol.is_seek_slave(seek_slave_msg))
-    print()
+    args = [fake_uuid, fake_dest,
+            {'fake_item_1': 45,
+             'fake_item_2': 39,
+             'fake_item_3': 2,
+             'fake_item_4': 93}]
+    test('SEEK SLAVE', MsgProtocol.seek_slave, MsgProtocol.is_seek_slave, args)
 
-    print('MEET ANTS:')
-    meet_ants_msg = MsgProtocol.meet_ants(fake_uuid, [fake_dest] * 4)
-    print(meet_ants_msg)
-    print(MsgProtocol.is_meet_ants(meet_ants_msg))
-    print()
+    args = [fake_uuid, fake_dest]
+    test('SEEK END', MsgProtocol.seek_end, MsgProtocol.is_seek_end, args)
+
+    args = [fake_uuid, [fake_dest] * 4]
+    test('MEET ANTS', MsgProtocol.meet_ants, MsgProtocol.is_meet_ants, args)
