@@ -137,13 +137,13 @@ export default class MapEntity {
         return ret;
     }
 
-    private initPlayerEntity(pos: Vector2, facing: string, teamName: string): Player {
+    private initPlayerEntity(pos: Vector2, facing: string, teamName: string, level: number): Player {
         let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
             (this.posEnd.y - this.posStart.y) / this.mapSize.y);
         let posStart = new Vector2(this.posStart.x + pos.x * mapRatio.x, this.posStart.y + pos.y * mapRatio.y);
         let posEnd = new Vector2(this.posStart.x + (pos.x + 1) * mapRatio.x, this.posStart.y + (pos.y + 1) * mapRatio.y);
 
-        let player = new Player(this.assetPool, teamName, new Vector2(posStart.x + (posEnd.x - posStart.x) / 2, posStart.y + (posEnd.y - posStart.y) / 2));
+        let player = new Player(this.assetPool, teamName, level, new Vector2(posStart.x + (posEnd.x - posStart.x) / 2, posStart.y + (posEnd.y - posStart.y) / 2));
         player.setRotation(new Vector3(0, facingTable[facing], 0));
         return player;
     }
@@ -186,7 +186,7 @@ export default class MapEntity {
                     this.mapItems[key] = [entry];
             } else if (type.id === 7) {
                 let info = (elem as IPlayerEntity);
-                let player = this.initPlayerEntity(new Vector2(info.pos.x, info.pos.y), info.facing, info.team);
+                let player = this.initPlayerEntity(new Vector2(info.pos.x, info.pos.y), info.facing, info.team, info.level);
                 this.player[info.id] = {info: info, obj: player};
             }
         });
@@ -209,7 +209,7 @@ export default class MapEntity {
 
     //EVENT
     public playerJoin(data: IPlayerEntity) {
-        let player = this.initPlayerEntity(new Vector2(data.pos.x, data.pos.y), data.facing, data.team);
+        let player = this.initPlayerEntity(new Vector2(data.pos.x, data.pos.y), data.facing, data.team, data.level);
         this.player[data.id] = {info: data, obj: player};
     }
 
@@ -314,6 +314,8 @@ export default class MapEntity {
             this.player[data.id].obj.setParticle(false);
             if (audio)
                 audio.play();
+            this.player[data.id].info.level += 1;
+            this.player[data.id].obj.setLevel(this.player[data.id].info.level);
         }
     }
 

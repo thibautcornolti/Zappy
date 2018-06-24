@@ -42,7 +42,7 @@ export default class Player {
     private particleEnable: boolean;
     private incantationSound: Audio | undefined;
 
-    constructor(assetPool: AssetsPool, teamName: string, position: Vector2 = new Vector2(0, 0)) {
+    constructor(assetPool: AssetsPool, teamName: string, level: number, position: Vector2 = new Vector2(0, 0)) {
         if (!assetPool.getGltfAssets("chicken")) {
             alert("Missing models: Chicken");
             window.location.href = "/";
@@ -55,6 +55,7 @@ export default class Player {
         this.speedZ = 0;
         this.speedRot = 0;
         this.object = assetPool.getGltfAssets("chicken").scene.clone();
+        this.setLevel(level);
         this.dest = new Vector3(position.x, 0, position.y);
         this.destRot = new Vector3(position.x, 0, position.y);
         this.object.position.set(position.x, 0, position.y);
@@ -153,6 +154,13 @@ export default class Player {
                 newZ -= this.speedZ;
             this.object.position.set(newX, this.dest.y, newZ);
         }, 25);
+    }
+
+    public setLevel(level: number) {
+        if (level < 1 || level > 8)
+            return ;
+        const scale = 0.3 + (level * 0.5) / 8;
+        this.object.scale.set(scale, scale, scale);
     }
 
     public setRotation(rotation: Vector3) {
