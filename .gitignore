@@ -2,3 +2,6 @@ venv
 .idea
 __pycache__
 zappy_server
+CMakeLists.txt
+.idea/
+.gitlab-ci.yml
