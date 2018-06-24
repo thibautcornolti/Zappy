@@ -937,7 +937,7 @@
     "buffers" : [
         {
             "byteLength" : 326220,
-            "uri" : "ChickenInventory.bin"
+            "uri" : "chicken_inventory.bin"
         }
     ],
     "meshes" : [
