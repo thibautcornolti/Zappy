@@ -18,7 +18,7 @@ void exec_right(control_t *control, client_t *client)
 {
 	(void)(control);
 	if (client->facing == NORTH)
-		client->facing = EAST;
+		client->facing = WEST;
 	else
 		client->facing -= 1;
 	add_pending(client, strdup(OK_MSG));

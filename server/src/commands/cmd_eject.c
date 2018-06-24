@@ -38,6 +38,5 @@ void exec_eject(control_t *control, client_t *client)
 			add_pending(cl, str);
 		}
 	}
-
 	client->task.type = NONE;
 }

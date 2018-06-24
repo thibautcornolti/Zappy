@@ -9,14 +9,18 @@
 #include <math.h>
 #include <stdio.h>
 
-static const float bounds[][2] = {[1] = {1.249046, 1.892547},
-	[2] = {1.892547, 2.819842},
-	[3] = {2.819842, 3.463343},
-	[4] = {3.463343, 4.390638},
-	[5] = {4.390638, 5.034139},
-	[6] = {5.034139, 5.961434},
-	[7] = {5.961434, 6.604936},
-	[8] = {6.604936, 7.532231}};
+static const float bounds[][3] = {
+	{1, -1.892547, -1.249046},
+	{2, -2.819842, -1.892547},
+	{3,     -M_PI, -2.819842},
+	{3,  2.819842,      M_PI},
+	{4,  1.892547,  2.819842},
+	{5,  1.249046,  1.892547},
+	{6,  0.321751,  1.249046},
+	{7,         0,  0.321751},
+	{7, -0.321751,         0},
+	{8, -1.249046, -0.321751},
+	{0, 0, 0}};
 
 void cmd_broadcast(control_t *control, client_t *client)
 {
@@ -33,7 +37,6 @@ float get_angle(control_t *control, vec2_t pos1, vec2_t pos2)
 	float x;
 	float y;
 	float norm;
-	float angle;
 
 	x = (float)(pos1.x) - (float)(pos2.x);
 	x = (x > control->params.width) ? -x : x;
@@ -44,10 +47,7 @@ float get_angle(control_t *control, vec2_t pos1, vec2_t pos2)
 		return (1.3);
 	x /= norm;
 	y /= norm;
-	angle = atan2f(y, x);
-	if (angle < 1.249046)
-		angle += 2 * M_PI;
-	return (angle);
+	return (atan2f(y, x));
 }
 
 void send_message(control_t *control, client_t *client, char *message)
@@ -61,11 +61,12 @@ void send_message(control_t *control, client_t *client, char *message)
 		if (cl->state != PLAYER || cl->fd == client->fd)
 			continue;
 		angle = get_angle(control, client->pos, cl->pos);
-		for (size_t i = 1; i < 9; ++i)
-			if (angle >= bounds[i][0] && angle <= bounds[i][1]) {
+		for (size_t i = 0; bounds[i][0]; ++i)
+			if (angle >= bounds[i][1] && angle <= bounds[i][2]) {
+				i = bounds[i][0];
 				i += 2 * cl->facing;
 				i %= 8;
-				i += 1;
+				// i += 1;
 				asprintf(&str, "message %lu, %s", i, message);
 				add_pending(cl, str);
 				break;

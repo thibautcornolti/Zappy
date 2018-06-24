@@ -45,7 +45,7 @@
 	}
 #endif
 
-typedef enum facing_e { NORTH = 0, WEST, SOUTH, EAST } facing_t;
+typedef enum facing_e { NORTH = 0, EAST, SOUTH, WEST } facing_t;
 
 typedef enum state_e { ANONYMOUS = 0, PLAYER, GUI, ADMIN } state_t;
 

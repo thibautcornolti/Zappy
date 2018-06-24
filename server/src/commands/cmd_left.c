@@ -17,7 +17,7 @@ void cmd_left(control_t *control, client_t *client)
 void exec_left(control_t *control, client_t *client)
 {
 	(void)(control);
-	if (client->facing == EAST)
+	if (client->facing == WEST)
 		client->facing = NORTH;
 	else
 		client->facing += 1;
