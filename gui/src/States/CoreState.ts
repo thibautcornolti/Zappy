@@ -118,9 +118,6 @@ export default class CoreState implements IState {
     public async update() {
         this.mainMap.update();
 
-
-        //TODO move this in a class
-        //TODO change inc by time
         let scale = (2 * Math.PI) / 2000;
         this.inc += 1;
         if (this.inc == 2000)

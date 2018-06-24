@@ -30,8 +30,8 @@ export default class SocketCom {
         });
         this.sock.on('disconnect', (reason: string) => {
            console.log(reason);
-           //TODO Uncomment this
-           // alert('disconnect');
+            alert("You have been disconnected from the server");
+            window.location.href = "/";
         });
 
         if (onData)

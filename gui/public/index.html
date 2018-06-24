@@ -114,5 +114,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"
         integrity="sha256-ji09tECORKvr8xB9iCl8DJ8iNMLriDchC1+p+yt1hSs=" crossorigin="anonymous"></script>
 <script src="dist/bundle.js"></script>
+<script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/SW.js", { scope: "/" }).then(function (registration) {
+        }).catch(function () {
+            console.warn("Service Worker registration failed !");
+        });
+    }
+</script>
 </body>
 </html>
