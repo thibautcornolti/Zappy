@@ -236,7 +236,6 @@ export default class Player {
         this.object.add(this.broadcastBubbleTexture);
         this.broadcastBubbleTexture.scale.set(0.03, 0.03, 0.03);
         this.broadcastBubbleInterval = setInterval(() => {
-            console.log("wtf")
             this.broadcastBubbleTexture.rotation.set(
                 0,
                 -this.object.rotation.y,
@@ -247,7 +246,7 @@ export default class Player {
             this.object.remove(this.broadcastBubbleTexture);
             if (this.broadcastBubbleInterval)
                 clearInterval(this.broadcastBubbleInterval);
-        }, 10000);
+        }, 800);
     }
 
 }

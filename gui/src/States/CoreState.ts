@@ -70,7 +70,6 @@ export default class CoreState implements IState {
 
             if (!elem.length)
                 return;
-            console.log(elem);
             try {
                 json = JSON.parse(elem);
             } catch (e) {
