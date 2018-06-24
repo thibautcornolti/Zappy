@@ -37,6 +37,7 @@ module.exports = {
         "mtl-loader": "THREE.MTLLoader",
         "gltf-loader": "THREE.GLTFLoader",
         "draco-loader": "THREE.DRACOLoader",
+        "gpu-particle": "THREE.GPUParticleSystem"
         // "three-obj-mtl-loader": "three-obj-mtl-loader"
     }
 };
