@@ -38,6 +38,10 @@ export default class InitState implements IState {
             AudioManager.getInstance().loadSoundProm("incantationSuccess", "sounds/incantation/success.ogg"),
             AudioManager.getInstance().loadSoundProm("eggDrop", "sounds/egg/drop.ogg"),
             AudioManager.getInstance().loadSoundProm("eggSpawn", "sounds/egg/spawn.ogg"),
+            AudioManager.getInstance().loadSoundProm("pickup", "sounds/pickup.ogg"),
+            AudioManager.getInstance().loadSoundProm("say1", "sounds/chicken/say1.ogg"),
+            AudioManager.getInstance().loadSoundProm("say2", "sounds/chicken/say2.ogg"),
+            AudioManager.getInstance().loadSoundProm("say3", "sounds/chicken/say3.ogg"),
         ];
 
         Promise.all(sounds)
@@ -118,7 +122,18 @@ export default class InitState implements IState {
                 obj.scene.scale.set(0.5, 0.5, 0.5);
                 this.loading.incPercentage(75 / loader.length);
             }),
+            this.share.getAssetsPool().loadGlTFProm('chicken_inventory', 'models/chicken/chicken_inventory.gltf', THREE.FrontSide, (obj) => {
+                obj.scene.scale.set(0.5, 0.5, 0.5);
+                this.loading.incPercentage(75 / loader.length);
+            }),
+            this.share.getAssetsPool().loadGlTFProm('chicken_looking', 'models/chicken/chicken_looking.gltf', THREE.FrontSide, (obj) => {
+                obj.scene.scale.set(0.5, 0.5, 0.5);
+                this.loading.incPercentage(75 / loader.length);
+            }),
             this.share.getAssetsPool().loadCubeTextureProm('skybox', this.getTextureSkyBox(), () => {
+                this.loading.incPercentage(75 / loader.length);
+            }),
+            this.share.getAssetsPool().loadPlaneMeshProm('bubble', 'textures/bubble.png', (obj) => {
                 this.loading.incPercentage(75 / loader.length);
             }),
             // this.share.getAssetsPool().loadJson('test', 'models/scene-animation.json', (obj) => {

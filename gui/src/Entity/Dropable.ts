@@ -35,6 +35,10 @@ export default class Dropable {
     public getRotation() : Vector3 {
         return this.object.rotation.toVector3();
     }
+    
+    public remove() : void {
+        GUIManagger.getInstance().getScene().remove(this.object);
+    }
 
     public update = () => {
         let position = Object.assign({}, this.object.position);
@@ -45,4 +49,5 @@ export default class Dropable {
         // this.object.position.set(position.x, position.y, position.z);
         this.frame += 1;
     };
+
 }

@@ -36,11 +36,16 @@ export default class CoreState implements IState {
         this.eventBinding["player-death"] = this.mainMap.playerDeath.bind(this.mainMap);
         this.eventBinding["player-move"] = this.mainMap.playerMove.bind(this.mainMap);
         this.eventBinding["player-turn"] = this.mainMap.playerTurn.bind(this.mainMap);
+        this.eventBinding["player-look"] = this.mainMap.playerLook.bind(this.mainMap);
+        this.eventBinding["player-inventory"] = this.mainMap.playerInventory.bind(this.mainMap);
+        this.eventBinding["item-pickup"] = this.mainMap.itemPickup.bind(this.mainMap);
+        this.eventBinding["item-drop"] = this.mainMap.itemDrop.bind(this.mainMap);
         this.eventBinding["incantation-start"] = this.mainMap.playerIncantationStart.bind(this.mainMap);
         this.eventBinding["incantation-fail"] = this.mainMap.playerIncantationFail.bind(this.mainMap);
         this.eventBinding["incantation-success"] = this.mainMap.playerIncantationSuccess.bind(this.mainMap);
         this.eventBinding["egg-drop"] = this.mainMap.playerDropEgg.bind(this.mainMap);
         this.eventBinding["egg-hatch"] = this.mainMap.playerHatchEgg.bind(this.mainMap);
+        this.eventBinding["broadcast"] = this.mainMap.playerBroadcast.bind(this.mainMap);
     }
 
     public init() {
@@ -84,7 +89,6 @@ export default class CoreState implements IState {
 
             if (!elem.length)
                 return;
-            console.log(elem);
             try {
                 json = JSON.parse(elem);
             } catch (e) {
