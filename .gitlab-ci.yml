@@ -3,7 +3,6 @@ stages:
   - basic
   - commands
   - event
-  
 
 srv_compile:
   stage: build
@@ -17,6 +16,7 @@ srv_compile:
 
 srv_connect:
   stage: basic
+  retry: 2
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/connect.input > /tmp/zappy_output
@@ -25,91 +25,103 @@ srv_connect:
 
 srv_join:
   stage: basic
+  retry: 2
   script:
-    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/join.output`"
   allow_failure: false
 
 srv_unknown:
   stage: commands
+  retry: 2
   script:
-    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/unknown.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/unknown.output`"
 
 srv_player_forward:
   stage: commands
+  retry: 2
   script:
-    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/forward.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/forward.output`"
 
 srv_player_death:
   stage: commands
+  retry: 2
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
-    - nc 0 4242 -w 5 < test/server/death.input > /tmp/zappy_output
+    - nc 0 4242 -w 10 < test/server/death.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/death.output`"
 
 srv_player_broadcast:
   stage: commands
+  retry: 2
   script:
-    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output &
     - nc 0 4242 -w 5 < test/server/broadcast.input
     - cat /tmp/zappy_output | grep "`cat test/server/broadcast.output`"
 
 srv_player_connect_nbr:
   stage: commands
+  retry: 2
   script:
-    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/connect_nbr.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/connect_nbr.output`"
 
 srv_player_fork:
   stage: commands
+  retry: 2
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
-    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
-    - nc 0 4242 -w 5 < test/server/fork.input
+    - nc 0 4242 -w 10 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 10 < test/server/fork.input
     - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/fork.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/fork.output`"
 
 srv_player_incantation_fail:
   stage: commands
+  retry: 2
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
-    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
-    - nc 0 4242 -w 5 < test/server/incantation_fail.input
+    - nc 0 4242 -w 10 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 10 < test/server/incantation_fail.input
     - cat /tmp/zappy_output | grep "`cat test/server/incantation_fail.output`"
 
 srv_player_inventory:
   stage: commands
+  retry: 2
   script:
-    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/inventory.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/inventory.output`"
 
 srv_gui_event_join:
   stage: event
+  retry: 2
   script:
-    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
-    - nc 0 4242 -w 2 < test/server/gui_connect.input > /tmp/zappy_output &
-    - nc 0 4242 -w 1 < test/server/join.input
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 5 < test/server/join.input
     - cat /tmp/zappy_output | grep "`cat test/server/event_join.output`"
 
 srv_gui_event_broadcast:
   stage: event
+  retry: 2
   script:
-    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
     - nc 0 4242 -w 5 < test/server/event_broadcast.input
     - cat /tmp/zappy_output | grep "`cat test/server/event_broadcast.output`"
 
 srv_gui_event_egg:
   stage: event
+  retry: 2
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
-    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
-    - nc 0 4242 -w 5 < test/server/fork.input
+    - nc 0 4242 -w 10 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 10 < test/server/fork.input
     - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/event_egg.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/event_egg.output`"
