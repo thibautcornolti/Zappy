@@ -57,10 +57,12 @@ static bool cycle_adjustment(control_t *ctrl)
 {
 	struct timeval stop, start;
 	long tr = (long)(round(1 * 1e3 / ctrl->params.tickrate));
-	long ms = tr;
+	long ms;
 	double i1;
 	double i2;
 
+	tr = tr > 0 ? tr : 1;
+	ms = tr;
 	CHECK(gettimeofday(&start, NULL), == -1, -1);
 	while (ms > 0) {
 		if (poll_wait(ctrl->list, (int)ms) > 0)
