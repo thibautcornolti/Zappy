@@ -42,6 +42,7 @@ FILES		=	args					\
 			admin/adm_cast				\
 			admin/adm_killall			\
 			admin/adm_lvlup				\
+			admin/adm_face				\
 			gui/gui_entities			\
 			gui/gui_map_size			\
 			gui/gui_player				\

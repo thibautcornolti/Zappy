@@ -21,7 +21,7 @@ static tuple_t gui[] = {{"map-size", &gui_map_size},
 static tuple_t admin[] = {{"getids", &adm_getids}, {"cast", &adm_cast},
 	{"killall", &adm_killall}, {"lvlup", &adm_lvlup}, {"move", &adm_move},
 	{"spawn", &adm_spawn}, {"teams", &adm_teams},
-	{"tickrate", &adm_tickrate}};
+	{"tickrate", &adm_tickrate}, {"face", &adm_face}};
 
 static tuple_t *commands[] = {[PLAYER] = player, [GUI] = gui, [ADMIN] = admin};
 

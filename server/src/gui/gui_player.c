@@ -26,7 +26,7 @@ static bool convert_to_number(size_t *ret, elem_t *elem)
 	return (true);
 }
 
-static bool find_client(size_t *id, client_t *client, size_t idx)
+bool find_client(size_t *id, client_t *client, size_t idx)
 {
 	(void)(idx);
 	return (*id == client->id);

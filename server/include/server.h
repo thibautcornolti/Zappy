@@ -18,7 +18,7 @@
 #define CMD_SIZE 2048
 #define PLAYER_CMD_COUNT 12
 #define GUI_CMD_COUNT 5
-#define ADMIN_CMD_COUNT 8
+#define ADMIN_CMD_COUNT 9
 #define FOOD_DELAY 126
 
 #define OK_MSG "ok"
@@ -186,6 +186,7 @@ void add_pending(client_t *, char *);
 ** Client management function
 */
 bool evict_client(control_t *, client_t *);
+bool find_client(size_t *, client_t *, size_t);
 
 /*
 ** Command pre-processing
@@ -357,6 +358,7 @@ void adm_cast(control_t *, client_t *);
 void adm_killall(control_t *, client_t *);
 void adm_move(control_t *, client_t *);
 void adm_getids(control_t *, client_t *);
+void adm_face(control_t *, client_t *);
 
 /*
 ** GUI commands
