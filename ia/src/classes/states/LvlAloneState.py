@@ -1,7 +1,9 @@
 # coding = utf-8
 import enum
 from src.classes.com.Controller import requirement, controller, defaultError
+from src.classes.com.SafeController import safe_controller
 from src.classes.ia_res.Ant import ant
+from src.classes.ia_res.TrackableTransactions import InventoryTransaction
 from src.classes.states.IncantationState import IncantationState
 from src.classes.states.SeekEmptyTileState import SeekEmptyTileState
 from src.classes.states.SeekItemsState import SeekItemsState
@@ -47,7 +49,7 @@ class LevelUpAlone(AAIState):
 
     def on_push(self, cli):
         super().on_push(cli)
-        controller.inventory(self.aloneLvl)
+        safe_controller.execute(InventoryTransaction(self.aloneLvl))
 
     def popped_over(self):
         super().popped_over()

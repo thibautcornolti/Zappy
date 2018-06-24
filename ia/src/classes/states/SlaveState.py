@@ -20,7 +20,6 @@ class SlaveState(AAIState):
         for m in controller.msgQueue:
             seek = MsgProtocol.is_seek_slave(m.text)
             if seek and seek['recipient'] == ant.uuid and seek['sender'] == ant.queen.uuid:
-                my_log('I have finally a real duty!! :')
                 items = {
                     Resources(name): int(value)
                     for name, value in seek['items'].items()
@@ -36,7 +35,6 @@ class SlaveState(AAIState):
         for m in controller.msgQueue:
             meet = MsgProtocol.is_meet_ants(m.text)
             if meet and ant.uuid in meet['recipients'] and meet['sender'] == ant.queen.uuid:
-                my_log("My dear queen asked me to join her, let's go!")
                 statemachine.closure = lambda ok=None: statemachine.replace(FollowQueenState())
                 return
         meet = LookTransaction(self.meet_callback)
@@ -54,7 +52,6 @@ class SlaveState(AAIState):
             meet = LookTransaction(self.meet_callback)
             safe_controller.execute(meet, rollback=False)
 
-        my_log('I accomplished my duty ! :)')
         msg = MsgProtocol.seek_end(ant.uuid, ant.queen.uuid)
         transaction = BroadcastTransaction(msg, callback)
         safe_controller.execute(transaction, rollback=False)
