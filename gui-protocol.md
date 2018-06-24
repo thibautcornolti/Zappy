@@ -340,11 +340,22 @@ Echec de l'incantation:
 
 ### Oeuf
 
-Dépôt d'oeuf
+Debut du dépôt d'oeuf
 ```json
 {
     "type": "event",
-    "event-type": "egg-drop",
+    "event-type": "egg-drop-start",
+    "data": {
+        "player-id": 2
+    }
+}
+```
+
+Fin du dépôt d'oeuf
+```json
+{
+    "type": "event",
+    "event-type": "egg-drop-end",
     "data": {
         "player-id": 2,
         "egg-id": 3,
