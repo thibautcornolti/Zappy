@@ -92,6 +92,10 @@ export default class MainScene {
         });
     }
 
+    public reversePosition(pos: Vector3): Vector2 {
+        return this.map.reversePosition(pos);
+    }
+
     // EVENT
     public playerJoin(data: any) {
         data = (data as IPlayerEntity);

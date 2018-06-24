@@ -207,9 +207,9 @@ export default class Player {
     }
 
     public remove() {
-        GUIManagger.getInstance().getScene().remove(this.object);
+        GUIManager.getInstance().getScene().remove(this.object);
         this.tempObjects.forEach((to) => {
-            GUIManagger.getInstance().getScene().remove(to);
+            GUIManager.getInstance().getScene().remove(to);
         })
         let audio = AudioManager.getInstance().getSound("chickenDeath");
         if (this.particleInterval)
@@ -272,17 +272,17 @@ export default class Player {
             this.tempObjectsTimeout = undefined;
         }
         this.tempObjects.forEach((to) => {
-            GUIManagger.getInstance().getScene().remove(to);
+            GUIManager.getInstance().getScene().remove(to);
         });
         if (nbr == -1) {
-            GUIManagger.getInstance().getScene().add(this.object);
+            GUIManager.getInstance().getScene().add(this.object);
         } else {
-            GUIManagger.getInstance().getScene().add(this.tempObjects[nbr]);
+            GUIManager.getInstance().getScene().add(this.tempObjects[nbr]);
             this.tempObjectsTimeout = setTimeout(() => {
                 this.tempObjects.forEach((to) => {
-                    GUIManagger.getInstance().getScene().remove(to);
+                    GUIManager.getInstance().getScene().remove(to);
                 });
-                GUIManagger.getInstance().getScene().add(this.object);
+                GUIManager.getInstance().getScene().add(this.object);
             }, 1000);
         }
     }

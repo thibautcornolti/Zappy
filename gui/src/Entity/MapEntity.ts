@@ -3,7 +3,7 @@ import {Audio, Object3D, Raycaster, Vector2, Vector3} from "three";
 import AssetsPool from "../AssetsPool";
 import {GLTF} from "three-gltf-loader";
 import GUIManager from "../GUIManager";
-import {IDataResp, IEgg, IEntitiesResp, IIncantation, IPlayerEntity, ITileResp} from "../ICom";
+import {IBroadcast, IDataResp, IEgg, IEntitiesResp, IIncantation, IItemEntity, IPlayerEntity, ITileResp} from "../ICom";
 import Dropable from "./Dropable";
 import Player from "./Player";
 import AudioManager from "../AudioManager";

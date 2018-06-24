@@ -37,7 +37,7 @@ export default class Dropable {
     }
     
     public remove() : void {
-        GUIManagger.getInstance().getScene().remove(this.object);
+        GUIManager.getInstance().getScene().remove(this.object);
     }
 
     public update = () => {
