@@ -320,13 +320,17 @@ export default class MapEntity {
     }
 
     public playerDropEgg(data: IEgg) {
-        this.egg[data["egg-id"]] = new Egg(this.assetPool, this.convertPosition(new Vector2(data.pos.x, data.pos.y)));
-        this.idEgg += 1;
+        if (this.egg[data["egg-id"]]) {
+            this.egg[data["egg-id"]] = new Egg(this.assetPool, this.convertPosition(new Vector2(data.pos.x, data.pos.y)));
+            this.idEgg += 1;
+        }
     }
 
     public playerHatchEgg(data: IEgg) {
-        this.egg[data["egg-id"]].remove();
-        delete this.egg[data["egg-id"]];
+        if (this.egg[data["egg-id"]]) {
+            this.egg[data["egg-id"]].remove();
+            delete this.egg[data["egg-id"]];
+        }
     }
 
     public playerBroadcast(data: IBroadcast) {
