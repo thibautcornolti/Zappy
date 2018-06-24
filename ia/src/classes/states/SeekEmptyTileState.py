@@ -22,7 +22,6 @@ class SeekEmptyTileState(AAIState):
         found = False
         for i in range(len(look)):
             if 'player' not in look[i]:
-                my_log("Seek empty tile : ", look[i], " ", i)
                 found = True
                 event = InventoryTransaction(lambda ok=None: None)
                 path.addConePoint(i, event)
@@ -40,7 +39,6 @@ class SeekEmptyTileState(AAIState):
             path.addPoint(Vector(0, 1), LookTransaction(lambda value: None))
             self.progress += 1
         path, look = path.generateOrder(False)
-        my_log(path)
         self.pathHandler = PathManipulator(path, self.updateAntLook)
         safe_controller.execute(self.pathHandler)
 
@@ -49,7 +47,6 @@ class SeekEmptyTileState(AAIState):
         found, path = self.findEmptyTile(look)
         if found:
             save = path.generateOrder(False)[0]
-            my_log(save)
             self.pathHandler = PathManipulator(
                 save,
                 lambda ok=None: statemachine.replace(self.replacement_state)

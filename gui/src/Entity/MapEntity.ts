@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import {Audio, Vector2, Vector3} from "three";
+import {Audio, Object3D, Raycaster, Vector2, Vector3} from "three";
 import AssetsPool from "../AssetsPool";
 import {GLTF} from "three-gltf-loader";
-import GUIManagger from "../GUIManager";
-import {IDataResp, IEgg, IEntitiesResp, IIncantation, IPlayerEntity, ITileResp} from "../ICom";
+import GUIManager from "../GUIManager";
+import {IBroadcast, IDataResp, IEgg, IEntitiesResp, IIncantation, IItemEntity, IPlayerEntity, ITileResp} from "../ICom";
 import Dropable from "./Dropable";
 import Player from "./Player";
 import AudioManager from "../AudioManager";
@@ -15,13 +15,14 @@ interface IType {
 }
 
 interface IEntitiesContent {
-    type: string
+    type: string,
     data: [{
         pos: {
             x: number,
             y: number,
-        }
-    }]
+        },
+        amount?: number,
+    }],
 }
 
 let facingTable: { [index: string]: number } = {
@@ -66,8 +67,15 @@ let typeTable: { [index: string]: IType } = {
     }
 };
 
+interface ITile {
+    name: string,
+    amount: number;
+    dropable: Dropable,
+}
+
 export default class MapEntity {
     private map: GLTF;
+    private mapItems: {[key: string]: ITile[]};
     private posStart: Vector2;
     private posEnd: Vector2;
     private assetPool: AssetsPool;
@@ -88,12 +96,14 @@ export default class MapEntity {
         this.egg = {};
         this.idEgg = 0;
 
+        this.mapItems = {};
         this.mapSize = mapSize;
         this.assetPool = assetsPool;
         this.map = assetsPool.getGltfAssets("map");
         this.map.scene.position.set(0, -3.6, 0);
         this.map.scene.rotation.y = (Math.PI / 2) * 3;
-        GUIManagger.getInstance().getScene().add(this.map.scene);
+        GUIManager.getInstance().getScene().add(this.map.scene);
+        // document.addEventListener('mousedown', this.onClick, false);
     }
 
     public getPosStart() {
@@ -114,31 +124,7 @@ export default class MapEntity {
         drop.setPosition(new Vector3(posStart.x + scale.x * pos.x, 0, posStart.y + scale.y * pos.y));
     }
 
-    public setTile(data: ITileResp, posStart: Vector2, posEnd: Vector2) {
-        let obj = ([] as any);
-        let ressources = data.data;
-        ressources.forEach((elem) => {
-            let type: IType | undefined;
-            let drop;
-            try {
-                type = (typeTable[(elem.type as string)] || {name: elem.type, id: -1});
-                drop = new Dropable(this.assetPool, type.name);
-            } catch (e) {
-                console.warn("Unable to create a \"" + ((type) ? type.name : "Undefined") + "\" Dropable");
-                return;
-            }
-            if (type.id >= 0 && type.id <= 6)
-                this.setPosDragable(drop, posStart, posEnd, new Vector2(type.id % 3, Math.floor(type.id / 3)));
-            // console.log(type.id, new Vector2(type.id % 3, Math.floor(type.id / 3)));
-            // drop.setPosition(new )
-            // else
-            // drop.setPosition(new Vector3(posStart.x, 0, posStart.y));
-            obj.push(drop);
-        });
-        this.content.set({x: data.pos.x, y: data.pos.y}, {data: data.data, obj: obj});
-    }
-
-    private calcPosEntity(id: number, pos: Vector2): Vector2 {
+    private calcPosEntity(id: number, pos: Vector2) : Vector2 {
         let ret = new Vector2();
         let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
             (this.posEnd.y - this.posStart.y) / this.mapSize.y);
@@ -152,33 +138,56 @@ export default class MapEntity {
         return ret;
     }
 
-    private initPlayerEntity(pos: Vector2, facing: string): Player {
+    private initPlayerEntity(pos: Vector2, facing: string, teamName: string, level: number): Player {
         let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
             (this.posEnd.y - this.posStart.y) / this.mapSize.y);
         let posStart = new Vector2(this.posStart.x + pos.x * mapRatio.x, this.posStart.y + pos.y * mapRatio.y);
         let posEnd = new Vector2(this.posStart.x + (pos.x + 1) * mapRatio.x, this.posStart.y + (pos.y + 1) * mapRatio.y);
 
-        let player = new Player(this.assetPool, new Vector2(posStart.x + (posEnd.x - posStart.x) / 2, posStart.y + (posEnd.y - posStart.y) / 2));
+        let player = new Player(this.assetPool, teamName, level, new Vector2(posStart.x + (posEnd.x - posStart.x) / 2, posStart.y + (posEnd.y - posStart.y) / 2));
         player.setRotation(new Vector3(0, facingTable[facing], 0));
         return player;
+    }
+
+    public getDropable(data: IItemEntity): Dropable | undefined {
+        let drop;
+        let type = (typeTable[data.item] || {name: data.item, id: -1});
+        try {
+            drop = new Dropable(this.assetPool, type.name);
+        } catch (e) {
+            console.warn("Unable to create a \"" + ((type) ? type.name : "Undefined") + "\" Dropable");
+            return;
+        }
+        let pos = this.calcPosEntity(type.id, new Vector2(data.pos.x, data.pos.y));
+        drop.setPosition(new Vector3(pos.x, 0, pos.y));
+        return drop;
     }
 
     public initEntitiesTile(resp: IEntitiesContent) {
         let type = (typeTable[resp.type] || {name: resp.type, id: -1});
         resp.data.forEach((elem) => {
             if (type.id >= 0 && type.id < 7) {
-                let drop;
-                try {
-                    drop = new Dropable(this.assetPool, type.name);
-                } catch (e) {
-                    console.warn("Unable to create a \"" + ((type) ? type.name : "Undefined") + "\" Dropable");
-                    return;
-                }
-                let pos = this.calcPosEntity(type.id, new Vector2(elem.pos.x, elem.pos.y));
-                drop.setPosition(new Vector3(pos.x, 0, pos.y));
+                let drop = this.getDropable({
+                    id: -1,
+                    item: resp.type,
+                    pos: elem.pos,
+                });
+                if (!drop)
+                    return ;
+                const entry = {
+                    name: resp.type,
+                    amount: elem.amount as number,
+                    dropable: drop,
+                };
+                const key = new String(elem.pos.x) + ',' + new String(elem.pos.y);
+                const it = this.mapItems[key];
+                if (it)
+                    it.push(entry);
+                else
+                    this.mapItems[key] = [entry];
             } else if (type.id === 7) {
                 let info = (elem as IPlayerEntity);
-                let player = this.initPlayerEntity(new Vector2(info.pos.x, info.pos.y), info.facing);
+                let player = this.initPlayerEntity(new Vector2(info.pos.x, info.pos.y), info.facing, info.team, info.level);
                 this.player[info.id] = {info: info, obj: player};
             }
         });
@@ -198,10 +207,17 @@ export default class MapEntity {
         return ret;
     }
 
+    public reversePosition(pos: Vector3): Vector2 {
+        let ret = new Vector2();
+
+        ret.x = Math.floor((pos.x - this.posStart.x) * (this.mapSize.x) / (this.posEnd.x - this.posStart.x));
+        ret.y = Math.floor((pos.z - this.posStart.y) * (this.mapSize.y) / (this.posEnd.y - this.posStart.y));
+        return ret;
+    }
 
     //EVENT
     public playerJoin(data: IPlayerEntity) {
-        let player = this.initPlayerEntity(new Vector2(data.pos.x, data.pos.y), data.facing);
+        let player = this.initPlayerEntity(new Vector2(data.pos.x, data.pos.y), data.facing, data.team, data.level);
         this.player[data.id] = {info: data, obj: player};
     }
 
@@ -226,6 +242,76 @@ export default class MapEntity {
         }
     }
 
+    public playerLook(data: IPlayerEntity) {
+        if (this.player[data.id]) {
+            this.player[data.id].obj.setChickenModel(1);
+        }
+    }
+
+    public playerInventory(data: IPlayerEntity) {
+        if (this.player[data.id]) {
+            this.player[data.id].obj.setChickenModel(0);
+        }
+    }
+
+    public itemPickup(data: IItemEntity) {
+        let audio = AudioManager.getInstance().getSound("pickup");
+        if (audio)
+            audio.play();
+        const key = new String(data.pos.x) + ',' + new String(data.pos.y);
+        const items = this.mapItems[key];
+        if (items == undefined)
+            return ;
+        for (let i = items.length - 1; i >= 0; i--) {
+            if (items[i].name == data.item) {
+                items[i].amount -= 1;
+                if (items[i].amount == 0) {
+                    items[i].dropable.remove()
+                    items.splice(i, 1);
+                }
+                break;
+            }
+        }
+    }
+
+    public itemDrop(data: IItemEntity) {
+        let audio = AudioManager.getInstance().getSound("pickup");
+        if (audio)
+            audio.play();
+        const key = new String(data.pos.x) + ',' + new String(data.pos.y);
+        const items = this.mapItems[key];
+        
+        let getItemEntry = (): ITile | undefined => {
+            let drop;
+            drop = this.getDropable(data)
+            if (drop)
+                return {
+                    name: data.item,
+                    amount: 1,
+                    dropable: drop,
+                };
+        }
+
+        if (items == undefined) {
+            const entry = getItemEntry();
+            if (!entry)
+                return ;
+            this.mapItems[key] = [entry]
+            
+        } else {
+            for (let i = items.length - 1; i >= 0; i--) {
+                if (items[i].name == data.item) {
+                    items[i].amount += 1;
+                    return ;
+                }
+            }
+            const entry = getItemEntry();
+            if (!entry)
+                return ;
+            items.push(entry);
+        }
+    }
+    
     public playerIncantationStart(data: IIncantation) {
         if (this.player[data.id]) {
             this.player[data.id].obj.setParticle(true);
@@ -247,16 +333,31 @@ export default class MapEntity {
             this.player[data.id].obj.setParticle(false);
             if (audio)
                 audio.play();
+            this.player[data.id].info.level += 1;
+            this.player[data.id].obj.setLevel(this.player[data.id].info.level);
         }
     }
 
     public playerDropEgg(data: IEgg) {
-        this.egg[data["egg-id"]] = new Egg(this.assetPool, this.convertPosition(new Vector2(data.pos.x, data.pos.y)));
-        this.idEgg += 1;
+        if (this.egg[data["egg-id"]]) {
+            this.egg[data["egg-id"]] = new Egg(this.assetPool, this.convertPosition(new Vector2(data.pos.x, data.pos.y)));
+            this.idEgg += 1;
+        }
     }
 
     public playerHatchEgg(data: IEgg) {
-        this.egg[data["egg-id"]].remove();
-        delete this.egg[data["egg-id"]];
+        if (this.egg[data["egg-id"]]) {
+            this.egg[data["egg-id"]].remove();
+            delete this.egg[data["egg-id"]];
+        }
+    }
+
+    public playerBroadcast(data: IBroadcast) {
+        if (this.player[data.id]) {
+            let audio = AudioManager.getInstance().getSound("say" + Math.floor(Math.random() * 3 + 1));
+            if (audio)
+                audio.play();
+            this.player[data.id].obj.setBroadcastBubble();
+        }
     }
 }

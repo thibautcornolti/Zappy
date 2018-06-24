@@ -6,7 +6,7 @@ from src.classes.com.SafeController import safe_controller
 from src.classes.ia_res.Ant import ant
 from collections import Counter
 from src.classes.ia_res.TrackableTransactions import TakeTransaction, SetTransaction, InventoryTransaction, \
-    LookTransaction, PackedTransaction, IncantationTransaction, ForwardTransaction
+    LookTransaction, PackedTransaction, IncantationTransaction
 from src.classes.states.StateMachine import AAIState, statemachine
 from src.misc import my_log, my_print
 
@@ -18,6 +18,7 @@ class IncantationState(AAIState):
 
     def __init__(self):
         super().__init__("Incantation -> " + str(ant.lvl + 1))
+        self.delay = 3
         self.require = requirement[ant.lvl + 1][1]
         self.look = dict()
         self.inventory = dict()
@@ -38,15 +39,15 @@ class IncantationState(AAIState):
             my_print("Failed to LvL up !")
 
     def endIncantationState(self, *args):
-        my_log("INCANT ", statemachine._stack)
         statemachine.closure = lambda: statemachine.pop()
 
     # endregion incantation callbacks
 
     def castIncantation(self, incantation):
         incant = IncantationTransaction(self.incantationStart, self.incantationStart, self.incantationEnd, self.incantationEnd, lambda ok=None: None)
-        incantation.addTransaction(LookTransaction(lambda ok: my_log(ok[0])))
         incantation.addTransaction(incant)
+        for i in range(self.delay):
+            incantation.addTransaction(LookTransaction(lambda ok: None))
         safe_controller.execute(incantation)
 
     def add_usefull_items(self, transactions):

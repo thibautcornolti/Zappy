@@ -1,19 +1,19 @@
 import * as THREE from "three"
 import StateShare from "../States/StateShare"
-import GUIManagger from "../GUIManager"
+import GUIManager from "../GUIManager"
 import {Vector2, Vector3} from "three";
-import {IEgg, IEntitiesResp, IIncantation, IPlayerEntity, ITileResp} from "../ICom";
+import {IEgg, IEntitiesResp, IIncantation, IPlayerEntity, IItemEntity, ITileResp} from "../ICom";
 import MapEntity from "../Entity/MapEntity";
 
 export default class MainScene {
     private map: MapEntity;
     private state: StateShare;
-    private manager: GUIManagger;
+    private manager: GUIManager;
 
     constructor(state: StateShare) {
         this.state = state;
         this.map = new MapEntity(this.state.getAssetsPool(), this.state.getMapSize());
-        this.manager = GUIManagger.getInstance();
+        this.manager = GUIManager.getInstance();
     }
 
     private setCamera() {
@@ -31,32 +31,32 @@ export default class MainScene {
         light = new THREE.DirectionalLight(0xffffff, intensity);
         light.position.set(0, 1, 0);
         light.lookAt(0, 0, 0);
-        GUIManagger.getInstance().getScene().add(light);
+        GUIManager.getInstance().getScene().add(light);
 
         light = new THREE.DirectionalLight(0xffffff, intensity);
         light.position.set(1, 1, 1);
         light.lookAt(0, 0, 0);
-        GUIManagger.getInstance().getScene().add(light);
+        GUIManager.getInstance().getScene().add(light);
 
         light = new THREE.DirectionalLight(0xffffff, intensity);
         light.position.set(-1, 1, -1);
         light.lookAt(0, 0, 0);
-        GUIManagger.getInstance().getScene().add(light);
+        GUIManager.getInstance().getScene().add(light);
 
         light = new THREE.DirectionalLight(0xffffff, intensity);
         light.position.set(0, 1, 0);
         light.lookAt(0, 20, 0);
-        GUIManagger.getInstance().getScene().add(light);
+        GUIManager.getInstance().getScene().add(light);
 
         light = new THREE.DirectionalLight(0xffffff, intensity);
         light.position.set(1, 1, 1);
         light.lookAt(0, 20, 0);
-        GUIManagger.getInstance().getScene().add(light);
+        GUIManager.getInstance().getScene().add(light);
 
         light = new THREE.DirectionalLight(0xffffff, intensity);
         light.position.set(-1, 1, -1);
         light.lookAt(0, 20, 0);
-        GUIManagger.getInstance().getScene().add(light);
+        GUIManager.getInstance().getScene().add(light);
     }
 
     private generateSkyBox() {
@@ -92,16 +92,8 @@ export default class MainScene {
         });
     }
 
-    public setTile(data: ITileResp) {
-        let pos = new Vector2(data.pos.x, data.pos.y);
-        let mapSize = new Vector2(this.state.getMapSize().x, this.state.getMapSize().y);
-        let ratio = new Vector2(this.map.getPosEnd().x - this.map.getPosStart().x, this.map.getPosEnd().y - this.map.getPosStart().y);
-        let scale = new Vector2(ratio.x / mapSize.x, ratio.y / mapSize.y);
-
-        this.map.setTile(data,
-            new Vector2(pos.x * scale.x + this.map.getPosStart().x, pos.y * scale.y + this.map.getPosStart().y),
-            new Vector2((pos.x + 1) * scale.x + this.map.getPosStart().x, (pos.y + 1) * scale.y + this.map.getPosStart().y)
-        );
+    public reversePosition(pos: Vector3): Vector2 {
+        return this.map.reversePosition(pos);
     }
 
     // EVENT
@@ -123,6 +115,26 @@ export default class MainScene {
     public playerTurn(data: any) {
         data = (data as IPlayerEntity);
         this.map.playerTurn(data);
+    }
+
+    public playerLook(data: any) {
+        data = (data as IPlayerEntity);
+        this.map.playerLook(data);
+    }
+
+    public playerInventory(data: any) {
+        data = (data as IPlayerEntity);
+        this.map.playerInventory(data);
+    }
+
+    public itemPickup(data: any) {
+        data = (data as IItemEntity)
+        this.map.itemPickup(data)
+    }
+
+    public itemDrop(data: any) {
+        data = (data as IItemEntity)
+        this.map.itemDrop(data)
     }
 
     public playerIncantationStart(data: any) {
@@ -148,5 +160,10 @@ export default class MainScene {
     public playerHatchEgg(data: any) {
         data = (data as IEgg);
         this.map.playerHatchEgg(data);
+    }
+
+    public playerBroadcast(data: any) {
+        data = (data as IEgg);
+        this.map.playerBroadcast(data);
     }
 }

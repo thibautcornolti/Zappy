@@ -26,18 +26,18 @@ class Cmd(enum.Enum):
 
 
 class CmdCost(enum.Enum):
-    Forward = int(10)
-    Right = int(10)
-    Left = int(10)
-    Look = int(10)
-    Inventory = int(2)
-    Broadcast = int(10)
+    Forward = int(1)
+    Right = int(1)
+    Left = int(1)
+    Look = int(1)
+    Inventory = int(1)
+    Broadcast = int(1)
     Connect_nbr = int(1)
-    Fork = int(45)
-    Eject = int(10)
-    Take = int(10)
-    Set = int(10)
-    Incantation = int(310)
+    Fork = int(10)
+    Eject = int(1)
+    Take = int(1)
+    Set = int(1)
+    Incantation = int(10)
 
 
 class Resources(enum.Enum):
@@ -197,7 +197,6 @@ class Controller(object):
 
     def broadcast(self, msg, callback):
         cmd = Cmd.Broadcast
-        #my_log("msg : ", msg)
         self._write(' '.join((cmd.value, msg)))
         self._cmdQueue.append((cmd, callback, defaultError))
 
@@ -308,20 +307,17 @@ class Controller(object):
             server_answer[i] = server_answer[i].split(' ')
             while '' in server_answer[i]:
                 server_answer[i].remove('')
-        try:
-            items = {Resources(v[0]): int(v[1]) for v in server_answer}
-        except Exception as e:
-            my_print(server_answer)
-            my_print(e)
+        items = {Resources(v[0]): int(v[1]) for v in server_answer}
         cmd_item[1](items)
 
     def applyTop(self, server_answer):
         try:
             match = re.findall("^message\s+(\d),\s+(.*)$", server_answer)
             if match:
-                #my_log("msg : ", server_answer)
                 self.msgQueue.append(Message(int(match[0][0]), match[0][1]))
             else:
+                reduced = server_answer if len(server_answer) <= 13 else server_answer[:13] + "..."
+                #my_print("receive : ", reduced, " expect : ", self._cmdQueue[0][0])
                 value = self._cmdQueue.pop(0)
                 self._answersCallers[value[0]](server_answer, value)
             return True, len(match) > 0

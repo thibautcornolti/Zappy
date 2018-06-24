@@ -3,7 +3,6 @@
 from src.classes.com.Controller import controller, CmdCost
 from src.classes.com.Transaction import TrackableTransaction
 from src.classes.ia_res.Vector import Vector
-from src.misc import my_log
 
 
 class EmptyPathTransaction(TrackableTransaction):
@@ -93,7 +92,7 @@ class BroadcastTransaction(TrackableTransaction):
         controller.broadcast(self.msg, self.end)
 
     def __repr__(self):
-        return repr(super().__repr__() + " -> Broadcast")
+        return repr(super().__repr__() + " -> Broadcast : " + self.msg)
 
 
 class ConnectNbrTransaction(TrackableTransaction):

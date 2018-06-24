@@ -6,7 +6,7 @@ from src.classes.com.Controller import Cmd
 from src.classes.com.Transaction import Transaction
 from src.classes.ia_res.TrackableTransactions import LeftTransaction, ForwardTransaction, RightTransaction, \
     EmptyPathTransaction
-from src.misc import my_log
+from src.misc import my_log, my_print
 
 
 class Path(object):
