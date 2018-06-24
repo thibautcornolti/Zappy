@@ -25,6 +25,10 @@ srv_connect:
 
 srv_join:
   stage: basic
+  artifacts:
+      paths:
+        - server/zappy_server
+      expire_in: 10 minutes
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output
@@ -54,6 +58,10 @@ srv_player_death:
 
 srv_player_broadcast:
   stage: commands
+  artifacts:
+      paths:
+        - server/zappy_server
+      expire_in: 10 minutes
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output &
@@ -69,6 +77,10 @@ srv_player_connect_nbr:
 
 srv_player_fork:
   stage: commands
+  artifacts:
+      paths:
+        - server/zappy_server
+      expire_in: 10 minutes
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
