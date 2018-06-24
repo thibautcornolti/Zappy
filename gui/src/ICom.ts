@@ -49,6 +49,16 @@ export interface IIncantation {
     "current-level": number
 }
 
+export interface IEgg {
+    "player-id": number,
+    "egg-id": number,
+    team: string,
+    pos: {
+        x: number,
+        y: number
+    }
+}
+
 export interface IPlayerEntity {
     pos: {
         x: number,

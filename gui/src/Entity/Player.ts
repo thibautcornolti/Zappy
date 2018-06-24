@@ -160,9 +160,8 @@ export default class Player {
             clearInterval(this.particleInterval);
         if (audio)
             audio.play();
-        if (this.incantationSound)
+        if (this.incantationSound && this.incantationSound.isPlaying)
             this.incantationSound.stop();
-
         let frame = this.inc;
         let tmpInterval = setInterval(() => {
             this.inc += this.clock.getDelta();
@@ -179,7 +178,7 @@ export default class Player {
         if (state && this.incantationSound) {
             this.incantationSound.setLoop(true);
             this.incantationSound.play();
-        } else if (this.incantationSound) {
+        } else if (this.incantationSound && this.incantationSound.isPlaying) {
             this.incantationSound.stop();
         }
     }
