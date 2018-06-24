@@ -11,7 +11,8 @@ void free_cmd(client_t *client, cmd_t *cmd, size_t idx)
 {
 	(void)(idx);
 	(void)(client);
-	free_json(cmd->json);
+	if (cmd->json)
+		free_json(cmd->json);
 	clear_cmd(cmd);
 }
 
