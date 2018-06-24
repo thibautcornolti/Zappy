@@ -25,6 +25,7 @@ let teams: {[index:string]: number} = {};
 let idTeam = 0;
 
 export default class Player {
+    private removed: boolean;
     private object: Object3D;
     private tempObjects: Object3D[];
     private tempObjectsTimeout: any;
@@ -53,6 +54,7 @@ export default class Player {
             window.location.href = "/";
         }
 
+        this.removed = false;
         this.teamMarker = undefined;
         this.timeInterval = null;
         this.timeIntervalRot = null;
@@ -211,6 +213,7 @@ export default class Player {
         this.tempObjects.forEach((to) => {
             GUIManager.getInstance().getScene().remove(to);
         })
+        this.removed = true;
         let audio = AudioManager.getInstance().getSound("chickenDeath");
         if (this.particleInterval)
             clearInterval(this.particleInterval);
@@ -275,14 +278,16 @@ export default class Player {
             GUIManager.getInstance().getScene().remove(to);
         });
         if (nbr == -1) {
-            GUIManager.getInstance().getScene().add(this.object);
+            if (!this.removed)
+                GUIManager.getInstance().getScene().add(this.object);
         } else {
             GUIManager.getInstance().getScene().add(this.tempObjects[nbr]);
             this.tempObjectsTimeout = setTimeout(() => {
                 this.tempObjects.forEach((to) => {
                     GUIManager.getInstance().getScene().remove(to);
                 });
-                GUIManager.getInstance().getScene().add(this.object);
+                if (!this.removed)
+                    GUIManager.getInstance().getScene().add(this.object);
             }, 1000);
         }
     }
