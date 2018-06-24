@@ -1,6 +1,8 @@
 stages:
   - build
-  - test
+  - basic
+  - event
+  
 
 srv_compile:
   stage: build
@@ -11,7 +13,7 @@ srv_compile:
       - server/zappy_server
 
 srv_connect:
-  stage: test
+  stage: basic
   dependencies:
     - srv_compile
   script:
@@ -20,45 +22,45 @@ srv_connect:
     - cat /tmp/zappy_output | grep "`cat test/server/connect.output`"
 
 srv_join:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_connect
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/join.output`"
 
 srv_unknown:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_join
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/unknown.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/unknown.output`"
 
 srv_player_forward:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_join
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/forward.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/forward.output`"
 
 srv_player_death:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_join
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/death.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/death.output`"
 
 srv_player_broadcast:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_join
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output &
@@ -66,18 +68,18 @@ srv_player_broadcast:
     - cat /tmp/zappy_output | grep "`cat test/server/broadcast.output`"
 
 srv_player_connect_nbr:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_join
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/connect_nbr.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/connect_nbr.output`"
 
 srv_player_fork:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_join
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
@@ -85,9 +87,9 @@ srv_player_fork:
     - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/fork.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/fork.output`"
 
 srv_player_incantation_fail:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_join
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
@@ -95,10 +97,40 @@ srv_player_incantation_fail:
     - cat /tmp/zappy_output | grep "`cat test/server/incantation_fail.output`"
 
 srv_player_inventory:
-  stage: test
+  stage: basic
   dependencies:
-    - srv_compile
+    - srv_join
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/inventory.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/inventory.output`"
+
+srv_gui_event_join:
+  stage: event
+  dependencies:
+    - srv_join
+  script:
+    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 2 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 1 < test/server/join.input
+    - cat /tmp/zappy_output | grep "`cat test/server/event_join.output`"
+
+srv_gui_event_broadcast:
+  stage: event
+  dependencies:
+    - srv_player_broadcast
+  script:
+    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 5 < test/server/event_broadcast.input
+    - cat /tmp/zappy_output | grep "`cat test/server/event_broadcast.output`"
+
+srv_gui_event_egg:
+  stage: event
+  dependencies:
+    - srv_player_fork
+  script:
+    - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 5 < test/server/fork.input
+    - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/event_egg.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/event_egg.output`"
