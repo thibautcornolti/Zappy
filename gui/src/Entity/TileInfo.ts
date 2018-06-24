@@ -1,4 +1,5 @@
 import {IPlayerEntity, ITileResp} from "../ICom";
+import {Vector2} from "three";
 
 let elementTable: { [index: string]: { name: string, img: string } } = {
     linemate: {
@@ -37,15 +38,20 @@ let elementTable: { [index: string]: { name: string, img: string } } = {
 
 export default class TileInfo {
     private background: HTMLElementTagNameMap["div"];
+    private position: Vector2;
+    private state: boolean;
 
     constructor() {
         this.background = document.createElement('div');
         this.background.classList.add("tileInfo-bg");
+        this.position = new Vector2();
+        this.state = false;
 
         document.body.appendChild(this.background);
     }
 
     public show() {
+        this.state = true;
         this.background.classList.add("strafe");
     }
 
@@ -111,7 +117,16 @@ export default class TileInfo {
         console.log(data);
     }
 
+    public isOpen(): boolean {
+        return this.state;
+    }
+
+    public getPosition(): Vector2 {
+        return this.position;
+    }
+
     public setInfo(data: ITileResp) {
+        this.position.set(data.pos.x, data.pos.y);
         this.background.innerHTML = "";
         this.setPositionQuery(data);
         this.setElementInfo(data);
@@ -122,6 +137,7 @@ export default class TileInfo {
     }
 
     public hide() {
+        this.state = false;
         this.background.classList.remove("strafe");
     }
 }

@@ -67,6 +67,21 @@ export default class CoreState implements IState {
         this.tileInfo.show();
     }
 
+    private refreshOverlay(json: any) {
+        let event = [
+            "player-join",
+            "player-move",
+            "player-death",
+            "item-drop",
+            "item-pickup",
+            "incantation-success",
+        ];
+        if (this.tileInfo.isOpen() && event.indexOf(json["event-type"]) !== -1) {
+            let pos = this.tileInfo.getPosition();
+            this.state.getSocket().sendJSON({"command": "tile", pos: {x: pos.x, y: pos.y}});
+        }
+    }
+
     private treatData(json: any) {
         if (json.type === "response") {
             if (json['response-type'] === "tile")
@@ -78,6 +93,7 @@ export default class CoreState implements IState {
         } else if (json.type === "event") {
             if (this.eventBinding[json["event-type"]])
                 this.eventBinding[json["event-type"]](json.data);
+            this.refreshOverlay(json);
         }
     }
 
