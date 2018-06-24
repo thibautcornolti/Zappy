@@ -103,7 +103,6 @@ export default class MapEntity {
         this.map.scene.position.set(0, -3.6, 0);
         this.map.scene.rotation.y = (Math.PI / 2) * 3;
         GUIManager.getInstance().getScene().add(this.map.scene);
-        // document.addEventListener('mousedown', this.onClick, false);
     }
 
     public getPosStart() {

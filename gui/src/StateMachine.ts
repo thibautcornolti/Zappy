@@ -45,13 +45,6 @@ export default class StateMachine {
         return this;
     }
 
-    // private animate() {
-    //     let manager = GUIManager.getInstance();
-    //
-    //     requestAnimationFrame(this.animate);
-    //     manager.getRenderer().render(manager.getScene(), manager.getCamera());
-    // }
-
     public  isLoaded(name: string) {
         for (let i = 0; i < this.states.length; i++) {
             if (this.states[i].getName() === name) {
