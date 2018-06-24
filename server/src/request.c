@@ -46,6 +46,7 @@ bool handle_request(control_t *control)
 
 	control->clients = llist_filter(control->clients,
 		(bool (*)(void *, void *, size_t))(handle_client), control);
+	llist_destroy(tmp);
 	for (size_t i = 0; i < tmp->length; ++i) {
 		cl = llist_at(tmp, i);
 		if (!llist_find(control->clients, find_evicted, cl))
