@@ -71,8 +71,7 @@ void proceed_cmd(control_t *ctrl, client_t *cl)
 		if (!strcasecmp(cmd->name, commands[cl->state][i].cmd)) {
 			commands[cl->state][i].func(ctrl, cl);
 			break;
-		}
-		else if (i + 1 == cmd_amount[cl->state])
+		} else if (i + 1 == cmd_amount[cl->state])
 			cmd_unknown(cl, cmd);
 	clear_cmd(llist_remove(cl->cmd, 0));
 }

@@ -35,8 +35,7 @@ bool team_remove_client(control_t *ctrl, client_t *cl)
 			if (!ret && cl->team->cl[i] == cl) {
 				cl->team->cl[i] = 0;
 				ret = true;
-			}
-			else if (ret && i < (cl->team->size - 1)) {
+			} else if (ret && i < (cl->team->size - 1)) {
 				cl->team->cl[i] = cl->team->cl[i + 1];
 				cl->team->cl[i + 1] = 0;
 			}
@@ -64,7 +63,7 @@ bool team_remove(control_t *ctrl, char *name)
 {
 	bool ret = false;
 
-	for (size_t i = 0; i < ctrl->params.nteam; ++i) {
+	for (size_t i = 0; i < ctrl->params.nteam; ++i)
 		if (!ret && !strcmp(ctrl->teams[i].name, name)) {
 			for (size_t k = 0;
 				k < ctrl->teams[i].size - ctrl->teams[i].av;
@@ -73,14 +72,8 @@ bool team_remove(control_t *ctrl, char *name)
 			team_release(&ctrl->teams[i]);
 			i -= 1;
 			ret = true;
-		}
-		else if (ret && i < ctrl->params.nteam - 1) {
-			ctrl->params.teams[i] = ctrl->params.teams[i + 1];
-			ctrl->teams[i].name = ctrl->params.teams[i];
-			ctrl->teams[i].cl = ctrl->teams[i + 1].cl;
-			ctrl->teams[i].av = ctrl->teams[i + 1].av;
-		}
-	}
+		} else if (ret && i < ctrl->params.nteam - 1)
+			helper_team_remove(ctrl, i);
 	if (ret)
 		team_realloc_arr(ctrl);
 	return (ret);

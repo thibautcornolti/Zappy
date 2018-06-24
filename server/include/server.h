@@ -277,7 +277,8 @@ object_t *emit_syntax_error(char *);
 list_t *create_tile_data(control_t *, vec2_t);
 void forward_event(control_t *, object_t *);
 void clear_cmd(cmd_t *);
-vec2_t move(control_t *control, vec2_t v, long x, long y);
+vec2_t move(control_t *, vec2_t, long, long);
+item_t get_chosen_item(client_t *);
 
 /*
 ** Teams
@@ -289,12 +290,15 @@ bool team_remove(control_t *, char *);
 bool team_init(control_t *);
 void team_realloc_arr(control_t *);
 void team_release(team_t *);
+void helper_team_remove(control_t *, size_t);
+bool *same_level(client_t *client, bool *acc, client_t *elem, size_t idx);
 
 /*
 ** Args parsing
 */
 int disp_help(const char *);
 bool parse_args(size_t, const char **, params_t *);
+void add_param(cmd_t *, char *);
 
 /*
 ** Map
@@ -332,8 +336,8 @@ void adm_move(control_t *, client_t *);
 void adm_getids(control_t *, client_t *);
 
 /*
- * GUI commands
- */
+** GUI commands
+*/
 void gui_map_size(control_t *, client_t *);
 void gui_entities(control_t *, client_t *);
 void gui_tile(control_t *, client_t *);

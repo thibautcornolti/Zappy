@@ -41,8 +41,7 @@ void adm_move(control_t *ctrl, client_t *cl)
 			move_player(ctrl, cl, y, x)) {
 		}
 		add_pending(cl, strdup("Command [MOVE] successful"));
-	}
-	else
+	} else
 		add_pending(cl, strdup(usage));
 	regfree(&preg);
 }

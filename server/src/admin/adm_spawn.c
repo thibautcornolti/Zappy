@@ -5,9 +5,9 @@
 ** Created by rectoria
 */
 
-#include <regex.h>
 #include "item_names.h"
 #include "server.h"
+#include <regex.h>
 
 static bool add_item(control_t *ctrl, client_t *cl, size_t y, size_t x)
 {
@@ -15,11 +15,11 @@ static bool add_item(control_t *ctrl, client_t *cl, size_t y, size_t x)
 	bool ret = false;
 	cmd_t *cmd = cl->cmd->head->payload;
 
-	for(; i < ITEM_COUNT; ++i)
+	for (; i < ITEM_COUNT; ++i)
 		if (!strcmp(item_names[i], cmd->param[0]))
 			break;
 	if (i < ITEM_COUNT) {
-		map_add(ctrl, x, y, (item_t) i);
+		map_add(ctrl, x, y, (item_t)i);
 		ret = true;
 	}
 	return (ret);
@@ -29,7 +29,8 @@ void adm_spawn(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(^spawn[[:space:]]+[[:alnum:]]+([[:space:]]+[[:digit:]]+){2}[[:space:]]*$)";
+	char pattern[] = "(^spawn[[:space:]]+[[:alnum:]]+([[:space:]]+"
+			 "[[:digit:]]+){2}[[:space:]]*$)";
 	char usage[] = "USAGE: SPAWN: [item] [y] [x]";
 	size_t y, x;
 
@@ -38,7 +39,7 @@ void adm_spawn(control_t *ctrl, client_t *cl)
 		y = strtoul(cmd->param[1], 0, 10);
 		x = strtoul(cmd->param[2], 0, 10);
 		if (y < ctrl->params.height && x < ctrl->params.width &&
-		    add_item(ctrl, cl, y, x))
+			add_item(ctrl, cl, y, x))
 			add_pending(cl, strdup("Command [SPAWN] successful"));
 		else
 			add_pending(cl, strdup(usage));

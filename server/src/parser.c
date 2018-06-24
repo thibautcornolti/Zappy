@@ -7,15 +7,6 @@
 
 #include "server.h"
 
-static void add_param(cmd_t *cmd, char *str)
-{
-	cmd->param = realloc(cmd->param, sizeof(char *) * (cmd->nparam + 1));
-	if (cmd->param) {
-		cmd->param[cmd->nparam] = strdup(str);
-		cmd->nparam += 1;
-	}
-}
-
 static void parse_cmd(cmd_t *item)
 {
 	char *cmd = strdup(item->cmd);

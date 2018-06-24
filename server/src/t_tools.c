@@ -7,6 +7,14 @@
 
 #include "server.h"
 
+void helper_team_remove(control_t *control, size_t i)
+{
+	control->params.teams[i] = control->params.teams[i + 1];
+	control->teams[i].name = control->params.teams[i];
+	control->teams[i].cl = control->teams[i + 1].cl;
+	control->teams[i].av = control->teams[i + 1].av;
+}
+
 void team_realloc_arr(control_t *ctrl)
 {
 	params_t *p = &ctrl->params;

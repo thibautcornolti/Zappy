@@ -32,13 +32,22 @@ static bool find_client(size_t *id, client_t *client, size_t idx)
 	return (*id == client->id);
 }
 
+static void send_player_info(client_t *client, client_t *cl, cmd_t *cmd)
+{
+	object_t *ret = lobj_init();
+
+	lobj_set(ret, "type", "string", strdup("response"));
+	lobj_set(ret, "response-type", "string", strdup("player"));
+	lobj_set(ret, "data", "object", serialize_player(cl));
+	finalize_json(client, ret, cmd);
+}
+
 void gui_player(control_t *control, client_t *client)
 {
 	size_t i;
 	client_t *cl;
 	cmd_t *cmd = client->cmd->head->payload;
 	elem_t *elem = lobj_get(cmd->json->root->data, "id");
-	object_t *ret;
 
 	if (elem == 0) {
 		finalize_json(
@@ -51,11 +60,6 @@ void gui_player(control_t *control, client_t *client)
 	if (cl == 0)
 		finalize_json(
 			client, emit_command_error("Player not found."), cmd);
-	else {
-		ret = lobj_init();
-		lobj_set(ret, "type", "string", strdup("response"));
-		lobj_set(ret, "response-type", "string", strdup("player"));
-		lobj_set(ret, "data", "object", serialize_player(cl));
-		finalize_json(client, ret, cmd);
-	}
+	else
+		send_player_info(client, cl, cmd);
 }

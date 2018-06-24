@@ -23,6 +23,7 @@ FILES		=	args					\
 			assigner				\
 			main					\
 			parser					\
+			parser_helper				\
 			t_manager				\
 			t_tools					\
 			map					\
@@ -56,6 +57,7 @@ FILES		=	args					\
 			commands/cmd_forward			\
 			commands/cmd_incantation		\
 			commands/cmd_incantation_helper		\
+			commands/cmd_incantation_helper2	\
 			commands/cmd_inventory			\
 			commands/cmd_left			\
 			commands/cmd_look			\

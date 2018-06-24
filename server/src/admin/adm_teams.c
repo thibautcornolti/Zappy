@@ -22,8 +22,7 @@ void adm_teams(control_t *ctrl, client_t *cl)
 		else
 			team_remove(ctrl, cmd->param[1]);
 		add_pending(cl, strdup("Command [TEAMS] successful"));
-	}
-	else
+	} else
 		add_pending(cl, strdup(usage));
 	regfree(&preg);
 }

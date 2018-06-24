@@ -26,8 +26,7 @@ void adm_killall(control_t *ctrl, client_t *cl)
 				i += 1;
 		}
 		add_pending(cl, strdup("Command [KILLALL] successful"));
-	}
-	else
+	} else
 		add_pending(cl, strdup(usage));
 	regfree(&preg);
 }

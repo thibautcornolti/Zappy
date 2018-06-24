@@ -20,18 +20,9 @@ void cmd_take(control_t *control, client_t *client)
 
 void exec_take(control_t *control, client_t *client)
 {
-	item_t chosen = ITEM_COUNT;
+	item_t chosen = get_chosen_item(client);
 
 	client->task.type = NONE;
-	if (client->task.data == 0) {
-		add_pending(client, strdup(KO_MSG));
-		return;
-	}
-	for (size_t i = 0; i < ITEM_COUNT; ++i)
-		if (lstr_equals(client->task.data, item_names[i])) {
-			chosen = i;
-			break;
-		}
 	if (chosen == ITEM_COUNT) {
 		add_pending(client, strdup(KO_MSG));
 		return;
@@ -42,8 +33,7 @@ void exec_take(control_t *control, client_t *client)
 		client->inventory[chosen] += 1;
 		add_pending(client, strdup(OK_MSG));
 		event_item_pickup(control, client, chosen);
-	}
-	else
+	} else
 		add_pending(client, strdup(KO_MSG));
 	free(client->task.data);
 }

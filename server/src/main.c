@@ -245,8 +245,7 @@ static bool perfom_poll_actions(control_t *ctrl)
 
 	if (poll_canread(ctrl->list, ctrl->fd)) {
 		CHECK(add_new_client(ctrl), == false, 84);
-	}
-	else if (ctrl->clients->length)
+	} else if (ctrl->clients->length)
 		handle_request(ctrl);
 	for (list_elem_t *it = ctrl->clients->head; it; it = it->next) {
 		client = it->payload;

@@ -32,8 +32,7 @@ bool parse_args(size_t ac, const char **av, params_t *params)
 		if (tab[j].cmd == 0) {
 			dprintf(2, "%s: Unknown argument.\n", av[i]);
 			return (false);
-		}
-		else if (tab[j].func(ac, av, params, &i) == false)
+		} else if (tab[j].func(ac, av, params, &i) == false)
 			return (false);
 	}
 	return (true);

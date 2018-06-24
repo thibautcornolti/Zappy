@@ -18,23 +18,24 @@ void cmd_set(control_t *control, client_t *client)
 	client->task.data = ((cmd->nparam != 1) ? 0 : strdup(cmd->param[0]));
 }
 
+item_t get_chosen_item(client_t *client)
+{
+	if (client->task.data == 0)
+		return (ITEM_COUNT);
+	for (size_t i = 0; i < ITEM_COUNT; ++i)
+		if (lstr_equals(client->task.data, item_names[i]))
+			return (i);
+	return (ITEM_COUNT);
+}
+
 void exec_set(control_t *control, client_t *client)
 {
-	item_t chosen = ITEM_COUNT;
+	item_t chosen = get_chosen_item(client);
 
 	client->task.type = NONE;
-	if (client->task.data == 0) {
-		add_pending(client, strdup(KO_MSG));
-		return;
-	}
-	for (size_t i = 0; i < ITEM_COUNT; ++i)
-		if (lstr_equals(client->task.data, item_names[i])) {
-			chosen = i;
-			break;
-		}
 	if (chosen == ITEM_COUNT) {
 		add_pending(client, strdup(KO_MSG));
-		return;
+		return (ITEM_COUNT);
 	}
 	if (client->inventory[chosen] != 0) {
 		map_add(control, client->pos.x, client->pos.y, chosen);
@@ -44,5 +45,4 @@ void exec_set(control_t *control, client_t *client)
 	} else
 		add_pending(client, strdup(KO_MSG));
 	free(client->task.data);
-
 }

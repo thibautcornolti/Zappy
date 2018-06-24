@@ -70,7 +70,6 @@ elem_t *lobj_set(object_t *this, char *key, char *type, void *data)
 		if (elem->type == NULL)
 			return (NULL);
 		return (elem);
-	}
-	else
+	} else
 		return (internal_lobj_add(this, key, type, data));
 }

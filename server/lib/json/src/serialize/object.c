@@ -14,8 +14,7 @@ static int internal_ljson_serialize_object_helper(
 		*output = lstr_append(*output, ",");
 		if (*output == NULL)
 			return (-1);
-	}
-	else {
+	} else {
 		*output = lstr_append(*output, "");
 		if (*output == NULL)
 			return (-1);

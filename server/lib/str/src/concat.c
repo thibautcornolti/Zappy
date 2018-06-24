@@ -83,8 +83,7 @@ static char *get_str(const strtype_t arg, va_list *list, bool *to_free)
 			return (NULL);
 		to_use[0] = va_arg(*list, int);
 		*to_free = true;
-	}
-	else if (arg == LSTR_INT) {
+	} else if (arg == LSTR_INT) {
 		to_use = int_to_str(va_arg(*list, int));
 		*to_free = true;
 	}

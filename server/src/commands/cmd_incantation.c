@@ -16,14 +16,6 @@ static const size_t required[][7] = {[0] = {1, 0, 0, 0, 0, 0, 0},
 	[6] = {6, 1, 2, 3, 0, 1, 0},
 	[7] = {6, 2, 2, 2, 2, 2, 1}};
 
-static bool *same_level(
-	client_t *client, bool *acc, client_t *elem, size_t idx)
-{
-	(void)(idx);
-	*acc = *acc && (client->level == elem->level);
-	return (acc);
-}
-
 static void incantation_success(
 	control_t *control, client_t *client, list_t *count)
 {
@@ -51,51 +43,55 @@ static list_t *validate_clients(control_t *control, client_t *client)
 	return (count);
 }
 
-void cmd_incantation(control_t *control, client_t *client)
+static void helper_cmd_incantation(control_t *control, client_t *client,
+	void (*event)(control_t *, client_t), char *message)
 {
-	list_t *count;
-
-	if (client->level == 8) {
-		add_pending(client, strdup(KO_MSG));
-		return;
-	}
-	count = validate_clients(control, client);
-	if (count == 0)
-		return;
-	for (size_t i = 1; i < ITEM_COUNT; ++i)
-		if (count_items(control, client->pos, i) !=
-			required[client->level][i]) {
-			add_pending(client, strdup(KO_MSG));
-			llist_destroy(count);
-			event_incantation_fail(control, client);
-			return;
-		}
-	client->task.time = 300;
-	client->task.type = INCANTATION;
-	llist_destroy(count);
-	add_pending(client, strdup(ELEVATION_MSG));
-	event_incantation_start(control, client);
+	add_pending(client, strdup(message));
+	event(control, client);
 }
 
-void exec_incantation(control_t *control, client_t *client)
+void cmd_incantation(control_t *ctrl, client_t *cl)
 {
 	list_t *count;
 
-	client->task.type = NONE;
-	if (client->level == 8) {
-		add_pending(client, strdup(KO_MSG));
+	cl->task.time = 300;
+	cl->task.type = INCANTATION;
+	if (cl->level == 8) {
+		add_pending(cl, strdup(KO_MSG));
 		return;
 	}
-	count = validate_clients(control, client);
+	count = validate_clients(ctrl, cl);
+	if (count == 0)
+		return;
+	llist_destroy(count);
+	for (size_t i = 1; i < ITEM_COUNT; ++i)
+		if (count_items(ctrl, cl->pos, i) != required[cl->level][i]) {
+			helper_cmd_incantation(
+				ctrl, cl, event_incantation_fail, KO_MSG);
+			return;
+		}
+	helper_cmd_incantation(
+		ctrl, cl, event_incantation_start, ELEVATION_MSG);
+}
+
+void exec_incantation(control_t *ctrl, client_t *cl)
+{
+	list_t *count;
+
+	cl->task.type = NONE;
+	if (cl->level == 8) {
+		add_pending(cl, strdup(KO_MSG));
+		return;
+	}
+	count = validate_cls(ctrl, cl);
 	if (count == 0)
 		return;
 	for (size_t i = 1; i < ITEM_COUNT; ++i)
-		if (count_items(control, client->pos, i) !=
-			required[client->level][i]) {
-			add_pending(client, strdup(KO_MSG));
+		if (count_items(ctrl, cl->pos, i) != required[cl->level][i]) {
+			add_pending(cl, strdup(KO_MSG));
 			llist_destroy(count);
-			event_incantation_fail(control, client);
+			event_incantation_fail(ctrl, cl);
 			return;
 		}
-	incantation_success(control, client, count);
+	incantation_success(ctrl, cl, count);
 }

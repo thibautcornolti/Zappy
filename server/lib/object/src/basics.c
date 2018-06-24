@@ -17,8 +17,7 @@ static void intern_lobj_delete_helper(
 			nkeys[idx2] = this->key_table[idx1];
 			nvals[idx2] = this->value_table[idx1];
 			idx2++;
-		}
-		else {
+		} else {
 			free(this->value_table[idx1]->type);
 			free(this->value_table[idx1]);
 			free(this->key_table[idx1]);
