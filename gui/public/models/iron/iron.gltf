@@ -97,8 +97,8 @@
     ],
     "images" : [
         {
-            "name" : "Iron_Ingot",
-            "uri" : "Iron_Ingot.png"
+            "name" : "iron",
+            "uri" : "iron.png"
         }
     ],
     "materials" : [

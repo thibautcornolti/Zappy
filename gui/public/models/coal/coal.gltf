@@ -97,8 +97,8 @@
     ],
     "images" : [
         {
-            "name" : "Coal",
-            "uri" : "Coal.png"
+            "name" : "coal",
+            "uri" : "coal.png"
         }
     ],
     "materials" : [

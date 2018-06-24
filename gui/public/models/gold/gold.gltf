@@ -97,8 +97,8 @@
     ],
     "images" : [
         {
-            "name" : "Gold_Ingot",
-            "uri" : "Gold_Ingot.png"
+            "name" : "gold",
+            "uri" : "gold.png"
         }
     ],
     "materials" : [

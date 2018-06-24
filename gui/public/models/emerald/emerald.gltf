@@ -97,8 +97,8 @@
     ],
     "images" : [
         {
-            "name" : "\u00c9meraude",
-            "uri" : "\u00c9meraude.png"
+            "name" : "emerald",
+            "uri" : "emerald.png"
         }
     ],
     "materials" : [

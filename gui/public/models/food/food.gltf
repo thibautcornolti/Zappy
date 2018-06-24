@@ -97,8 +97,8 @@
     ],
     "images" : [
         {
-            "name" : "Apple",
-            "uri" : "Apple.png"
+            "name" : "food",
+            "uri" : "food.png"
         }
     ],
     "materials" : [

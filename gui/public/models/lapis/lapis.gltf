@@ -97,8 +97,8 @@
     ],
     "images" : [
         {
-            "name" : "Lapis-lazuli",
-            "uri" : "Lapis-lazuli.png"
+            "name" : "lapis",
+            "uri" : "lapis.png"
         }
     ],
     "materials" : [
