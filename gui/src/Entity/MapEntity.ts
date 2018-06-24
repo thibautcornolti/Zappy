@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import {Vector2, Vector3} from "three";
+import {Vector2, Vector3, Object3D} from "three";
 import AssetsPool from "../AssetsPool";
 import {GLTF} from "three-gltf-loader";
 import GUIManagger from "../GUIManager";
-import {IDataResp, IEntitiesResp, IPlayerEntity, ITileResp} from "../ICom";
+import {IDataResp, IEntitiesResp, IPlayerEntity, IItemEntity, ITileResp} from "../ICom";
 import Dropable from "./Dropable";
 import Player from "./Player";
 
@@ -13,13 +13,14 @@ interface IType {
 }
 
 interface IEntitiesContent {
-    type: string
+    type: string,
     data: [{
         pos: {
             x: number,
             y: number,
-        }
-    }]
+        },
+        amount?: number,
+    }],
 }
 
 let facingTable: {[index: string]: number} = {
@@ -64,8 +65,15 @@ let typeTable: {[index: string]: IType} = {
     }
 };
 
+interface ITile {
+    name: string,
+    amount: number;
+    dropable: Dropable,
+}
+
 export default class MapEntity {
     private map: GLTF;
+    private mapItems: {[key: string]: ITile[]};
     private posStart: Vector2;
     private posEnd: Vector2;
     private assetPool: AssetsPool;
@@ -82,6 +90,7 @@ export default class MapEntity {
         this.content = new Map();
         this.player = {};
 
+        this.mapItems = {};
         this.mapSize = mapSize;
         this.assetPool = assetsPool;
         this.map = assetsPool.getGltfAssets("map");
@@ -106,30 +115,6 @@ export default class MapEntity {
         let scale = new Vector2(ratio.x / 3, ratio.y / 3);
 
         drop.setPosition(new Vector3(posStart.x + scale.x * pos.x, 0, posStart.y + scale.y * pos.y));
-    }
-
-    public setTile(data: ITileResp, posStart: Vector2, posEnd: Vector2) {
-        let obj = ([] as any);
-        let ressources = data.data;
-        ressources.forEach((elem) => {
-            let type: IType | undefined;
-            let drop;
-            try {
-                type = (typeTable[(elem.type as string)] || {name: elem.type, id: -1});
-                drop = new Dropable(this.assetPool, type.name);
-            } catch (e) {
-                console.warn("Unable to create a \"" + ((type) ? type.name : "Undefined") + "\" Dropable");
-                return;
-            }
-            if (type.id >= 0 && type.id <= 6)
-                this.setPosDragable(drop, posStart, posEnd, new Vector2(type.id % 3, Math.floor(type.id / 3)));
-            // console.log(type.id, new Vector2(type.id % 3, Math.floor(type.id / 3)));
-            // drop.setPosition(new )
-            // else
-            // drop.setPosition(new Vector3(posStart.x, 0, posStart.y));
-            obj.push(drop);
-        });
-        this.content.set({x: data.pos.x, y: data.pos.y}, {data: data.data, obj: obj});
     }
 
     private calcPosEntity(id: number, pos: Vector2) : Vector2 {
@@ -157,19 +142,42 @@ export default class MapEntity {
         return player;
     }
 
+    public getDropable(data: IItemEntity): Dropable | undefined {
+        let drop;
+        let type = (typeTable[data.item] || {name: data.item, id: -1});
+        try {
+            drop = new Dropable(this.assetPool, type.name);
+        } catch (e) {
+            console.warn("Unable to create a \"" + ((type) ? type.name : "Undefined") + "\" Dropable");
+            return;
+        }
+        let pos = this.calcPosEntity(type.id, new Vector2(data.pos.x, data.pos.y));
+        drop.setPosition(new Vector3(pos.x, 0, pos.y));
+        return drop;
+    }
+
     public initEntitiesTile(resp: IEntitiesContent) {
         let type = (typeTable[resp.type] || {name: resp.type, id: -1});
         resp.data.forEach((elem) => {
             if (type.id >= 0 && type.id < 7) {
-                let drop;
-                try {
-                    drop = new Dropable(this.assetPool, type.name);
-                } catch (e) {
-                    console.warn("Unable to create a \"" + ((type) ? type.name : "Undefined") + "\" Dropable");
-                    return;
-                }
-                let pos = this.calcPosEntity(type.id, new Vector2(elem.pos.x, elem.pos.y));
-                drop.setPosition(new Vector3(pos.x, 0, pos.y));
+                let drop = this.getDropable({
+                    id: -1,
+                    item: resp.type,
+                    pos: elem.pos,
+                });
+                if (!drop)
+                    return ;
+                const entry = {
+                    name: resp.type,
+                    amount: elem.amount as number,
+                    dropable: drop,
+                };
+                const key = new String(elem.pos.x) + ',' + new String(elem.pos.y);
+                const it = this.mapItems[key];
+                if (it)
+                    it.push(entry);
+                else
+                    this.mapItems[key] = [entry];
             } else if (type.id === 7) {
                 let info = (elem as IPlayerEntity);
                 let player = this.initPlayerEntity(new Vector2(info.pos.x, info.pos.y), info.facing);
@@ -217,6 +225,59 @@ export default class MapEntity {
         if (this.player[data.id]) {
             this.player[data.id].info.facing = data.facing;
             this.player[data.id].obj.setRotation(new Vector3(0, facingTable[data.facing], 0));
+        }
+    }
+
+    public itemPickup(data: IItemEntity) {
+        const key = new String(data.pos.x) + ',' + new String(data.pos.y);
+        const items = this.mapItems[key];
+        if (items == undefined)
+            return ;
+        for (let i = items.length - 1; i >= 0; i--) {
+            if (items[i].name == data.item) {
+                items[i].amount -= 1;
+                if (items[i].amount == 0) {
+                    items[i].dropable.remove()
+                    items.splice(i, 1);
+                }
+                break;
+            }
+        }
+    }
+
+    public itemDrop(data: IItemEntity) {
+        const key = new String(data.pos.x) + ',' + new String(data.pos.y);
+        const items = this.mapItems[key];
+        
+        let getItemEntry = (): ITile | undefined => {
+            let drop;
+            drop = this.getDropable(data)
+            if (drop)
+                return {
+                    name: data.item,
+                    amount: 1,
+                    dropable: drop,
+                };
+        }
+
+        if (items == undefined) {
+            const entry = getItemEntry();
+            if (!entry)
+                return ;
+            this.mapItems[key] = [entry]
+            
+        } else {
+            for (let i = items.length - 1; i >= 0; i--) {
+                if (items[i].name == data.item) {
+                    items[i].amount += 1;
+                    console.log("new amount: " + items[i].amount)
+                    return ;
+                }
+            }
+            const entry = getItemEntry();
+            if (!entry)
+                return ;
+            items.push(entry);
         }
     }
 }

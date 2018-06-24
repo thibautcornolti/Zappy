@@ -30,6 +30,8 @@ export default class CoreState implements IState {
         this.eventBinding["player-death"] = this.mainMap.playerDeath.bind(this.mainMap);
         this.eventBinding["player-move"] = this.mainMap.playerMove.bind(this.mainMap);
         this.eventBinding["player-turn"] = this.mainMap.playerTurn.bind(this.mainMap);
+        this.eventBinding["item-pickup"] = this.mainMap.itemPickup.bind(this.mainMap);
+        this.eventBinding["item-drop"] = this.mainMap.itemDrop.bind(this.mainMap);
     }
 
     public init() {
@@ -58,7 +60,6 @@ export default class CoreState implements IState {
         let resp = data.split('\n');
 
         resp.forEach((elem) => {
-            console.log(elem);
             let json;
 
             if (!elem.length)
@@ -70,9 +71,7 @@ export default class CoreState implements IState {
                 return;
             }
             if (json.type === "response") {
-                if (json['response-type'] === "tile")
-                    this.mainMap.setTile(json);
-                else if (json['response-type'] === "entities")
+                if (json['response-type'] === "entities")
                     this.mainMap.initMapTile(json);
             } else if (json.type === "event") {
                 if (this.eventBinding[json["event-type"]])
