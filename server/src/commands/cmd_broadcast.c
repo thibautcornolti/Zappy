@@ -66,7 +66,6 @@ void send_message(control_t *control, client_t *client, char *message)
 				i = bounds[i][0];
 				i += 2 * cl->facing;
 				i %= 8;
-				// i += 1;
 				asprintf(&str, "message %lu, %s", i, message);
 				add_pending(cl, str);
 				break;
