@@ -1,11 +1,13 @@
 import * as THREE from "three";
-import {Vector2, Vector3, Object3D} from "three";
+import {Audio, Vector2, Vector3} from "three";
 import AssetsPool from "../AssetsPool";
 import {GLTF} from "three-gltf-loader";
 import GUIManagger from "../GUIManager";
-import {IDataResp, IEntitiesResp, IPlayerEntity, IItemEntity, ITileResp} from "../ICom";
+import {IDataResp, IEgg, IEntitiesResp, IIncantation, IPlayerEntity, IItemEntity, ITileResp} from "../ICom";
 import Dropable from "./Dropable";
 import Player from "./Player";
+import AudioManager from "../AudioManager";
+import Egg from "./Egg";
 
 interface IType {
     name: string,
@@ -23,14 +25,14 @@ interface IEntitiesContent {
     }],
 }
 
-let facingTable: {[index: string]: number} = {
+let facingTable: { [index: string]: number } = {
     N: Math.PI / 2,
     E: 0,
     S: -Math.PI / 2,
     W: Math.PI
 };
 
-let typeTable: {[index: string]: IType} = {
+let typeTable: { [index: string]: IType } = {
     linemate: {
         name: "coal",
         id: 0
@@ -79,9 +81,11 @@ export default class MapEntity {
     private assetPool: AssetsPool;
     private mapSize: Vector2;
 
-    private player: {[index: number]: {info: IPlayerEntity, obj: Player}};
+    private player: { [index: number]: { info: IPlayerEntity, obj: Player } };
+    private egg: {[index: number]: Egg};
 
     private content: Map<{ x: number, y: number }, Object>;
+    private idEgg: number;
 
     constructor(assetsPool: AssetsPool, mapSize: Vector2) {
         this.posStart = new Vector2(-6, -3);
@@ -89,6 +93,8 @@ export default class MapEntity {
 
         this.content = new Map();
         this.player = {};
+        this.egg = {};
+        this.idEgg = 0;
 
         this.mapItems = {};
         this.mapSize = mapSize;
@@ -131,13 +137,13 @@ export default class MapEntity {
         return ret;
     }
 
-    private initPlayerEntity(pos: Vector2, facing: string): Player {
+    private initPlayerEntity(pos: Vector2, facing: string, teamName: string): Player {
         let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
             (this.posEnd.y - this.posStart.y) / this.mapSize.y);
         let posStart = new Vector2(this.posStart.x + pos.x * mapRatio.x, this.posStart.y + pos.y * mapRatio.y);
         let posEnd = new Vector2(this.posStart.x + (pos.x + 1) * mapRatio.x, this.posStart.y + (pos.y + 1) * mapRatio.y);
 
-        let player = new Player(this.assetPool, new Vector2(posStart.x + (posEnd.x - posStart.x) / 2, posStart.y + (posEnd.y - posStart.y) / 2));
+        let player = new Player(this.assetPool, teamName, new Vector2(posStart.x + (posEnd.x - posStart.x) / 2, posStart.y + (posEnd.y - posStart.y) / 2));
         player.setRotation(new Vector3(0, facingTable[facing], 0));
         return player;
     }
@@ -180,13 +186,13 @@ export default class MapEntity {
                     this.mapItems[key] = [entry];
             } else if (type.id === 7) {
                 let info = (elem as IPlayerEntity);
-                let player = this.initPlayerEntity(new Vector2(info.pos.x, info.pos.y), info.facing);
+                let player = this.initPlayerEntity(new Vector2(info.pos.x, info.pos.y), info.facing, info.team);
                 this.player[info.id] = {info: info, obj: player};
             }
         });
     }
 
-    private convertPosition(pos: Vector2) : Vector3 {
+    private convertPosition(pos: Vector2): Vector3 {
         let ret = new Vector3();
         let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
             (this.posEnd.y - this.posStart.y) / this.mapSize.y);
@@ -203,7 +209,7 @@ export default class MapEntity {
 
     //EVENT
     public playerJoin(data: IPlayerEntity) {
-        let player = this.initPlayerEntity(new Vector2(data.pos.x, data.pos.y), data.facing);
+        let player = this.initPlayerEntity(new Vector2(data.pos.x, data.pos.y), data.facing, data.team);
         this.player[data.id] = {info: data, obj: player};
     }
 
@@ -279,5 +285,39 @@ export default class MapEntity {
                 return ;
             items.push(entry);
         }
+    }
+    
+    public playerIncantationStart(data: IIncantation) {
+        if (this.player[data.id]) {
+            this.player[data.id].obj.setParticle(true);
+        }
+    }
+
+    public playerIncantationFail(data: IIncantation) {
+        if (this.player[data.id]) {
+            let audio = AudioManager.getInstance().getSound("incantationFail");
+            this.player[data.id].obj.setParticle(false);
+            if (audio)
+                audio.play();
+        }
+    }
+
+    public playerIncantationSuccess(data: IIncantation) {
+        if (this.player[data.id]) {
+            let audio = AudioManager.getInstance().getSound("incantationSuccess");
+            this.player[data.id].obj.setParticle(false);
+            if (audio)
+                audio.play();
+        }
+    }
+
+    public playerDropEgg(data: IEgg) {
+        this.egg[data["egg-id"]] = new Egg(this.assetPool, this.convertPosition(new Vector2(data.pos.x, data.pos.y)));
+        this.idEgg += 1;
+    }
+
+    public playerHatchEgg(data: IEgg) {
+        this.egg[data["egg-id"]].remove();
+        delete this.egg[data["egg-id"]];
     }
 }

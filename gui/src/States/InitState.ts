@@ -33,7 +33,11 @@ export default class InitState implements IState {
     private loadMusic() {
         let sounds = [
             AudioManager.getInstance().loadSoundProm("chickenDeath", "sounds/chicken/hurt.ogg"),
-            // AudioManager.getInstance().loadSoundProm()
+            AudioManager.getInstance().loadSoundProm("incantationStart", "sounds/incantation/start.ogg"),
+            AudioManager.getInstance().loadSoundProm("incantationFail", "sounds/incantation/fail.ogg"),
+            AudioManager.getInstance().loadSoundProm("incantationSuccess", "sounds/incantation/success.ogg"),
+            AudioManager.getInstance().loadSoundProm("eggDrop", "sounds/egg/drop.ogg"),
+            AudioManager.getInstance().loadSoundProm("eggSpawn", "sounds/egg/spawn.ogg"),
         ];
 
         Promise.all(sounds)
@@ -120,6 +124,11 @@ export default class InitState implements IState {
             // this.share.getAssetsPool().loadJson('test', 'models/scene-animation.json', (obj) => {
                 // this.loading.incPercentage(75 / loader.length);
             // }),
+
+            this.share.getAssetsPool().loadGlTFProm('egg', 'models/egg/egg.gltf', THREE.FrontSide, (obj) => {
+                obj.scene.scale.set(0.5, 0.5, 0.5);
+                this.loading.incPercentage(75 / loader.length);
+            }),
 
             // Dropable Models
             this.share.getAssetsPool().loadGlTFProm('diamond', 'models/diamond/diamond.gltf', THREE.DoubleSide, (obj) => {

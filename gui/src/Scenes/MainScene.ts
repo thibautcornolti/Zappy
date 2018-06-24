@@ -2,7 +2,7 @@ import * as THREE from "three"
 import StateShare from "../States/StateShare"
 import GUIManagger from "../GUIManager"
 import {Vector2, Vector3} from "three";
-import {IEntitiesResp, IPlayerEntity, ITileResp, IItemEntity} from "../ICom";
+import {IEgg, IEntitiesResp, IIncantation, IPlayerEntity, IItemEntity, ITileResp} from "../ICom";
 import MapEntity from "../Entity/MapEntity";
 
 export default class MainScene {
@@ -121,5 +121,30 @@ export default class MainScene {
     public itemDrop(data: any) {
         data = (data as IItemEntity)
         this.map.itemDrop(data)
+    }
+
+    public playerIncantationStart(data: any) {
+        data = (data as IIncantation);
+        this.map.playerIncantationStart(data);
+    }
+
+    public playerIncantationFail(data: any) {
+        data = (data as IIncantation);
+        this.map.playerIncantationFail(data);
+    }
+
+    public playerIncantationSuccess(data: any) {
+        data = (data as IIncantation);
+        this.map.playerIncantationSuccess(data);
+    }
+
+    public playerDropEgg(data: any) {
+        data = (data as IEgg);
+        this.map.playerDropEgg(data);
+    }
+
+    public playerHatchEgg(data: any) {
+        data = (data as IEgg);
+        this.map.playerHatchEgg(data);
     }
 }
