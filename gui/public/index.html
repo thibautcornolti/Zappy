@@ -1,49 +1,118 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Zappy</title>
-        <link rel="icon" href="images/logo.png" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-        <style>
-			body { margin: 0; overflow: hidden; }
-			canvas { width: 100%; height: 100% }
+<head>
+    <title>Zappy</title>
+    <link rel="icon" href="images/logo.png"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+        }
 
-            .progress-wrap {
-                border-radius: 5px;
-                line-height: 25px;
-                height: 50px;
-                width: 300px;
-                color: white;
-                text-align: center;
-                font-family: 'Roboto', sans-serif;
-                background-color: white;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                -webkit-transform: translate(-50%, -50%);
-                -moz-transform: translate(-50%, -50%);
-                -ms-transform: translate(-50%, -50%);
-                -o-transform: translate(-50%, -50%);
-                transform: translate(-50%, -50%);
-            }
+        canvas {
+            width: 100%;
+            height: 100%
+        }
 
-            .progress-bar {
-                border-radius: 5px;
-                height: 100%;
-                width: 0;
-                background-color: gray;
-            }
-		</style>
-    </head>
-    <body>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/93/three.min.js" integrity="sha256-F/DPe+eDTcgfe/n2sWVU57X1V/JozaDAu7KR9zXSb3Y=" crossorigin="anonymous"></script>
-        <script src="https://threejs.org/examples/js/loaders/DDSLoader.js"></script>
-        <script src="https://threejs.org/examples/js/loaders/OBJLoader.js"></script>
-        <script src="https://threejs.org/examples/js/loaders/MTLLoader.js"></script>
-        <script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
-        <script src="https://threejs.org/examples/js/loaders/DRACOLoader.js"></script>
-        <script src="https://threejs.org/examples/js/GPUParticleSystem.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js" integrity="sha256-ji09tECORKvr8xB9iCl8DJ8iNMLriDchC1+p+yt1hSs=" crossorigin="anonymous"></script>
-        <script src="dist/bundle.js"></script>
-    </body>
+        .progress-wrap {
+            border-radius: 5px;
+            line-height: 25px;
+            height: 50px;
+            width: 300px;
+            color: white;
+            text-align: center;
+            background-color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .progress-bar {
+            border-radius: 5px;
+            height: 100%;
+            width: 0;
+            background-color: gray;
+        }
+
+        .tileInfo-bg {
+            transition: all 0.5s;
+            position: absolute;
+            top: 0;
+            left: -100%;
+            /*background-color: gray;*/
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            height: 100%;
+            width: 20%;
+        }
+
+        .tileInfo-bg.strafe {
+            left: 0;
+        }
+
+        .position {
+            margin: 1em 2em;
+            background-color: rgba(214, 214, 214, 0.6);
+            padding: 1em 2em;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .items {
+            margin: 1em 2em;
+            padding: 1em;
+            background-color: rgba(214, 214, 214, 0.6);
+            border-radius: 5px;
+        }
+
+        .item {
+            margin-left: 2em;
+            margin-right: 2em;
+            background-color: rgba(214, 214, 214, 0.8);
+            border-radius: 5px;
+            padding: 0.5em 1em;
+        }
+
+        .item img {
+            vertical-align: middle;
+            margin-right: 1em;
+        }
+
+        .item:not(:first-child) {
+            margin-top: 1em;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .players {
+            margin: 1em 2em;
+            padding: 1em;
+            background-color: rgba(214, 214, 214, 0.6);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/93/three.min.js"
+        integrity="sha256-F/DPe+eDTcgfe/n2sWVU57X1V/JozaDAu7KR9zXSb3Y=" crossorigin="anonymous"></script>
+<script src="https://threejs.org/examples/js/loaders/DDSLoader.js"></script>
+<script src="https://threejs.org/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://threejs.org/examples/js/loaders/MTLLoader.js"></script>
+<script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://threejs.org/examples/js/loaders/DRACOLoader.js"></script>
+<script src="https://threejs.org/examples/js/GPUParticleSystem.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"
+        integrity="sha256-ji09tECORKvr8xB9iCl8DJ8iNMLriDchC1+p+yt1hSs=" crossorigin="anonymous"></script>
+<script src="dist/bundle.js"></script>
+</body>
 </html>

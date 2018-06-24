@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import {Audio, Vector2, Vector3} from "three";
+import {Audio, Object3D, Raycaster, Vector2, Vector3} from "three";
 import AssetsPool from "../AssetsPool";
 import {GLTF} from "three-gltf-loader";
-import GUIManagger from "../GUIManager";
+import GUIManager from "../GUIManager";
 import {IDataResp, IEgg, IEntitiesResp, IIncantation, IPlayerEntity, ITileResp} from "../ICom";
 import Dropable from "./Dropable";
 import Player from "./Player";
@@ -93,7 +93,8 @@ export default class MapEntity {
         this.map = assetsPool.getGltfAssets("map");
         this.map.scene.position.set(0, -3.6, 0);
         this.map.scene.rotation.y = (Math.PI / 2) * 3;
-        GUIManagger.getInstance().getScene().add(this.map.scene);
+        GUIManager.getInstance().getScene().add(this.map.scene);
+        // document.addEventListener('mousedown', this.onClick, false);
     }
 
     public getPosStart() {
@@ -198,6 +199,13 @@ export default class MapEntity {
         return ret;
     }
 
+    public reversePosition(pos: Vector3): Vector2 {
+        let ret = new Vector2();
+
+        ret.x = Math.floor((pos.x - this.posStart.x) * (this.mapSize.x) / (this.posEnd.x - this.posStart.x));
+        ret.y = Math.floor((pos.z - this.posStart.y) * (this.mapSize.y) / (this.posEnd.y - this.posStart.y));
+        return ret;
+    }
 
     //EVENT
     public playerJoin(data: IPlayerEntity) {

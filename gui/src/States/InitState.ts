@@ -5,7 +5,7 @@ import StateShare from "./StateShare";
 import SocketCom from "../SocketCom";
 import StateMachine from "../StateMachine";
 import CoreState from "./CoreState";
-import GUIManagger from "../GUIManager";
+import GUIManager from "../GUIManager";
 import LoadingBar from "../LoadingBar";
 import {IMapSize} from "../ICom";
 import {Vector3} from "three";

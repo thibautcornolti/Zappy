@@ -83,3 +83,7 @@ export interface ITileCommand extends IGeneralCommandCom {
         y: number
     }
 }
+
+export interface IPlayerCommand extends IGeneralCommandCom {
+    id: number
+}

@@ -1,6 +1,6 @@
 import AssetsPool from "../AssetsPool";
 import {Object3D, Vector2, Vector3, Clock, Audio, Mesh, SphereGeometry, MeshBasicMaterial} from "three";
-import GUIManagger from "../GUIManager";
+import GUIManager from "../GUIManager";
 import AudioManager from "../AudioManager";
 // import * as THREE from "three";
 // import "../../types/gpu-particle-system.d.ts";
@@ -59,7 +59,7 @@ export default class Player {
         this.destRot = new Vector3(position.x, 0, position.y);
         this.object.position.set(position.x, 0, position.y);
         this.initTeamMarker(teamName);
-        GUIManagger.getInstance().getScene().add(this.object);
+        GUIManager.getInstance().getScene().add(this.object);
 
         this.incantationSound = undefined;
         this.setIncantationSound();
@@ -73,10 +73,10 @@ export default class Player {
         // let mixer = new THREE.AnimationMixer(object);
         // if (object.geometry instanceof THREE.Geometry)
         //     mixer.clipAction(object.geometry.animations[0]).setDuration(1).play();
-        // GUIManagger.getInstance().getMixers().push(mixer);
-        // GUIManagger.getInstance().getMixers().pop();
-        // GUIManagger.getInstance().getScene().add(object);
-        // GUIManagger.getInstance().getScene().remove(object);
+        // GUIManager.getInstance().getMixers().push(mixer);
+        // GUIManager.getInstance().getMixers().pop();
+        // GUIManager.getInstance().getScene().add(object);
+        // GUIManager.getInstance().getScene().remove(object);
         // object.remove();
 
         this.particle = new THREE.GPUParticleSystem({
@@ -85,7 +85,7 @@ export default class Player {
         this.particleEnable = false;
         this.inc = 0;
         this.clock = new Clock();
-        GUIManagger.getInstance().getScene().add((this.particle as any));
+        GUIManager.getInstance().getScene().add((this.particle as any));
         this.particleInterval = setInterval(this.emitParticle, 25);
     }
 
@@ -179,7 +179,7 @@ export default class Player {
     }
 
     public remove() {
-        GUIManagger.getInstance().getScene().remove(this.object);
+        GUIManager.getInstance().getScene().remove(this.object);
         let audio = AudioManager.getInstance().getSound("chickenDeath");
         if (this.particleInterval)
             clearInterval(this.particleInterval);
@@ -192,7 +192,7 @@ export default class Player {
             this.inc += this.clock.getDelta();
             this.particle.update(this.inc);
             if (this.inc - frame >= 1) {
-                GUIManagger.getInstance().getScene().remove((this.particle as any));
+                GUIManager.getInstance().getScene().remove((this.particle as any));
                 clearInterval(tmpInterval);
             }
         }, 10);

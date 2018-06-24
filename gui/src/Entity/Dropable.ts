@@ -1,6 +1,6 @@
 import AssetsPool from "../AssetsPool";
 import {Object3D, Vector3} from "three";
-import GUIManagger from "../GUIManager";
+import GUIManager from "../GUIManager";
 
 export default class Dropable {
     private object: Object3D;
@@ -12,7 +12,7 @@ export default class Dropable {
         this.object = assetPool.getGltfAssets(type).scene.clone();
         this.object.position.add(position);
         this.object.rotation.setFromVector3(rotation);
-        GUIManagger.getInstance().getScene().add(this.object);
+        GUIManager.getInstance().getScene().add(this.object);
         this.factor = (2 * Math.PI) / 600;
         this.frame = 0;
         this.startPos = Object.assign({}, this.object.position);
