@@ -1,6 +1,6 @@
 import AssetsPool from "../AssetsPool";
-import {Object3D, Vector2, Vector3, Clock, Audio, Mesh, SphereGeometry, MeshBasicMaterial} from "three";
 import GUIManager from "../GUIManager";
+import {Object3D, Vector2, Vector3, Clock, Audio, Mesh, SphereGeometry, MeshBasicMaterial, CubeGeometry, CubeTexture, Material} from "three";
 import AudioManager from "../AudioManager";
 // import * as THREE from "three";
 // import "../../types/gpu-particle-system.d.ts";
