@@ -5,14 +5,15 @@
 ** Created by rectoria
 */
 
-#include <regex.h>
 #include "server.h"
+#include <regex.h>
 
 void adm_teams(control_t *ctrl, client_t *cl)
 {
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
-	char pattern[] = R"(teams[[:space:]]+(add|del)[[:space:]]+[[:alnum:]]+[[:space:]]*$)";
+	char pattern[] = "(teams[[:space:]]+(add|del)[[:space:]]+[[:alnum:]]+["
+			"[:space:]]*$)";
 	char usage[] = "USAGE: TEAMS: [add|del] [team_name]";
 
 	regcomp(&preg, pattern, REG_NOSUB | REG_ICASE | REG_EXTENDED);
@@ -22,7 +23,8 @@ void adm_teams(control_t *ctrl, client_t *cl)
 		else
 			team_remove(ctrl, cmd->param[1]);
 		add_pending(cl, strdup("Command [TEAMS] successful"));
-	} else
+	}
+	else
 		add_pending(cl, strdup(usage));
 	regfree(&preg);
 }

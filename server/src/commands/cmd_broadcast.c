@@ -43,32 +43,39 @@ float get_angle(control_t *control, vec2_t pos1, vec2_t pos2)
 	return (atan2f(y, x));
 }
 
+void do_thing(
+	control_t *control, client_t *client, client_t *cl, char *message)
+{
+	float angle;
+	char *str = 0;
+
+	if (cl->pos.x == client->pos.x && cl->pos.y == client->pos.y) {
+		asprintf(&str, "message 0, %s", message);
+		add_pending(cl, str);
+		return;
+	}
+	angle = get_angle(control, client->pos, cl->pos);
+	for (size_t i = 0; bounds[i][0]; ++i)
+		if (angle >= bounds[i][1] && angle <= bounds[i][2]) {
+			i = bounds[i][0];
+			i += 2 * cl->facing;
+			i %= 8;
+			i = (i == 0) ? 8 : i;
+			asprintf(&str, "message %lu, %s", i, message);
+			add_pending(cl, str);
+			break;
+		}
+}
+
 void send_message(control_t *control, client_t *client, char *message)
 {
 	client_t *cl;
-	float angle;
-	char *str = 0;
 
 	for (list_elem_t *it = control->clients->head; it; it = it->next) {
 		cl = it->payload;
 		if (cl->state != PLAYER || cl->fd == client->fd)
 			continue;
-		if (cl->pos.x == client->pos.x && cl->pos.y == client->pos.y) {
-			asprintf(&str, "message %lu, %s", 0, message);
-			add_pending(cl, str);
-			continue;
-		}
-		angle = get_angle(control, client->pos, cl->pos);
-		for (size_t i = 0; bounds[i][0]; ++i)
-			if (angle >= bounds[i][1] && angle <= bounds[i][2]) {
-				i = bounds[i][0];
-				i += 2 * cl->facing;
-				i %= 8;
-				i = (i == 0) ? 8 : i;
-				asprintf(&str, "message %lu, %s", i, message);
-				add_pending(cl, str);
-				break;
-			}
+		do_thing(control, client, cl, message);
 	}
 }
 

@@ -5,8 +5,8 @@
 ** Created by rectoria
 */
 
-#include <regex.h>
 #include "server.h"
+#include <regex.h>
 
 void adm_killall(control_t *ctrl, client_t *cl)
 {
@@ -21,7 +21,8 @@ void adm_killall(control_t *ctrl, client_t *cl)
 		for (size_t i = 0; i < ctrl->clients->length;) {
 			tmp = llist_at(ctrl->clients, i);
 			if (tmp->state == PLAYER)
-				evict_client(ctrl, llist_remove(ctrl->clients, i));
+				evict_client(
+					ctrl, llist_remove(ctrl->clients, i));
 			else
 				i += 1;
 		}

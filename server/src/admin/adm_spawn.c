@@ -30,7 +30,7 @@ void adm_spawn(control_t *ctrl, client_t *cl)
 	regex_t preg;
 	cmd_t *cmd = cl->cmd->head->payload;
 	char pattern[] = "(^spawn[[:space:]]+[[:alnum:]]+([[:space:]]+"
-			 "[[:digit:]]+){2}[[:space:]]*$)";
+			"[[:digit:]]+){2}[[:space:]]*$)";
 	char usage[] = "USAGE: SPAWN: [item] [y] [x]";
 	size_t y, x;
 
@@ -43,7 +43,8 @@ void adm_spawn(control_t *ctrl, client_t *cl)
 			add_pending(cl, strdup("Command [SPAWN] successful"));
 		else
 			add_pending(cl, strdup(usage));
-	} else
+	}
+	else
 		add_pending(cl, strdup(usage));
 	regfree(&preg);
 }
