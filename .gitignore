@@ -12,3 +12,5 @@ gui/main.ts.BAK
 gui/public/dist/
 .gitlab-ci.yml
 CMakeLists.txt
+venv
+__pycache__
