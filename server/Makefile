@@ -71,7 +71,9 @@ FILES		=	args					\
 			events/event_item_drop			\
 			events/event_item_pickup		\
 			events/event_player_death		\
+			events/event_player_inventory		\
 			events/event_player_join		\
+			events/event_player_look		\
 			events/event_player_move		\
 			events/event_player_turn		\
 			events/event_tickrate_switchover	\

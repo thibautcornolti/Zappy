@@ -150,6 +150,7 @@ typedef struct team_s {
 } team_t;
 
 typedef struct egg_s {
+	size_t id;
 	size_t delay;
 	team_t *team;
 	vec2_t pos;
@@ -259,7 +260,7 @@ void event_item_drop(control_t *, client_t *, item_t);
 void event_item_pickup(control_t *, client_t *, item_t);
 void event_player_death(control_t *, client_t *, char *);
 void event_player_join(control_t *, client_t *);
-void event_egg_drop(control_t *, client_t *);
+void event_egg_drop(control_t *, client_t *, egg_t *);
 void event_egg_hatch(control_t *, egg_t *);
 void event_broadcast(control_t *, client_t *, char *);
 

@@ -14,6 +14,7 @@ void event_egg_hatch(control_t *control, egg_t *egg)
 
 	lobj_set(ret, "type", "string", strdup("event"));
 	lobj_set(ret, "event-type", "string", strdup("egg-hatch"));
+	lobj_set(data, "egg-id", "number", double_to_void_ptr(egg->id));
 	lobj_set(data, "team", "string", strdup(egg->team->name));
 	lobj_set(data, "pos", "object", serialize_position(egg->pos));
 	lobj_set(ret, "data", "object", data);
