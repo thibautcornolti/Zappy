@@ -1,6 +1,7 @@
 stages:
   - build
   - basic
+  - commands
   - event
   
 
@@ -11,56 +12,56 @@ srv_compile:
   artifacts:
     paths:
       - server/zappy_server
+    expire_in: 10 minutes
+  allow_failure: false
 
 srv_connect:
   stage: basic
-  dependencies:
-    - srv_compile
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/connect.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/connect.output`"
+  allow_failure: false
 
 srv_join:
   stage: basic
-  dependencies:
-    - srv_connect
+  artifacts:
+      paths:
+        - server/zappy_server
+      expire_in: 10 minutes
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/join.output`"
+  allow_failure: false
 
 srv_unknown:
-  stage: basic
-  dependencies:
-    - srv_join
+  stage: commands
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/unknown.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/unknown.output`"
 
 srv_player_forward:
-  stage: basic
-  dependencies:
-    - srv_join
+  stage: commands
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/forward.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/forward.output`"
 
 srv_player_death:
-  stage: basic
-  dependencies:
-    - srv_join
+  stage: commands
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/death.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/death.output`"
 
 srv_player_broadcast:
-  stage: basic
-  dependencies:
-    - srv_join
+  stage: commands
+  artifacts:
+      paths:
+        - server/zappy_server
+      expire_in: 10 minutes
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output &
@@ -68,18 +69,18 @@ srv_player_broadcast:
     - cat /tmp/zappy_output | grep "`cat test/server/broadcast.output`"
 
 srv_player_connect_nbr:
-  stage: basic
-  dependencies:
-    - srv_join
+  stage: commands
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/connect_nbr.input > /tmp/zappy_output
     - cat /tmp/zappy_output | grep "`cat test/server/connect_nbr.output`"
 
 srv_player_fork:
-  stage: basic
-  dependencies:
-    - srv_join
+  stage: commands
+  artifacts:
+      paths:
+        - server/zappy_server
+      expire_in: 10 minutes
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
@@ -87,9 +88,7 @@ srv_player_fork:
     - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/fork.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/fork.output`"
 
 srv_player_incantation_fail:
-  stage: basic
-  dependencies:
-    - srv_join
+  stage: commands
   script:
     - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
@@ -97,9 +96,7 @@ srv_player_incantation_fail:
     - cat /tmp/zappy_output | grep "`cat test/server/incantation_fail.output`"
 
 srv_player_inventory:
-  stage: basic
-  dependencies:
-    - srv_join
+  stage: commands
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/inventory.input > /tmp/zappy_output
@@ -108,7 +105,7 @@ srv_player_inventory:
 srv_gui_event_join:
   stage: event
   dependencies:
-    - srv_join
+      - srv_join
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 2 < test/server/gui_connect.input > /tmp/zappy_output &
@@ -118,7 +115,7 @@ srv_gui_event_join:
 srv_gui_event_broadcast:
   stage: event
   dependencies:
-    - srv_player_broadcast
+      - srv_player_broadcast
   script:
     - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
     - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
