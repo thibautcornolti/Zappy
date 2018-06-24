@@ -234,6 +234,18 @@ export default class MapEntity {
         }
     }
 
+    public playerLook(data: IPlayerEntity) {
+        if (this.player[data.id]) {
+            this.player[data.id].obj.setChickenModel(1);
+        }
+    }
+
+    public playerInventory(data: IPlayerEntity) {
+        if (this.player[data.id]) {
+            this.player[data.id].obj.setChickenModel(0);
+        }
+    }
+
     public itemPickup(data: IItemEntity) {
         let audio = AudioManager.getInstance().getSound("pickup");
         if (audio)
@@ -282,7 +294,6 @@ export default class MapEntity {
             for (let i = items.length - 1; i >= 0; i--) {
                 if (items[i].name == data.item) {
                     items[i].amount += 1;
-                    console.log("new amount: " + items[i].amount)
                     return ;
                 }
             }
@@ -335,6 +346,9 @@ export default class MapEntity {
 
     public playerBroadcast(data: IBroadcast) {
         if (this.player[data.id]) {
+            let audio = AudioManager.getInstance().getSound("say" + Math.floor(Math.random() * 3 + 1));
+            if (audio)
+                audio.play();
             this.player[data.id].obj.setBroadcastBubble();
         }
     }

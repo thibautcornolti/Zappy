@@ -26,6 +26,8 @@ let idTeam = 0;
 
 export default class Player {
     private object: Object3D;
+    private tempObjects: Object3D[];
+    private tempObjectsTimeout: any;
     private teamMarker: Object3D | undefined;
     private broadcastBubbleTexture: Mesh;
     private broadcastBubbleInterval: any;
@@ -58,6 +60,10 @@ export default class Player {
         this.speedZ = 0;
         this.speedRot = 0;
         this.object = assetPool.getGltfAssets("chicken").scene.clone();
+        this.tempObjects = [
+            assetPool.getGltfAssets("chicken_inventory").scene.clone(),
+            assetPool.getGltfAssets("chicken_looking").scene.clone(),
+        ]
         this.broadcastBubbleTexture = assetPool.getPlaneMesh("bubble").clone();
         this.setLevel(level);
         this.dest = new Vector3(position.x, 0, position.y);
@@ -157,6 +163,10 @@ export default class Player {
             else if (this.dest.z < this.object.position.z)
                 newZ -= this.speedZ;
             this.object.position.set(newX, this.dest.y, newZ);
+            this.tempObjects.forEach((to) => {
+                to.position.set(newX, this.dest.y, newZ);
+            })
+            this.setChickenModel(-1);
         }, 25);
     }
 
@@ -165,6 +175,9 @@ export default class Player {
             return ;
         const scale = 0.3 + (level * 0.5) / 8;
         this.object.scale.set(scale, scale, scale);
+        this.tempObjects.forEach((to) => {
+            to.scale.set(scale, scale, scale);
+        })
     }
 
     public setRotation(rotation: Vector3) {
@@ -187,11 +200,17 @@ export default class Player {
             else if (this.destRot.y < this.object.rotation.y)
                 newRot -= this.speedRot;
             this.object.rotation.set(this.destRot.x, newRot, this.destRot.z);
+            this.tempObjects.forEach((to) => {
+                to.rotation.set(this.destRot.x, newRot, this.destRot.z);
+            })
         }, 25);
     }
 
     public remove() {
         GUIManagger.getInstance().getScene().remove(this.object);
+        this.tempObjects.forEach((to) => {
+            GUIManagger.getInstance().getScene().remove(to);
+        })
         let audio = AudioManager.getInstance().getSound("chickenDeath");
         if (this.particleInterval)
             clearInterval(this.particleInterval);
@@ -230,16 +249,14 @@ export default class Player {
             this.broadcastBubbleTimeout = undefined;
         }
         this.broadcastBubbleTexture.position.y = 8;
-        this.broadcastBubbleTexture.rotation.set(0, 0, 0);
+        this.broadcastBubbleTexture.rotation.set(0, -this.object.rotation.y, 0);
         if (this.broadcastBubbleTexture.material instanceof Material)
             this.broadcastBubbleTexture.material.transparent = true;
         this.object.add(this.broadcastBubbleTexture);
         this.broadcastBubbleTexture.scale.set(0.03, 0.03, 0.03);
         this.broadcastBubbleInterval = setInterval(() => {
             this.broadcastBubbleTexture.rotation.set(
-                0,
-                -this.object.rotation.y,
-                0,
+                0, -this.object.rotation.y, 0,
             );
         }, 10);
         this.broadcastBubbleTimeout = setTimeout(() => {
@@ -247,6 +264,27 @@ export default class Player {
             if (this.broadcastBubbleInterval)
                 clearInterval(this.broadcastBubbleInterval);
         }, 800);
+    }
+
+    public setChickenModel(nbr: number) {
+        if (this.tempObjectsTimeout) {
+            clearTimeout(this.tempObjectsTimeout);
+            this.tempObjectsTimeout = undefined;
+        }
+        this.tempObjects.forEach((to) => {
+            GUIManagger.getInstance().getScene().remove(to);
+        });
+        if (nbr == -1) {
+            GUIManagger.getInstance().getScene().add(this.object);
+        } else {
+            GUIManagger.getInstance().getScene().add(this.tempObjects[nbr]);
+            this.tempObjectsTimeout = setTimeout(() => {
+                this.tempObjects.forEach((to) => {
+                    GUIManagger.getInstance().getScene().remove(to);
+                });
+                GUIManagger.getInstance().getScene().add(this.object);
+            }, 1000);
+        }
     }
 
 }

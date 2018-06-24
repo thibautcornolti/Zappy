@@ -113,6 +113,16 @@ export default class MainScene {
         this.map.playerTurn(data);
     }
 
+    public playerLook(data: any) {
+        data = (data as IPlayerEntity);
+        this.map.playerLook(data);
+    }
+
+    public playerInventory(data: any) {
+        data = (data as IPlayerEntity);
+        this.map.playerInventory(data);
+    }
+
     public itemPickup(data: any) {
         data = (data as IItemEntity)
         this.map.itemPickup(data)
