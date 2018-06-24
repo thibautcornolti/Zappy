@@ -17,6 +17,7 @@ static bool lvlup_player(control_t *ctrl, size_t id)
 		cl = llist_at(ctrl->clients, i);
 		if (cl->id == id) {
 			cl->level += 1;
+			event_incantation_success(ctrl, cl);
 			ret = true;
 			break;
 		}
