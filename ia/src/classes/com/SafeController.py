@@ -3,7 +3,6 @@ from src.classes.com.Controller import Resources
 from src.classes.ia_res.Ant import ant
 from src.classes.ia_res.TrackableTransactions import InventoryTransaction
 from src.classes.states.StateMachine import statemachine
-from src.misc import my_log, my_print
 
 
 class SafeController(object):
@@ -25,7 +24,6 @@ class SafeController(object):
 
     def clear_state(self, cli):
         del cli
-        my_print("END EMERGENCY")
         def reset_trans():
             statemachine.block_trans_detect = False
 
@@ -49,7 +47,6 @@ class SafeController(object):
                 elif inventory[Resources.Food] < self.floor:
                     state = SeekItemsState({Resources.Food: int(self.floor) + self.upfloor - self.floor},  self.rollback)
                 if state:
-                    my_print("EMERGENCY")
                     statemachine.block_trans_detect = True
                     self.safe = False
                     state.on_pop = self.clear_state
