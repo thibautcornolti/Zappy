@@ -33,15 +33,15 @@ export interface IDataResp {
 
 export interface IEntitiesResp extends IGeneralResp {
     data: [{
-        type: string
+        type: string,
         data: [{
             pos: {
                 x: number,
                 y: number,
-            }
-            amount: number
-        }]
-    }]
+            },
+            amount: number,
+        }],
+    }],
 }
 
 export interface IIncantation {
@@ -70,6 +70,20 @@ export interface IPlayerEntity {
     level: number
 }
 
+export interface IItemEntity {
+    id: number,
+    item: string,
+    pos: {
+        x: number,
+        y: number
+    },
+}
+
+export interface IBroadcast {
+    id: number,
+    message: string,
+}
+
 
 
 
@@ -82,4 +96,8 @@ export interface ITileCommand extends IGeneralCommandCom {
         x: number,
         y: number
     }
+}
+
+export interface IPlayerCommand extends IGeneralCommandCom {
+    id: number
 }

@@ -1,5 +1,5 @@
 import * as io from "socket.io-client"
-import {IGeneralCommandCom, ITileCommand} from "./ICom";
+import {IGeneralCommandCom, IPlayerEntity, ITileCommand} from "./ICom";
 
 interface Error {
     code: string
@@ -30,7 +30,8 @@ export default class SocketCom {
         });
         this.sock.on('disconnect', (reason: string) => {
            console.log(reason);
-           // alert('disconnect');
+            alert("You have been disconnected from the server");
+            window.location.href = "/";
         });
 
         if (onData)
@@ -60,7 +61,7 @@ export default class SocketCom {
         this.sock.emit('my_data', str);
     }
 
-    public sendJSON(json: ITileCommand | IGeneralCommandCom) {
+    public sendJSON(json: ITileCommand | IPlayerEntity | IGeneralCommandCom) {
         let str = JSON.stringify(json) + '\n';
         this.sock.emit('my_data', str);
     }
