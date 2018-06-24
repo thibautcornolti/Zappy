@@ -1,3 +1,10 @@
+build
+*.o
+*.a
+zappy_server
+zappy_ai
+.vscode
+cmake-build-debug/
 gui/node_modules
 .idea
 gui/gulpfile.js
@@ -5,3 +12,5 @@ gui/main.ts.BAK
 gui/public/dist/
 .gitlab-ci.yml
 CMakeLists.txt
+venv
+__pycache__

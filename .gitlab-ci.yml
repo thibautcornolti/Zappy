@@ -1,17 +1,141 @@
+stages:
+  - build
+  - srv_basic
+  - srv_commands
+  - srv_event
+  - ia_protocol
+
+srv_compile:
+  stage: build
+  script:
+    - make -C server
+  artifacts:
+    paths:
+      - server/zappy_server
+    expire_in: 10 minutes
+  allow_failure: false
+
 gui_compile:
   image: node:9
   stage: build
-  before_script:
+  script:
     - cd gui
     - npm install --progress=false
     - npm install -g webpack webpack-cli --progress=false
-  script:
     - webpack --verbose
+  allow_failure: false
 
-#before_script:
-#  -
+srv_connect:
+  stage: srv_basic
+  retry: 2
+  script:
+    - ./server/zappy_server -f 10 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/connect.input > /tmp/zappy_output
+    - cat /tmp/zappy_output | grep "`cat test/server/connect.output`"
+  allow_failure: false
 
-#gui_compile:
-#  script:
-#    - cd gui
-#    - webpack --verbose
+srv_join:
+  stage: srv_basic
+  retry: 2
+  script:
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output
+    - cat /tmp/zappy_output | grep "`cat test/server/join.output`"
+  allow_failure: false
+
+srv_unknown:
+  stage: srv_commands
+  retry: 2
+  script:
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/unknown.input > /tmp/zappy_output
+    - cat /tmp/zappy_output | grep "`cat test/server/unknown.output`"
+
+srv_player_forward:
+  stage: srv_commands
+  retry: 2
+  script:
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/forward.input > /tmp/zappy_output
+    - cat /tmp/zappy_output | grep "`cat test/server/forward.output`"
+
+srv_player_death:
+  stage: srv_commands
+  retry: 2
+  script:
+    - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 10 < test/server/death.input > /tmp/zappy_output
+    - cat /tmp/zappy_output | grep "`cat test/server/death.output`"
+
+srv_player_broadcast:
+  stage: srv_commands
+  retry: 2
+  script:
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/join.input > /tmp/zappy_output &
+    - nc 0 4242 -w 5 < test/server/broadcast.input
+    - cat /tmp/zappy_output | grep "`cat test/server/broadcast.output`"
+
+srv_player_connect_nbr:
+  stage: srv_commands
+  retry: 2
+  script:
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/connect_nbr.input > /tmp/zappy_output
+    - cat /tmp/zappy_output | grep "`cat test/server/connect_nbr.output`"
+
+srv_player_fork:
+  stage: srv_commands
+  retry: 2
+  script:
+    - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 10 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 10 < test/server/fork.input
+    - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/fork.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/fork.output`"
+
+srv_player_incantation_fail:
+  stage: srv_commands
+  retry: 2
+  script:
+    - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 10 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 10 < test/server/incantation_fail.input
+    - cat /tmp/zappy_output | grep "`cat test/server/incantation_fail.output`"
+
+srv_player_inventory:
+  stage: srv_commands
+  retry: 2
+  script:
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/inventory.input > /tmp/zappy_output
+    - cat /tmp/zappy_output | grep "`cat test/server/inventory.output`"
+
+srv_gui_event_join:
+  stage: srv_event
+  retry: 2
+  script:
+    - ./server/zappy_server -f 100 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 5 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 5 < test/server/join.input
+    - cat /tmp/zappy_output | grep "`cat test/server/event_join.output`"
+
+srv_gui_event_broadcast:
+  stage: srv_event
+  retry: 2
+  script:
+    git status
+
+srv_gui_event_egg:
+  stage: srv_event
+  retry: 2
+  script:
+    - ./server/zappy_server -f 1000 -n test -c 10 -x 20 -y 20 &
+    - nc 0 4242 -w 10 < test/server/gui_connect.input > /tmp/zappy_output &
+    - nc 0 4242 -w 10 < test/server/fork.input
+    - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/event_egg.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/event_egg.output`"
+
+ia_protocol:
+  stage: ia_protocol
+  retry: 2
+  script:
+    - python3 ia/src/classes/ia_res/MsgProtocol.py

@@ -99,7 +99,6 @@ export default class CoreState implements IState {
 
     private onSocketData = (data: string) => {
         let resp = data.split('\n');
-        console.log(data)
 
         resp.forEach((elem) => {
             let json;
