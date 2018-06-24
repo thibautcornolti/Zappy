@@ -23,10 +23,6 @@ gui_compile:
     - npm install --progress=false
     - npm install -g webpack webpack-cli --progress=false
     - webpack --verbose
-  artifacts:
-    paths:
-      - gui/node_modules
-    expire_in: 10 minutes
   allow_failure: false
 
 srv_connect:
