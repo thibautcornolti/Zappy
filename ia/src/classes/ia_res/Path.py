@@ -184,9 +184,9 @@ class PathManipulator(Transaction):
             Cmd.Right: RightTransaction(lambda ok=None: None),
         }
         # cmds = {
-        #     Cmd.Forward: ForwardTransaction(lambda ok=None: my_print("Forward")),
-        #     Cmd.Left: LeftTransaction(lambda ok=None: my_print("Left")),
-        #     Cmd.Right: RightTransaction(lambda ok=None: my_print("Right")),
+        #     Cmd.Forward: ForwardTransaction(lambda ok=None: my_log("Forward")),
+        #     Cmd.Left: LeftTransaction(lambda ok=None: my_log("Left")),
+        #     Cmd.Right: RightTransaction(lambda ok=None: my_log("Right")),
         # }
 
         self.path = list()

@@ -39,7 +39,6 @@ class IncantationState(AAIState):
             my_print("Failed to LvL up !")
 
     def endIncantationState(self, *args):
-        my_log("INCANT ", statemachine._stack)
         statemachine.closure = lambda: statemachine.pop()
 
     # endregion incantation callbacks

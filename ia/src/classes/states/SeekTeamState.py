@@ -17,8 +17,7 @@ class SeekTeamState(AAIState):
     def on_push(self, cli):
         super().on_push(cli)
         msg = MsgProtocol.enrolment(ant.uuid, ant.lvl + 1)
-        my_log("Search a team lvl {}...".format(ant.lvl + 1))
-        transaction = BroadcastTransaction(msg, lambda: statemachine.push(WaitAnswerState(40)))
+        transaction = BroadcastTransaction(msg, lambda: statemachine.push(WaitAnswerState(70)))
         safe_controller.execute(transaction, rollback=False)
 
     def popped_over(self):
@@ -28,7 +27,6 @@ class SeekTeamState(AAIState):
             if enr and enr['recipient'] == ant.uuid:
                 mates.add_mate(enr['sender'])
                 my_print(enr["sender"], " joined ! {} / {}".format(len(mates), requirement[ant.lvl + 1][0] - 1))
-                my_log("Allow enrolment : ", enr['sender'])
             if len(mates) == requirement[ant.lvl + 1][0] - 1:
                 break
         if len(mates) < requirement[ant.lvl + 1][0] - 1:

@@ -4,7 +4,7 @@ import socket
 import select
 import enum
 
-from src.misc import my_print
+from src.misc import my_print, my_log
 
 
 def init_client(ip, port):
@@ -99,13 +99,13 @@ class Client:
             self._disconnection()
         self._buffer += msg.decode()
         if len(self._buffer) > self._readSize:
-            my_print("SUPPRESS BUFFER : ",self._buffer)
             self._buffer = self._buffer[len(self._buffer) - self._readSize - 1:]
         if self._buffer.find("\n") > 0:
             split = self._buffer.split("\n")
             while '' in split:
                 split.remove('')
             self._readQueue += split
+            my_log(self._buffer)
             self._buffer = ""
 
     def consult(self):

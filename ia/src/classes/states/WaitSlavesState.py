@@ -23,6 +23,7 @@ class WaitSlavesState(AAIState):
             ready = MsgProtocol.is_ready_inc(msg.text)
             if ready and ready["recipient"] == ant.uuid and ready['sender'] in (mate.uuid for mate in mates):
                 mates.get_mate(ready['sender']).ready = True
+                my_log(msg.text)
                 my_print(ready["sender"], " is ready ! {} / {}".format(len([mate for mate in mates if mate.ready]), len(mates)))
                 #my_print("=> player on tile {}".format(look[0].count("player")))
                 #my_print("=> look : {}".format(look))

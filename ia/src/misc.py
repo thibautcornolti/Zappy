@@ -2,17 +2,24 @@
 import os
 import subprocess
 import src.config as config
+from src.classes.ia_res.Ant import ant
 
 process = None
 
 
 def my_log(*args, **kwargs):
-    #print("[{}]".format(os.getpid()), *args, **kwargs)
+    status = "Slave"
+    if ant.is_queen:
+        status = "Queen"
+    #print("[{}][{}]".format(os.getpid(), status), *args, **kwargs)
     pass
 
 
 def my_print(*args, **kwargs):
-    print("[{}]".format(os.getpid()), *args, **kwargs)
+    status = "Slave"
+    if ant.is_queen:
+        status = "Queen"
+    print("[{}][{}]".format(os.getpid(), status), *args, **kwargs)
 
 
 def dup_me():

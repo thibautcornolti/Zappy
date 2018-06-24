@@ -38,9 +38,9 @@ class FollowQueenState(AAIState):
         else:
             my_print("Failed to LvL up !")
         statemachine.closure = lambda: statemachine.pop()
-        my_log(statemachine._stack)
 
     def set_requested_items(self):
+        my_print("On queen position")
         transaction = PackedTransaction(self.wait_others)
         for k, v in ant.request.items():
             sub_transaction = SetTransaction(k, v, lambda ok=None: None, lambda ok=None: None, lambda ok=None: None)

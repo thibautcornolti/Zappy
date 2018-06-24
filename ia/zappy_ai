@@ -6,6 +6,7 @@ import os
 import traceback
 
 from src.classes.com.Client import init_client, ClientException
+from src.classes.com.Controller import Resources, GameException
 from src.classes.states.ConnectionState import ConnectionState
 from src.classes.ia_res.Ant import init_ant
 from src import config
@@ -51,10 +52,19 @@ def main():
         try:
             args = parse_arg()
             run(args)
-        except Exception:
+        except GameException as e:
             from src.classes.ia_res.Ant import ant
             from src.misc import process
-            my_print("Oops I died ¯\_(ツ)_/¯ I was lvl {}".format(ant.lvl))
+            my_print("Oops I died ¯\_(ツ)_/¯ I was lvl {} {}".format(ant.lvl, e))
+            if process:
+                my_print("Waitting my son")
+                process.wait()
+                my_print("My son died")
+            exit(0)
+        except Exception as e:
+            from src.classes.ia_res.Ant import ant
+            from src.misc import process
+            my_print("Oops I crashed ¯\_(ツ)_/¯ I was lvl {} {}".format(ant.lvl, e))
             if process:
                 my_print("Waitting my son")
                 process.wait()

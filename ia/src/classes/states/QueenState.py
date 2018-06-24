@@ -57,7 +57,6 @@ class QueenState(AAIState):
         for msg in controller.msgQueue:
             end = MsgProtocol.is_seek_end(msg.text)
             if end and end['sender'] in (mate.uuid for mate in mates):
-                my_log(end['sender'], " finished all the tasks")
                 mates.get_mate(end['sender']).inventory.clear()
         end = True
         for mate in mates:
@@ -66,7 +65,6 @@ class QueenState(AAIState):
                 break
 
         if end:
-            my_log("All resources was found by slaves! Meeting required")
             msg = MsgProtocol.meet_ants(ant.uuid, [m.uuid for m in mates])
             transaction = BroadcastTransaction(msg, self.ping)
         else:
@@ -78,7 +76,6 @@ class QueenState(AAIState):
         if not ant.is_queen:
             statemachine.closure = lambda: statemachine.replace(WaitTeamState())
         else:
-            my_log("IM THE QUEEN !!")
             self.resource_repart()
 
 

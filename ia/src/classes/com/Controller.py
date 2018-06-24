@@ -26,18 +26,18 @@ class Cmd(enum.Enum):
 
 
 class CmdCost(enum.Enum):
-    Forward = int(20)
-    Right = int(20)
-    Left = int(20)
-    Look = int(20)
+    Forward = int(1)
+    Right = int(1)
+    Left = int(1)
+    Look = int(1)
     Inventory = int(1)
-    Broadcast = int(20)
-    Connect_nbr = int(5)
-    Fork = int(55)
-    Eject = int(20)
-    Take = int(20)
-    Set = int(20)
-    Incantation = int(320)
+    Broadcast = int(1)
+    Connect_nbr = int(1)
+    Fork = int(10)
+    Eject = int(1)
+    Take = int(1)
+    Set = int(1)
+    Incantation = int(10)
 
 
 class Resources(enum.Enum):
@@ -197,7 +197,6 @@ class Controller(object):
 
     def broadcast(self, msg, callback):
         cmd = Cmd.Broadcast
-        #my_log("msg : ", msg)
         self._write(' '.join((cmd.value, msg)))
         self._cmdQueue.append((cmd, callback, defaultError))
 

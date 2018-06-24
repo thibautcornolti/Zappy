@@ -16,7 +16,6 @@ class GameState(AState):
         if ant.lvl < 8:
             statemachine.closure = lambda: statemachine.push(LevelUpHandlingState())
         else:
-            my_log("END OF THE GAME")
             exit(0)
 
     def on_push(self, cli):
@@ -26,6 +25,5 @@ class GameState(AState):
     def popped_over(self):
         super().popped_over()
         mates.clear()
-        my_log("RESETTING ...")
         self.check()
 
