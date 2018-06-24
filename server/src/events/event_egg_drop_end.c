@@ -2,18 +2,18 @@
 ** EPITECH PROJECT, 2018
 ** zappy
 ** File description:
-** event_egg_drop
+** event_egg_drop_end
 */
 
 #include "server.h"
 
-void event_egg_drop(control_t *control, client_t *client, egg_t *egg)
+void event_egg_drop_end(control_t *control, client_t *client, egg_t *egg)
 {
 	object_t *ret = lobj_init();
 	object_t *data = lobj_init();
 
 	lobj_set(ret, "type", "string", strdup("event"));
-	lobj_set(ret, "event-type", "string", strdup("egg-drop"));
+	lobj_set(ret, "event-type", "string", strdup("egg-drop-end"));
 	lobj_set(data, "egg-id", "number", double_to_void_ptr(egg->id));
 	lobj_set(data, "player-id", "number", double_to_void_ptr(client->id));
 	lobj_set(data, "team", "string", strdup(client->team->name));
