@@ -33,7 +33,9 @@ export default class InitState implements IState {
     private loadMusic() {
         let sounds = [
             AudioManager.getInstance().loadSoundProm("chickenDeath", "sounds/chicken/hurt.ogg"),
-            // AudioManager.getInstance().loadSoundProm()
+            AudioManager.getInstance().loadSoundProm("incantationStart", "sounds/incantation/start.ogg"),
+            AudioManager.getInstance().loadSoundProm("incantationFail", "sounds/incantation/fail.ogg"),
+            AudioManager.getInstance().loadSoundProm("incantationSuccess", "sounds/incantation/success.ogg"),
         ];
 
         Promise.all(sounds)

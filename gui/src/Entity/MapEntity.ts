@@ -1,11 +1,12 @@
 import * as THREE from "three";
-import {Vector2, Vector3} from "three";
+import {Audio, Vector2, Vector3} from "three";
 import AssetsPool from "../AssetsPool";
 import {GLTF} from "three-gltf-loader";
 import GUIManagger from "../GUIManager";
-import {IDataResp, IEntitiesResp, IPlayerEntity, ITileResp} from "../ICom";
+import {IDataResp, IEntitiesResp, IIncantation, IPlayerEntity, ITileResp} from "../ICom";
 import Dropable from "./Dropable";
 import Player from "./Player";
+import AudioManager from "../AudioManager";
 
 interface IType {
     name: string,
@@ -22,14 +23,14 @@ interface IEntitiesContent {
     }]
 }
 
-let facingTable: {[index: string]: number} = {
+let facingTable: { [index: string]: number } = {
     N: Math.PI / 2,
     E: 0,
     S: -Math.PI / 2,
     W: Math.PI
 };
 
-let typeTable: {[index: string]: IType} = {
+let typeTable: { [index: string]: IType } = {
     linemate: {
         name: "coal",
         id: 0
@@ -71,7 +72,7 @@ export default class MapEntity {
     private assetPool: AssetsPool;
     private mapSize: Vector2;
 
-    private player: {[index: number]: {info: IPlayerEntity, obj: Player}};
+    private player: { [index: number]: { info: IPlayerEntity, obj: Player } };
 
     private content: Map<{ x: number, y: number }, Object>;
 
@@ -132,7 +133,7 @@ export default class MapEntity {
         this.content.set({x: data.pos.x, y: data.pos.y}, {data: data.data, obj: obj});
     }
 
-    private calcPosEntity(id: number, pos: Vector2) : Vector2 {
+    private calcPosEntity(id: number, pos: Vector2): Vector2 {
         let ret = new Vector2();
         let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
             (this.posEnd.y - this.posStart.y) / this.mapSize.y);
@@ -178,7 +179,7 @@ export default class MapEntity {
         });
     }
 
-    private convertPosition(pos: Vector2) : Vector3 {
+    private convertPosition(pos: Vector2): Vector3 {
         let ret = new Vector3();
         let mapRatio = new Vector2((this.posEnd.x - this.posStart.x) / this.mapSize.x,
             (this.posEnd.y - this.posStart.y) / this.mapSize.y);
@@ -217,6 +218,30 @@ export default class MapEntity {
         if (this.player[data.id]) {
             this.player[data.id].info.facing = data.facing;
             this.player[data.id].obj.setRotation(new Vector3(0, facingTable[data.facing], 0));
+        }
+    }
+
+    public playerIncantationStart(data: IIncantation) {
+        if (this.player[data.id]) {
+            this.player[data.id].obj.setParticle(true);
+        }
+    }
+
+    public playerIncantationFail(data: IIncantation) {
+        if (this.player[data.id]) {
+            let audio = AudioManager.getInstance().getSound("incantationFail");
+            this.player[data.id].obj.setParticle(false);
+            if (audio)
+                audio.play();
+        }
+    }
+
+    public playerIncantationSuccess(data: IIncantation) {
+        if (this.player[data.id]) {
+            let audio = AudioManager.getInstance().getSound("incantationSuccess");
+            this.player[data.id].obj.setParticle(false);
+            if (audio)
+                audio.play();
         }
     }
 }

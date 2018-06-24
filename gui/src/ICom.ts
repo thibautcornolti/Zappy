@@ -3,6 +3,11 @@ interface IGeneralResp {
     "response-type": string
 }
 
+interface IGeneralEvt {
+    type: string,
+    "event-type": string
+}
+
 export interface IMapSize extends IGeneralResp {
     size: {
         width: number,
@@ -37,6 +42,11 @@ export interface IEntitiesResp extends IGeneralResp {
             amount: number
         }]
     }]
+}
+
+export interface IIncantation {
+    id: number,
+    "current-level": number
 }
 
 export interface IPlayerEntity {

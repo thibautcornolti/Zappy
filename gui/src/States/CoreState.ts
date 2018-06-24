@@ -30,6 +30,9 @@ export default class CoreState implements IState {
         this.eventBinding["player-death"] = this.mainMap.playerDeath.bind(this.mainMap);
         this.eventBinding["player-move"] = this.mainMap.playerMove.bind(this.mainMap);
         this.eventBinding["player-turn"] = this.mainMap.playerTurn.bind(this.mainMap);
+        this.eventBinding["incantation-start"] = this.mainMap.playerIncantationStart.bind(this.mainMap);
+        this.eventBinding["incantation-fail"] = this.mainMap.playerIncantationFail.bind(this.mainMap);
+        this.eventBinding["incantation-success"] = this.mainMap.playerIncantationSuccess.bind(this.mainMap);
     }
 
     public init() {

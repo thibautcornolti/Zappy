@@ -1,5 +1,5 @@
 import AssetsPool from "../AssetsPool";
-import { Object3D, Vector2, Vector3, Clock } from "three";
+import {Object3D, Vector2, Vector3, Clock, Audio} from "three";
 import GUIManagger from "../GUIManager";
 import AudioManager from "../AudioManager";
 // import * as THREE from "three";
@@ -8,18 +8,17 @@ import "gpu-particle";
 
 /// <reference path="../../types/gpu-particle-system.d.ts" />
 
-
 let options = {
     position: new Vector3(),
-    positionRandomness: 3,
+    positionRandomness: 2,
     velocity: new Vector3(),
-    velocityRandomness: 3,
+    velocityRandomness: 2,
     color: 0xaa88ff,
     colorRandomness: .2,
-    turbulence: .5,
+    turbulence: 0,
     lifetime: 0.5,
-    size: 5,
-    sizeRandomness: 1
+    size: 2,
+    sizeRandomness: 0.5
 };
 
 export default class Player {
@@ -36,6 +35,8 @@ export default class Player {
     private clock: Clock;
     private particle: THREE.GPUParticleSystem;
     private inc: number;
+    private particleEnable: boolean;
+    private incantationSound: Audio | undefined;
 
     constructor(assetPool: AssetsPool, position: Vector2 = new Vector2(0, 0)) {
         if (!assetPool.getGltfAssets("chicken")) {
@@ -54,7 +55,10 @@ export default class Player {
         this.object.position.set(position.x, 0, position.y);
         GUIManagger.getInstance().getScene().add(this.object);
 
-        
+        this.incantationSound = undefined;
+        this.setIncantationSound();
+
+
         // HERE IS HOW ANIMATE A JSON ASSET
 
         // let object = assetPool.getJsonAssets("test").clone();
@@ -72,12 +76,30 @@ export default class Player {
         this.particle = new THREE.GPUParticleSystem({
             maxParticles: 250000
         });
-        this.particleInterval = undefined;
+        this.particleEnable = false;
         this.inc = 0;
         this.clock = new Clock();
         GUIManagger.getInstance().getScene().add((this.particle as any));
-        // this.setParticle(true);
+        this.particleInterval = setInterval(this.emitParticle, 25);
     }
+
+    private setIncantationSound() {
+        let audio = AudioManager.getInstance().getSound("incantationStart");
+
+        if (audio)
+            this.incantationSound = audio;
+    }
+
+    private emitParticle = () => {
+        this.inc += this.clock.getDelta();
+        if (this.particleEnable) {
+            options.position = this.object.position;
+            for (let i = 0; i < 8000; i++) {
+                this.particle.spawnParticle(options);
+            }
+        }
+        this.particle.update(this.inc);
+    };
 
     public setPosition(pos: Vector3) {
         let count = 5;
@@ -138,21 +160,27 @@ export default class Player {
             clearInterval(this.particleInterval);
         if (audio)
             audio.play();
+        if (this.incantationSound)
+            this.incantationSound.stop();
+
+        let frame = this.inc;
+        let tmpInterval = setInterval(() => {
+            this.inc += this.clock.getDelta();
+            this.particle.update(this.inc);
+            if (this.inc - frame >= 1) {
+                GUIManagger.getInstance().getScene().remove((this.particle as any));
+                clearInterval(tmpInterval);
+            }
+        }, 10);
     }
 
-    public setParticle(state: true) {
-        this.particleInterval = setInterval(() => {
-            let delta = this.clock.getDelta();
-
-            this.inc += delta;
-            options.position.x = this.object.position.x;
-            options.position.y = this.object.position.y;
-            options.position.z = this.object.position.z;
-            for (let i = 0; i < 15000; i++) {
-                this.particle.spawnParticle(options);
-            }
-            this.particle.update(this.inc);
-            console.log(this.clock.getDelta());
-        }, 10);
+    public setParticle(state: boolean) {
+        this.particleEnable = state;
+        if (state && this.incantationSound) {
+            this.incantationSound.setLoop(true);
+            this.incantationSound.play();
+        } else if (this.incantationSound) {
+            this.incantationSound.stop();
+        }
     }
 }
