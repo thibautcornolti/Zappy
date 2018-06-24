@@ -2,6 +2,7 @@ import AssetsPool from "../AssetsPool";
 import { Object3D, Vector2, Vector3 } from "three";
 import GUIManagger from "../GUIManager";
 import AudioManager from "../AudioManager";
+import * as THREE from "three";
 
 export default class Player {
     private object: Object3D;
@@ -28,6 +29,22 @@ export default class Player {
         this.destRot = new Vector3(position.x, 0, position.y);
         this.object.position.set(position.x, 0, position.y);
         GUIManagger.getInstance().getScene().add(this.object);
+
+        
+        // HERE IS HOW ANIMATE A JSON ASSET
+
+        // let object = assetPool.getJsonAssets("test").clone();
+        // object.position.set(position.x, 0, position.y);
+        // object.scale.set(0.1, 0.1, 0.1)
+        // let mixer = new THREE.AnimationMixer(object);
+        // if (object.geometry instanceof THREE.Geometry)
+        //     mixer.clipAction(object.geometry.animations[0]).setDuration(1).play();
+        // GUIManagger.getInstance().getMixers().push(mixer);
+        // GUIManagger.getInstance().getMixers().pop();
+        // GUIManagger.getInstance().getScene().add(object);
+        // GUIManagger.getInstance().getScene().remove(object);
+        // object.remove();
+
     }
 
     public setPosition(pos: Vector3) {

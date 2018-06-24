@@ -3,6 +3,8 @@ import * as THREE from "three"
 export default class GUIManagger {
     private static _instance : GUIManagger;
     private scene: THREE.Scene;
+    private mixers: THREE.AnimationMixer[];
+    private clock: THREE.Clock;
     private camera: THREE.PerspectiveCamera;
     private renderer: THREE.WebGLRenderer;
     private audio: THREE.AudioListener;
@@ -10,6 +12,8 @@ export default class GUIManagger {
 
     private constructor() {
         this.scene = new THREE.Scene();
+        this.clock = new THREE.Clock();
+        this.mixers = [];
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.renderer = new THREE.WebGLRenderer({
             antialias: false,
@@ -32,6 +36,14 @@ export default class GUIManagger {
 
     public static getInstance() : GUIManagger {
         return this._instance || (this._instance = new this());
+    }
+
+    public getMixers() : THREE.AnimationMixer[] {
+        return this.mixers;
+    }
+
+    public getClock() : THREE.Clock {
+        return this.clock;
     }
 
     public getRenderer() : THREE.WebGLRenderer {

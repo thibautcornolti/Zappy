@@ -6,7 +6,7 @@ import "obj-loader";
 import "mtl-loader";
 import "gltf-loader";
 import "draco-loader";
-import {CubeTexture, MaterialCreator, Side, Vector3} from "three";
+import {CubeTexture, MaterialCreator, Side, Vector3, Object3D} from "three";
 
 
 interface IAssets {
@@ -71,6 +71,22 @@ export default class AssetsPool {
         }, onProgress, onError);
     }
 
+    public loadJson(key: string, path: string, onLoad?: (obj: THREE.Mesh) => void, onProgress?: (evt: ProgressEvent) => void, onError?: (err: ErrorEvent | Error) => void) {
+        let objectLoader = new THREE.JSONLoader();
+        objectLoader.load(path, (geometry: THREE.Geometry) => {
+            var material = new THREE.MeshPhongMaterial( {
+                color: 0xffffff,
+                morphTargets: true,
+                vertexColors: THREE.FaceColors,
+                flatShading: true
+            } );
+            var mesh = new THREE.Mesh(geometry, material);
+            if (onLoad)
+                onLoad(mesh);
+            this.assets[key] = mesh;
+        }, onProgress, onError);
+    }
+
     public loadAssets(key: string, pathObj: string, pathMat: string, onProgress?: (evt: ProgressEvent) => void, onFinish?: (obj: THREE.Group) => void, onError?: (evt: ErrorEvent) => void) {
         let mtlload = new THREE.MTLLoader();
         mtlload.setPath(path.dirname(pathMat) + '/');
@@ -87,6 +103,10 @@ export default class AssetsPool {
             }, onProgress, onError);
 
         });
+    }
+
+    public getJsonAssets(key: string): THREE.Mesh {
+        return this.assets[key];
     }
 
     public getAssets(key: string): THREE.Object3D {

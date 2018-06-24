@@ -117,6 +117,9 @@ export default class InitState implements IState {
             this.share.getAssetsPool().loadCubeTextureProm('skybox', this.getTextureSkyBox(), () => {
                 this.loading.incPercentage(75 / loader.length);
             }),
+            // this.share.getAssetsPool().loadJson('test', 'models/scene-animation.json', (obj) => {
+                // this.loading.incPercentage(75 / loader.length);
+            // }),
 
             // Dropable Models
             this.share.getAssetsPool().loadGlTFProm('diamond', 'models/diamond/diamond.gltf', THREE.DoubleSide, (obj) => {

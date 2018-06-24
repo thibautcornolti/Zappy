@@ -6,8 +6,15 @@ import GUIManager from "./GUIManager";
 function animate() {
     let manager = GUIManager.getInstance();
 
+    let delta = manager.getClock().getDelta();
+    let mixers = manager.getMixers();
+    mixers.forEach((mixer) => {
+        mixer.update(delta);
+    })
+
     requestAnimationFrame(animate);
 
+    manager.getRenderer().clear();
     manager.getRenderer().render(manager.getScene(), manager.getCamera());
 }
 
