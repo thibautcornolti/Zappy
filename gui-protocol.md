@@ -244,6 +244,28 @@ Mort de joueur:
 }
 ```
 
+Look du joueur:
+```json
+{
+    "type": "event",
+    "event-type": "player-look",
+    "data": {
+        "id": 2
+    }
+}
+```
+
+Inventaire du joueur:
+```json
+{
+    "type": "event",
+    "event-type": "player-inventory",
+    "data": {
+        "id": 2
+    }
+}
+```
+
 ### Items
 
 Dépôt d'item:
@@ -324,7 +346,8 @@ Dépôt d'oeuf
     "type": "event",
     "event-type": "egg-drop",
     "data": {
-        "id": 2,
+        "player-id": 2,
+        "egg-id": 3,
         "team": "Eo",
         "pos": {
             "x": 3,
@@ -340,6 +363,7 @@ Eclosion d'oeuf
     "type": "event",
     "event-type": "egg-hatch",
     "data": {
+        "egg-id": 3,
         "team": "Eo",
         "pos": {
             "x": 3,

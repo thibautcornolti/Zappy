@@ -30,18 +30,21 @@ void cmd_broadcast(control_t *control, client_t *client)
 
 float get_angle(control_t *control, vec2_t pos1, vec2_t pos2)
 {
-	vec2_t v;
+	float x;
+	float y;
 	float norm;
 	float angle;
 
-	v.x = (float)(pos1.x) - (float)(pos2.x);
-	v.x = (v.x > control->params.width) ? -v.x : v.x;
-	v.y = (float)(pos1.y) - (float)(pos2.y);
-	v.y = (v.y > control->params.height) ? -v.y : v.y;
-	norm = sqrtf(v.x * v.x + v.y * v.y);
-	v.x /= norm;
-	v.y /= norm;
-	angle = atan2f(v.y, v.x);
+	x = (float)(pos1.x) - (float)(pos2.x);
+	x = (x > control->params.width) ? -x : x;
+	y = (float)(pos1.y) - (float)(pos2.y);
+	y = (y > control->params.height) ? -y : y;
+	norm = sqrtf(x * x + y * y);
+	if (norm == 0)
+		return (1.3);
+	x /= norm;
+	y /= norm;
+	angle = atan2f(y, x);
 	if (angle < 1.249046)
 		angle += 2 * M_PI;
 	return (angle);
@@ -63,8 +66,7 @@ void send_message(control_t *control, client_t *client, char *message)
 				i += 2 * cl->facing;
 				i %= 8;
 				i += 1;
-				asprintf(&str, "message %lu, %s", i,
-					message);
+				asprintf(&str, "message %lu, %s", i, message);
 				add_pending(cl, str);
 			}
 	}
