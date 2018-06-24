@@ -5,7 +5,7 @@
 ** Created by rectoria
 */
 
-#include "item_names.h"
+#include "server.h"
 #include "str/src/str.h"
 
 void cmd_take(control_t *control, client_t *client)

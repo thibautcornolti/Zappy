@@ -21,9 +21,14 @@ OBJDIR		=	build
 
 FILES		=	args					\
 			assigner				\
+			consume					\
+			create_client				\
+			init					\
+			interact_client				\
 			main					\
 			parser					\
 			parser_helper				\
+			request					\
 			t_manager				\
 			t_tools					\
 			map					\

@@ -178,13 +178,13 @@ typedef struct param_parse_s {
 } param_parse_t;
 
 /*
- * Message flow management function
- */
+** Message flow management function
+*/
 void add_pending(client_t *, char *);
 
 /*
- * Client management function
- */
+** Client management function
+*/
 bool evict_client(control_t *, client_t *);
 
 /*
@@ -279,6 +279,7 @@ void forward_event(control_t *, object_t *);
 void clear_cmd(cmd_t *);
 vec2_t move(control_t *, vec2_t, long, long);
 item_t get_chosen_item(client_t *);
+bool add_new_client(control_t *);
 
 /*
 ** Teams
@@ -299,6 +300,27 @@ bool *same_level(client_t *client, bool *acc, client_t *elem, size_t idx);
 int disp_help(const char *);
 bool parse_args(size_t, const char **, params_t *);
 void add_param(cmd_t *, char *);
+
+/*
+** Resource consuming
+*/
+bool consume_food(control_t *);
+void consume_eggs(control_t *);
+
+/*
+** Requests
+*/
+bool handle_request(control_t *);
+bool find_evicted(void *, void *, size_t);
+void free_player(control_t *, client_t *);
+bool handle_client(control_t *, client_t *, size_t );
+bool proceed_clients(control_t *);
+bool write_to_client(control_t *, client_t *);
+bool evict_client(control_t *, client_t *);
+bool append_special_client(control_t *, client_t *, char *);
+bool append_to_team(control_t *, client_t *);
+bool ctrl_init(control_t *);
+ssize_t receive_data(client_t *);
 
 /*
 ** Map
