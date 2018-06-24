@@ -7,6 +7,15 @@
 
 #include "server.h"
 
+vec2_t move(control_t *control, vec2_t v, long x, long y)
+{
+	v.x += control->params.width + x;
+	v.y += control->params.height + y;
+	v.x %= control->params.width;
+	v.y %= control->params.height;
+	return (v);
+}
+
 void move_forward(control_t *control, client_t *client)
 {
 	long x = 0;
@@ -16,10 +25,7 @@ void move_forward(control_t *control, client_t *client)
 	x = ((client->facing == WEST) ? -1 : x);
 	y = ((client->facing == NORTH) ? -1 : y);
 	y = ((client->facing == SOUTH) ? 1 : y);
-	client->pos.x += control->params.width + x;
-	client->pos.y += control->params.height + y;
-	client->pos.x %= control->params.width;
-	client->pos.y %= control->params.height;
+	client->pos = move(control, client->pos, x, y);
 	event_player_move(control, client);
 }
 
@@ -32,10 +38,7 @@ void move_directed(control_t *control, client_t *client, facing_t direction)
 	x = ((direction == WEST) ? -1 : x);
 	y = ((direction == NORTH) ? -1 : y);
 	y = ((direction == SOUTH) ? 1 : y);
-	client->pos.x += control->params.width + x;
-	client->pos.y += control->params.height + y;
-	client->pos.x %= control->params.width;
-	client->pos.y %= control->params.height;
+	client->pos = move(control, client->pos, x, y);
 	event_player_move(control, client);
 }
 

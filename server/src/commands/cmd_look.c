@@ -7,8 +7,8 @@
 
 #include "item_names.h"
 
-static const long increments[][2] = {[NORTH] = {0, 1},
-	[SOUTH] = {0, -1},
+static const long increments[][2] = {[NORTH] = {0, -1},
+	[SOUTH] = {0, 1},
 	[EAST] = {1, 0},
 	[WEST] = {-1, 0}};
 
@@ -70,19 +70,12 @@ void exec_look(control_t *control, client_t *client)
 
 	for (long i = 0; i <= (long)(client->level); ++i) {
 		for (long j = -radius; j <= radius; ++j) {
-			pos.x = (((long)(client->pos.x)) + axis[0] * i +
-					sidestep[0] * j +
-					control->params.width) %
-				control->params.width;
-			pos.y = (((long)(client->pos.y)) + axis[1] * i +
-					sidestep[1] * j +
-					control->params.height) %
-				control->params.height;
-			dprintf(2, "POS: {%lu,%lu}\n", pos.x, pos.y);
+			pos = move(control, client->pos,
+				axis[0] * i + sidestep[0] * j,
+				axis[1] * i + sidestep[1] * j);
 			tmp = list_items(control, pos);
 			if (i != 0 || j != 0)
 				list = lstr_append(list, ",");
-			dprintf(2, "TMP: '%s'\n", tmp);
 			list = lstr_append(list, tmp);
 			free(tmp);
 		}

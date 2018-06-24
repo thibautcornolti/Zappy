@@ -275,6 +275,7 @@ object_t *emit_syntax_error(char *);
 list_t *create_tile_data(control_t *, vec2_t);
 void forward_event(control_t *, object_t *);
 void clear_cmd(cmd_t *);
+vec2_t move(control_t *control, vec2_t v, long x, long y);
 
 /*
 ** Teams
