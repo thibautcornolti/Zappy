@@ -1,5 +1,5 @@
 import AssetsPool from "../AssetsPool";
-import {Object3D, Vector2, Vector3, Clock, Audio} from "three";
+import {Object3D, Vector2, Vector3, Clock, Audio, Mesh, SphereGeometry, MeshBasicMaterial} from "three";
 import GUIManagger from "../GUIManager";
 import AudioManager from "../AudioManager";
 // import * as THREE from "three";
@@ -21,8 +21,12 @@ let options = {
     sizeRandomness: 0.5
 };
 
+let teams: {[index:string]: number} = {};
+let idTeam = 0;
+
 export default class Player {
     private object: Object3D;
+    private teamMarker: Object3D | undefined;
     private dest: Vector3;
     private speedX: number;
     private speedZ: number;
@@ -38,12 +42,13 @@ export default class Player {
     private particleEnable: boolean;
     private incantationSound: Audio | undefined;
 
-    constructor(assetPool: AssetsPool, position: Vector2 = new Vector2(0, 0)) {
+    constructor(assetPool: AssetsPool, teamName: string, position: Vector2 = new Vector2(0, 0)) {
         if (!assetPool.getGltfAssets("chicken")) {
             alert("Missing models: Chicken");
             window.location.href = "/";
         }
 
+        this.teamMarker = undefined;
         this.timeInterval = null;
         this.timeIntervalRot = null;
         this.speedX = 0;
@@ -53,6 +58,7 @@ export default class Player {
         this.dest = new Vector3(position.x, 0, position.y);
         this.destRot = new Vector3(position.x, 0, position.y);
         this.object.position.set(position.x, 0, position.y);
+        this.initTeamMarker(teamName);
         GUIManagger.getInstance().getScene().add(this.object);
 
         this.incantationSound = undefined;
@@ -81,6 +87,25 @@ export default class Player {
         this.clock = new Clock();
         GUIManagger.getInstance().getScene().add((this.particle as any));
         this.particleInterval = setInterval(this.emitParticle, 25);
+    }
+
+    private getColorFromTeamName(teamName: string): number {
+        if (teams[teamName])
+            return teams[teamName];
+        let r = Math.round(Math.random() * 127 + 127);
+        let g = Math.round(Math.random() * 127 + 127);
+        let b = Math.round(Math.random() * 127 + 127);
+        let color = (r << 16) | (g << 8) | b;
+        teams[teamName] = color;
+        return color;
+    }
+
+    private initTeamMarker(teamName: string) {
+        let geometry = new SphereGeometry(0.3, 10, 10);
+        let material = new MeshBasicMaterial({color: this.getColorFromTeamName(teamName)});
+        this.teamMarker = new Mesh(geometry, material);
+        this.teamMarker.position.y = 4;
+        this.object.add(this.teamMarker);
     }
 
     private setIncantationSound() {
