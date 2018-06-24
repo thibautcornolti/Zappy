@@ -44,22 +44,6 @@ export default class CoreState implements IState {
         this.mainMap.generate();
         this.camPos = Object.assign({}, this.manager.getCamera().position);
         this.state.getSocket().setOnData(this.onSocketData);
-
-        //TODO rm this
-        let geometry = new THREE.BoxGeometry(1, 1, 1);
-        let material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-        let cube = new THREE.Mesh(geometry, material);
-        cube.position.set(-6, 0, -3);
-        let cube2 = cube.clone();
-        cube2.position.set(-6, 0, 27);
-        let cube3 = cube.clone();
-        cube3.position.set(28, 0, -3);
-        let cube4 = cube.clone();
-        cube4.position.set(28, 0, 27);
-        GUIManager.getInstance().getScene().add(cube);
-        GUIManager.getInstance().getScene().add(cube2);
-        GUIManager.getInstance().getScene().add(cube3);
-        GUIManager.getInstance().getScene().add(cube4);
     }
 
     private onSocketData = (data: string) => {
