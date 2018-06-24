@@ -53,10 +53,6 @@ export default class SocketCom {
         }
     }
 
-    private onData(msg: String) {
-        // console.log(msg);
-    }
-
     public send(str: String) {
         this.sock.emit('my_data', str);
     }

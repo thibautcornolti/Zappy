@@ -136,8 +136,6 @@ export default class InitState implements IState {
             this.share.getAssetsPool().loadPlaneMeshProm('bubble', 'textures/bubble.png', (obj) => {
                 this.loading.incPercentage(75 / loader.length);
             }),
-            // this.share.getAssetsPool().loadJson('test', 'models/scene-animation.json', (obj) => {
-                // this.loading.incPercentage(75 / loader.length);
             // }),
 
             this.share.getAssetsPool().loadGlTFProm('egg', 'models/egg/egg.gltf', THREE.FrontSide, (obj) => {
@@ -178,24 +176,32 @@ export default class InitState implements IState {
 
         Promise.all(loader).then(() => {
             this.isMapLoaded = true;
-            // this.initSocket();
         }, () => {
             this.loading.setError("Erreur lors du chargement des assets");
         });
     }
 
+    private loadBGMusic() {
+        AudioManager.getInstance().loadSound('bg', 'sounds/music.ogg', (buffer) => {
+            let audio = new THREE.Audio(GUIManager.getInstance().getAudio());
+
+            audio.setBuffer(buffer);
+            audio.setLoop(true);
+            audio.setVolume(0.05);
+            audio.play();
+        })
+    }
+
     public init() {
         this.loading.show();
-        // this.isSocketConnected = true;
         this.initSocket();
-        // this.initAssets();
 
         this.loadMusic();
+        this.loadBGMusic();
     }
 
     public update() {
         if (this.isMapLoaded && this.isSocketConnected && this.isSoundLoad && !this.loadCore) {
-            console.log("Loaded");
             this.loading.hide();
             this.loadCore = true;
             (<StateMachine> this.share.getKey("stateMachine")).push(new CoreState(this.share));

@@ -29,11 +29,7 @@ let elementTable: { [index: string]: { name: string, img: string } } = {
     food: {
         name: "Nourriture (Food)",
         img: "/images/food.png"
-    },
-    // player: {
-    //     name: "chicken",
-    //     id: 7
-    // }
+    }
 };
 
 export default class TileInfo {
@@ -114,7 +110,6 @@ export default class TileInfo {
         mainDiv.appendChild(header);
         mainDiv.appendChild(content);
         elem.appendChild(mainDiv);
-        console.log(data);
     }
 
     public isOpen(): boolean {

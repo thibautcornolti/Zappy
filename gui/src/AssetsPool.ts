@@ -1,7 +1,6 @@
 import * as THREE from "three"
 import * as path from "path"
 import GLTFLoader, {GLTF, GLTFLoaderlol} from "three-gltf-loader";
-// import {Group} from "three"
 import "obj-loader";
 import "mtl-loader";
 import "gltf-loader";
