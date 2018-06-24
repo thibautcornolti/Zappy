@@ -38,6 +38,7 @@ export default class InitState implements IState {
             AudioManager.getInstance().loadSoundProm("incantationSuccess", "sounds/incantation/success.ogg"),
             AudioManager.getInstance().loadSoundProm("eggDrop", "sounds/egg/drop.ogg"),
             AudioManager.getInstance().loadSoundProm("eggSpawn", "sounds/egg/spawn.ogg"),
+            AudioManager.getInstance().loadSoundProm("pickup", "sounds/pickup.ogg"),
         ];
 
         Promise.all(sounds)

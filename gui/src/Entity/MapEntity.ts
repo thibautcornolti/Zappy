@@ -235,6 +235,9 @@ export default class MapEntity {
     }
 
     public itemPickup(data: IItemEntity) {
+        let audio = AudioManager.getInstance().getSound("pickup");
+        if (audio)
+            audio.play();
         const key = new String(data.pos.x) + ',' + new String(data.pos.y);
         const items = this.mapItems[key];
         if (items == undefined)
@@ -252,6 +255,9 @@ export default class MapEntity {
     }
 
     public itemDrop(data: IItemEntity) {
+        let audio = AudioManager.getInstance().getSound("pickup");
+        if (audio)
+            audio.play();
         const key = new String(data.pos.x) + ',' + new String(data.pos.y);
         const items = this.mapItems[key];
         
