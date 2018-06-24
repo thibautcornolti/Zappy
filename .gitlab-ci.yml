@@ -1,17 +1,32 @@
 stages:
-  - srv_build
+  - build
   - srv_basic
   - srv_commands
   - srv_event
-  - gui_protocol
+  - ia_protocol
 
 srv_compile:
-  stage: srv_build
+  stage: build
   script:
     - make -C server
   artifacts:
     paths:
       - server/zappy_server
+    expire_in: 10 minutes
+  allow_failure: false
+
+gui_compile:
+  image: node:9
+  stage: build
+  before_script:
+    - cd gui
+    - npm install --progress=false
+    - npm install -g webpack webpack-cli --progress=false
+  script:
+    - webpack --verbose
+  artifacts:
+    paths:
+      - gui/node_modules
     expire_in: 10 minutes
   allow_failure: false
 
@@ -127,7 +142,7 @@ srv_gui_event_egg:
     - nc 0 4242 -w 10 < test/server/fork.input
     - cat /tmp/zappy_output | grep "`sed '1q;d' test/server/event_egg.output`" && cat /tmp/zappy_output | grep "`sed '2q;d' test/server/event_egg.output`"
 
-gui_protocol:
+ia_protocol:
   stage: gui_protocol
   retry: 2
   script:
