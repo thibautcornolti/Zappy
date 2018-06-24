@@ -1,6 +1,6 @@
 import AssetsPool from "../AssetsPool";
 import {Object3D, Vector3} from "three";
-import GUIManagger from "../GUIManager";
+import GUIManager from "../GUIManager";
 import AudioManager from "../AudioManager";
 
 export default class Egg {
@@ -14,12 +14,12 @@ export default class Egg {
         if (this.object) {
             this.object.rotation.set(0, -Math.PI / 2, 0);
             this.object.position.set(position.x, position.y, position.z);
-            GUIManagger.getInstance().getScene().add(this.object);
+            GUIManager.getInstance().getScene().add(this.object);
         }
     }
 
     public remove() {
-        GUIManagger.getInstance().getScene().remove(this.object);
+        GUIManager.getInstance().getScene().remove(this.object);
         let audio = AudioManager.getInstance().getSound("eggSpawn");
         if (audio)
             audio.play();

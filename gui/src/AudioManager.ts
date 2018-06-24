@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import GUIManagger from "./GUIManager";
+import GUIManager from "./GUIManager";
 
 export default class AudioManager {
     private static _instance: AudioManager;
@@ -39,7 +39,7 @@ export default class AudioManager {
     }
 
     public getSound(key: string): THREE.Audio | undefined {
-        let sound = new THREE.Audio(GUIManagger.getInstance().getAudio());
+        let sound = new THREE.Audio(GUIManager.getInstance().getAudio());
         if (this.soundList[key])
             return sound.setBuffer(this.soundList[key]);
     }
