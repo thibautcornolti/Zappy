@@ -122,6 +122,9 @@ export default class InitState implements IState {
             this.share.getAssetsPool().loadCubeTextureProm('skybox', this.getTextureSkyBox(), () => {
                 this.loading.incPercentage(75 / loader.length);
             }),
+            this.share.getAssetsPool().loadPlaneMeshProm('bubble', 'textures/bubble.png', (obj) => {
+                this.loading.incPercentage(75 / loader.length);
+            }),
             // this.share.getAssetsPool().loadJson('test', 'models/scene-animation.json', (obj) => {
                 // this.loading.incPercentage(75 / loader.length);
             // }),

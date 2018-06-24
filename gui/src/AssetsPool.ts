@@ -71,6 +71,30 @@ export default class AssetsPool {
         }, onProgress, onError);
     }
 
+    public loadPlaneMeshProm(key: string, path: string, onLoad?: (obj: THREE.Mesh) => void, onProgress?: (evt: ProgressEvent) => void, onError?: (err: ErrorEvent) => void) {
+        return new Promise((resolve, reject) => {
+            let textureLoader = new THREE.TextureLoader();
+            textureLoader.load(path, (texture) => {
+                let img = new THREE.MeshBasicMaterial({map: texture});
+                let mesh = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), img);
+                if (onLoad)
+                    onLoad(mesh);
+                this.assets[key] = mesh;
+                resolve();
+            })
+        });
+    }
+
+    public loadPlaneMesh(key: string, path: string, onLoad?: (obj: THREE.Mesh) => void, onProgress?: (evt: ProgressEvent) => void, onError?: (err: ErrorEvent) => void) {
+        let img = new THREE.MeshBasicMaterial({
+            map:THREE.ImageUtils.loadTexture(path)
+        });
+        let mesh = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), img);
+        if (onLoad)
+            onLoad(mesh);
+        this.assets[key] = mesh;
+    }
+
     public loadJson(key: string, path: string, onLoad?: (obj: THREE.Mesh) => void, onProgress?: (evt: ProgressEvent) => void, onError?: (err: ErrorEvent | Error) => void) {
         let objectLoader = new THREE.JSONLoader();
         objectLoader.load(path, (geometry: THREE.Geometry) => {
@@ -106,6 +130,10 @@ export default class AssetsPool {
     }
 
     public getJsonAssets(key: string): THREE.Mesh {
+        return this.assets[key];
+    }
+
+    public getPlaneMesh(key: string): THREE.Mesh {
         return this.assets[key];
     }
 

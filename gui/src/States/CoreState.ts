@@ -37,6 +37,7 @@ export default class CoreState implements IState {
         this.eventBinding["incantation-success"] = this.mainMap.playerIncantationSuccess.bind(this.mainMap);
         this.eventBinding["egg-drop"] = this.mainMap.playerDropEgg.bind(this.mainMap);
         this.eventBinding["egg-hatch"] = this.mainMap.playerHatchEgg.bind(this.mainMap);
+        this.eventBinding["broadcast"] = this.mainMap.playerBroadcast.bind(this.mainMap);
     }
 
     public init() {

@@ -1,5 +1,5 @@
 import AssetsPool from "../AssetsPool";
-import {Object3D, Vector2, Vector3, Clock, Audio, Mesh, SphereGeometry, MeshBasicMaterial} from "three";
+import {Object3D, Vector2, Vector3, Clock, Audio, Mesh, SphereGeometry, MeshBasicMaterial, CubeGeometry, CubeTexture, Material} from "three";
 import GUIManagger from "../GUIManager";
 import AudioManager from "../AudioManager";
 // import * as THREE from "three";
@@ -27,6 +27,9 @@ let idTeam = 0;
 export default class Player {
     private object: Object3D;
     private teamMarker: Object3D | undefined;
+    private broadcastBubbleTexture: Mesh;
+    private broadcastBubbleInterval: any;
+    private broadcastBubbleTimeout: any;
     private dest: Vector3;
     private speedX: number;
     private speedZ: number;
@@ -55,6 +58,7 @@ export default class Player {
         this.speedZ = 0;
         this.speedRot = 0;
         this.object = assetPool.getGltfAssets("chicken").scene.clone();
+        this.broadcastBubbleTexture = assetPool.getPlaneMesh("bubble").clone();
         this.setLevel(level);
         this.dest = new Vector3(position.x, 0, position.y);
         this.destRot = new Vector3(position.x, 0, position.y);
@@ -183,7 +187,7 @@ export default class Player {
             else if (this.destRot.y < this.object.rotation.y)
                 newRot -= this.speedRot;
             this.object.rotation.set(this.destRot.x, newRot, this.destRot.z);
-        }, 25, 0);
+        }, 25);
     }
 
     public remove() {
@@ -215,4 +219,35 @@ export default class Player {
             this.incantationSound.stop();
         }
     }
+
+    public setBroadcastBubble() {
+        if (this.broadcastBubbleInterval) {
+            clearInterval(this.broadcastBubbleInterval);
+            this.broadcastBubbleInterval = undefined;
+        }
+        if (this.broadcastBubbleTimeout) {
+            clearTimeout(this.broadcastBubbleTimeout);
+            this.broadcastBubbleTimeout = undefined;
+        }
+        this.broadcastBubbleTexture.position.y = 8;
+        this.broadcastBubbleTexture.rotation.set(0, 0, 0);
+        if (this.broadcastBubbleTexture.material instanceof Material)
+            this.broadcastBubbleTexture.material.transparent = true;
+        this.object.add(this.broadcastBubbleTexture);
+        this.broadcastBubbleTexture.scale.set(0.03, 0.03, 0.03);
+        this.broadcastBubbleInterval = setInterval(() => {
+            console.log("wtf")
+            this.broadcastBubbleTexture.rotation.set(
+                0,
+                -this.object.rotation.y,
+                0,
+            );
+        }, 10);
+        this.broadcastBubbleTimeout = setTimeout(() => {
+            this.object.remove(this.broadcastBubbleTexture);
+            if (this.broadcastBubbleInterval)
+                clearInterval(this.broadcastBubbleInterval);
+        }, 10000);
+    }
+
 }

@@ -147,4 +147,9 @@ export default class MainScene {
         data = (data as IEgg);
         this.map.playerHatchEgg(data);
     }
+
+    public playerBroadcast(data: any) {
+        data = (data as IEgg);
+        this.map.playerBroadcast(data);
+    }
 }

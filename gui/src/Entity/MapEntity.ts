@@ -3,7 +3,7 @@ import {Audio, Vector2, Vector3} from "three";
 import AssetsPool from "../AssetsPool";
 import {GLTF} from "three-gltf-loader";
 import GUIManagger from "../GUIManager";
-import {IDataResp, IEgg, IEntitiesResp, IIncantation, IPlayerEntity, IItemEntity, ITileResp} from "../ICom";
+import {IDataResp, IEgg, IEntitiesResp, IIncantation, IPlayerEntity, IItemEntity, IBroadcast, ITileResp} from "../ICom";
 import Dropable from "./Dropable";
 import Player from "./Player";
 import AudioManager from "../AudioManager";
@@ -327,5 +327,11 @@ export default class MapEntity {
     public playerHatchEgg(data: IEgg) {
         this.egg[data["egg-id"]].remove();
         delete this.egg[data["egg-id"]];
+    }
+
+    public playerBroadcast(data: IBroadcast) {
+        if (this.player[data.id]) {
+            this.player[data.id].obj.setBroadcastBubble();
+        }
     }
 }

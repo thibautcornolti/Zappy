@@ -79,6 +79,11 @@ export interface IItemEntity {
     },
 }
 
+export interface IBroadcast {
+    id: number,
+    message: string,
+}
+
 
 
 
