@@ -44,7 +44,7 @@ static list_t *validate_clients(control_t *control, client_t *client)
 }
 
 static void helper_cmd_incantation(control_t *control, client_t *client,
-	void (*event)(control_t *, client_t), char *message)
+	void (*event)(control_t *, client_t *), char *message)
 {
 	add_pending(client, strdup(message));
 	event(control, client);
@@ -83,7 +83,7 @@ void exec_incantation(control_t *ctrl, client_t *cl)
 		add_pending(cl, strdup(KO_MSG));
 		return;
 	}
-	count = validate_cls(ctrl, cl);
+	count = validate_clients(ctrl, cl);
 	if (count == 0)
 		return;
 	for (size_t i = 1; i < ITEM_COUNT; ++i)

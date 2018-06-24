@@ -35,7 +35,7 @@ void exec_set(control_t *control, client_t *client)
 	client->task.type = NONE;
 	if (chosen == ITEM_COUNT) {
 		add_pending(client, strdup(KO_MSG));
-		return (ITEM_COUNT);
+		return;
 	}
 	if (client->inventory[chosen] != 0) {
 		map_add(control, client->pos.x, client->pos.y, chosen);
