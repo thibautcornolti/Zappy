@@ -18,6 +18,7 @@ static bool move_player(control_t *ctrl, client_t *cl, size_t y, size_t x)
 		if (cl->id == id) {
 			cl->pos.x = x;
 			cl->pos.y = y;
+			event_player_move(ctrl, cl);
 			return (true);
 		}
 	}
@@ -38,9 +39,10 @@ void adm_move(control_t *ctrl, client_t *cl)
 		y = strtoul(cmd->param[1], 0, 10);
 		x = strtoul(cmd->param[2], 0, 10);
 		if (y < ctrl->params.height && x < ctrl->params.width &&
-			move_player(ctrl, cl, y, x)) {
-		}
-		add_pending(cl, strdup("Command [MOVE] successful"));
+			move_player(ctrl, cl, y, x))
+			add_pending(cl, strdup("Command [MOVE] successful"));
+		else
+			add_pending(cl, strdup(usage));
 	} else
 		add_pending(cl, strdup(usage));
 	regfree(&preg);

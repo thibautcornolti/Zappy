@@ -31,6 +31,7 @@ void adm_face(control_t *ctrl, client_t *cl)
 			size_t)) (find_client), &id);
 		if (tmp && tmp->id == id) {
 			tmp->facing = orient[toupper(*cmd->param[1])];
+			event_player_turn(ctrl, tmp);
 			add_pending(cl, strdup("Command [FACE] successful"));
 		} else
 			add_pending(cl, strdup(usage));
