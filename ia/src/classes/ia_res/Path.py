@@ -6,7 +6,7 @@ from src.classes.com.Controller import Cmd
 from src.classes.com.Transaction import Transaction
 from src.classes.ia_res.TrackableTransactions import LeftTransaction, ForwardTransaction, RightTransaction, \
     EmptyPathTransaction
-from src.misc import my_log
+from src.misc import my_log, my_print
 
 
 class Path(object):
@@ -184,9 +184,9 @@ class PathManipulator(Transaction):
             Cmd.Right: RightTransaction(lambda ok=None: None),
         }
         # cmds = {
-        #     Cmd.Forward: ForwardTransaction(lambda ok=None: my_log("Forward")),
-        #     Cmd.Left: LeftTransaction(lambda ok=None: my_log("Left")),
-        #     Cmd.Right: RightTransaction(lambda ok=None: my_log("Right")),
+        #     Cmd.Forward: ForwardTransaction(lambda ok=None: my_print("Forward")),
+        #     Cmd.Left: LeftTransaction(lambda ok=None: my_print("Left")),
+        #     Cmd.Right: RightTransaction(lambda ok=None: my_print("Right")),
         # }
 
         self.path = list()

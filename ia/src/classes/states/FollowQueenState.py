@@ -68,7 +68,6 @@ class FollowQueenState(AAIState):
             self.last = save.dir
             save = None
         if save and save.dir.x == 0 and save.dir.y == 0:
-            #my_log("J'vais poser les res les gars !")
             self.set_requested_items()
         elif save:
             self.follow_dir(save.dir)

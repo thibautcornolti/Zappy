@@ -4,6 +4,8 @@ import socket
 import select
 import enum
 
+from src.misc import my_print
+
 
 def init_client(ip, port):
     global cli
@@ -44,7 +46,7 @@ class Client:
         self._poll = select.poll()
         self._sock = None
         self._buffer = ""
-        self._readSize = 4096
+        self._readSize = 40960
 
     def __enter__(self):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -85,20 +87,21 @@ class Client:
         if len(self._writeQueue) == 0:
             raise ClientException("Nothing to write in the buffer")
         msg = self._writeQueue.pop(0)
-        #my_log"-> write : ", msg)
+        # print("-> write : ", msg)
         os.write(self._sock.fileno(), str(str(msg) + '\n').encode())
         if len(self._writeQueue) == 0:
             self._poll.modify(self._sock.fileno(), PollStatus.DIN.value)
 
     def _read(self):
         msg = os.read(self._sock.fileno(), self._readSize)
-        #my_log"-> read : ", msg)
+        # my_print("-> read : ", msg)
         if len(msg) == 0:
             self._disconnection()
         self._buffer += msg.decode()
         if len(self._buffer) > self._readSize:
+            my_print("SUPPRESS BUFFER : ",self._buffer)
             self._buffer = self._buffer[len(self._buffer) - self._readSize - 1:]
-        if self._buffer.find("\n") >= 0:
+        if self._buffer.find("\n") > 0:
             split = self._buffer.split("\n")
             while '' in split:
                 split.remove('')

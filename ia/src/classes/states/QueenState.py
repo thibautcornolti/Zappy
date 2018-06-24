@@ -2,7 +2,7 @@
 import itertools
 from collections import Counter
 
-from src.classes.com.Controller import requirement, controller
+from src.classes.com.Controller import requirement, controller, Resources
 from src.classes.com.SafeController import safe_controller
 from src.classes.ia_res.Ant import ant, mates
 from src.classes.ia_res.MsgProtocol import MsgProtocol
@@ -13,7 +13,7 @@ from src.classes.states.SeekTeamState import SeekTeamState
 from src.classes.states.StateMachine import AAIState, statemachine
 from src.classes.states.WaitSlavesState import WaitSlavesState
 from src.classes.states.WaitTeamState import WaitTeamState
-from src.misc import my_log
+from src.misc import my_log, my_print
 
 
 def split_seq(seq, p):

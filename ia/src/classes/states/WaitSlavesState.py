@@ -5,7 +5,7 @@ from src.classes.ia_res.MsgProtocol import MsgProtocol
 from src.classes.ia_res.TrackableTransactions import LookTransaction, BroadcastTransaction
 from src.classes.com.SafeController import safe_controller
 from src.classes.states.StateMachine import AAIState, statemachine
-from src.misc import my_log
+from src.misc import my_log, my_print
 
 
 class WaitSlavesState(AAIState):
@@ -23,12 +23,16 @@ class WaitSlavesState(AAIState):
             ready = MsgProtocol.is_ready_inc(msg.text)
             if ready and ready["recipient"] == ant.uuid and ready['sender'] in (mate.uuid for mate in mates):
                 mates.get_mate(ready['sender']).ready = True
+                my_print(ready["sender"], " is ready ! {} / {}".format(len([mate for mate in mates if mate.ready]), len(mates)))
+                #my_print("=> player on tile {}".format(look[0].count("player")))
+                #my_print("=> look : {}".format(look))
         ok = True
         for mate in mates:
             if not mate.ready:
                 ok = False
                 break
         if look[0].count("player") == self.size and ok:
+            my_print("Ready to incant ! ")
             statemachine.closure = lambda: statemachine.replace(self.replacement_state)
         else:
             msg = MsgProtocol.ping_team(ant.uuid)

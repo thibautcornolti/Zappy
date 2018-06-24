@@ -6,7 +6,7 @@ from src.classes.ia_res.Ant import ant, mates
 from src.classes.ia_res.TrackableTransactions import BroadcastTransaction
 from src.classes.states.StateMachine import AAIState, statemachine
 from src.classes.states.WaitAnswerState import WaitAnswerState
-from src.misc import my_log
+from src.misc import my_log, my_print
 
 
 class SeekTeamState(AAIState):
@@ -27,11 +27,12 @@ class SeekTeamState(AAIState):
             enr = MsgProtocol.is_apply(m.text)
             if enr and enr['recipient'] == ant.uuid:
                 mates.add_mate(enr['sender'])
+                my_print(enr["sender"], " joined ! {} / {}".format(len(mates), requirement[ant.lvl + 1][0] - 1))
                 my_log("Allow enrolment : ", enr['sender'])
-            if len(mates) == requirement[ant.lvl + 1][0]:
+            if len(mates) == requirement[ant.lvl + 1][0] - 1:
                 break
         if len(mates) < requirement[ant.lvl + 1][0] - 1:
-            my_log("Failed to find a team lvl {} :'(".format(ant.lvl + 1))
+            my_print("Failed to find a team lvl {}".format(ant.lvl + 1))
             mates.clear()
             ant.is_queen = False
         allow_list = [m.uuid for m in mates]

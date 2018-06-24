@@ -4,7 +4,7 @@ import select
 import src.classes.com.Client as COM
 from src.classes.com.Controller import controller, Resources
 from src.classes.ia_res.Ant import ant
-from src.misc import my_log
+from src.misc import my_log, my_print
 
 
 class StateException(Exception):
