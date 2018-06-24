@@ -253,6 +253,8 @@ object_t *serialize_position(vec2_t);
 */
 void event_player_move(control_t *, client_t *);
 void event_player_turn(control_t *, client_t *);
+void event_player_inventory(control_t *, client_t *);
+void event_player_look(control_t *, client_t *);
 void event_incantation_start(control_t *, client_t *);
 void event_incantation_fail(control_t *, client_t *);
 void event_incantation_success(control_t *, client_t *);

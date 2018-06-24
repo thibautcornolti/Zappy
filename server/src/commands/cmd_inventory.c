@@ -28,5 +28,6 @@ void exec_inventory(control_t *control, client_t *client)
 		client->inventory[MENDIANE], client->inventory[PHIRAS],
 		client->inventory[THYSTAME]);
 	add_pending(client, str);
+	event_player_inventory(control, client);
 	client->task.type = NONE;
 }

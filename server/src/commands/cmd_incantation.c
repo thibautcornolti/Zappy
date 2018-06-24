@@ -43,11 +43,11 @@ static list_t *validate_clients(control_t *control, client_t *client)
 	return (count);
 }
 
-static void helper_cmd_incantation(control_t *control, client_t *client,
-	void (*event)(control_t *, client_t *), char *message)
+static void helper_cmd_incantation(list_t *count, char *message)
 {
-	add_pending(client, strdup(message));
-	event(control, client);
+	for (list_elem_t *it = count->head; it; it = it->next)
+		add_pending(it->payload, strdup(message));
+	llist_destroy(count);
 }
 
 void cmd_incantation(control_t *ctrl, client_t *cl)
@@ -63,15 +63,14 @@ void cmd_incantation(control_t *ctrl, client_t *cl)
 	count = validate_clients(ctrl, cl);
 	if (count == 0)
 		return;
-	llist_destroy(count);
 	for (size_t i = 1; i < ITEM_COUNT; ++i)
 		if (count_items(ctrl, cl->pos, i) != required[cl->level][i]) {
-			helper_cmd_incantation(
-				ctrl, cl, event_incantation_fail, KO_MSG);
+			helper_cmd_incantation(count, KO_MSG);
+			event_incantation_fail(ctrl, cl);
 			return;
 		}
-	helper_cmd_incantation(
-		ctrl, cl, event_incantation_start, ELEVATION_MSG);
+	event_incantation_start(ctrl, cl);
+	helper_cmd_incantation(count, ELEVATION_MSG);
 }
 
 void exec_incantation(control_t *ctrl, client_t *cl)
@@ -88,8 +87,7 @@ void exec_incantation(control_t *ctrl, client_t *cl)
 		return;
 	for (size_t i = 1; i < ITEM_COUNT; ++i)
 		if (count_items(ctrl, cl->pos, i) != required[cl->level][i]) {
-			add_pending(cl, strdup(KO_MSG));
-			llist_destroy(count);
+			helper_cmd_incantation(count, KO_MSG);
 			event_incantation_fail(ctrl, cl);
 			return;
 		}

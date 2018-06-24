@@ -86,4 +86,5 @@ void exec_look(control_t *control, client_t *client)
 	list = lstr_append(list, "]");
 	client->task.type = NONE;
 	add_pending(client, list);
+	event_player_look(control, client);
 }
