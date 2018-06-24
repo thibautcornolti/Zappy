@@ -1,0 +1,9 @@
+build
+*.o
+*.a
+zappy_server
+zappy_ai
+.vscode
+CMakeLists.txt
+cmake-build-debug/
+.idea
