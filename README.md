@@ -24,14 +24,14 @@ The project is composed of 3 modules:
 
 ## Build instructions
 
-Here are the instructions on how to build the different modules of the project.
+Here are the instructions on how to build the different modules of the project on Linux and UNIX-like OSes.  
 
 ### Server
 
-The server module is implemented in C.
-It can be found in the `server/` folder.
+The server module is implemented in C.  
+It can be found in the `server/` folder.  
 
-No dependancy is required to build it except `gcc`.
+No dependancy is required to build it except `gcc` and `make`.
 
 To start the build, do either:
 ```bash
@@ -55,11 +55,11 @@ You can then launch it like this:
 
 ### GUI
 
-The graphical interface is implemented in TypeScript and use Three.JS.  
-It can be found in the `gui/` folder
+The graphical interface is implemented in TypeScript and uses Three.JS.  
+It can be found in the `gui/` folder.  
 
 For building the GUI you will need Node (version 9 or above) and NPM.  
-You can install Node and NPM via [NVM](http://nvm.sh)
+You can install Node and NPM via [NVM](http://nvm.sh) or follow the instructions over at [nodejs.org](https://nodejs.org/en/download/current/).  
 
 To start the build, do either:
 ```bash
@@ -80,10 +80,10 @@ node .
 ```
 
 Note:  
-The port for the web interface is 33333
+The port for the web interface is 33333.
 
-The default port to the server module is 33334 (on localhost)  
-You can change it via the flag `--serv`
+The default port to the server module is 33334 (on localhost).  
+You can change it via the `--serv` flag.
 
 Example:
 ```bash
