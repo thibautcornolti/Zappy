@@ -8,10 +8,19 @@ To elevate to the next level, stones are required and sometimes multiple player 
 Differents kinds and quantities of stone are required depending on the level to reach.  
 Along with stones, food is required to live as they are consumed with time.  
 Stones and food can be picked up from the ground or dropped to the ground.  
-The game is implemented and exposed by the server.  
-An artificial intelligence can connect to it and play the game.  
-A GUI can connect to the server, access custom commands to hook into the state of the game and be notified of every events occuring in the game.  
-An administrator can also connect to the server and access custom commands to alter the state of the game or the server configuration.  
+
+The project is composed of 3 modules:
+- The server module [C]:
+    - It implements the game and exposes it to clients.
+    - It manages clients asynchronously.
+    - It has 3 modes: Player mode, UI mode and Administrator mode.
+- The AI module [Python]:
+    - It can connect to the server and play the game.
+    - It is able to get all the way to level 8.
+- The UI module [Typescript]:
+    - It can connect to the server and access custom commands to hook into the state of the game.
+    - The server notifies it of every events occuring in the game.
+    - It represents the game world as a 3D scene using Three.JS
 
 ## Build instructions
 
@@ -33,7 +42,7 @@ make -C server
 make
 ```
 
-To restart the build, use 'make re' instead of 'make'
+To restart the build, use `make re` instead of `make`
 
 You can then launch it like this:
 ```bash
