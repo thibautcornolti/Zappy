@@ -20,7 +20,7 @@ The project is composed of 3 modules:
 - The UI module [Typescript]:
     - It can connect to the server and access custom commands to hook into the state of the game.
     - The server notifies it of every events occuring in the game.
-    - It represents the game world as a 3D scene using Three.JS
+    - It represents the game world as a 3D scene using Three.JS.
 
 ## Build instructions
 
