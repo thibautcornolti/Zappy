@@ -52,3 +52,40 @@ You can then launch it like this:
 # From the server/ folder
 ./zappy_server [-n [teams]...] [-f [ticks per second]] [-p [port]] [-h]
 ```
+
+### GUI
+
+The graphical interface is implemented in TypeScript and use Three.JS.  
+It can be found in the `gui/` folder
+
+For building the GUI you will need Node (version 9 or above) and NPM.  
+You can install Node and NPM via [NVM](http://nvm.sh)
+
+To start the build, do either:
+```bash
+# From the repository root folder
+cd gui
+
+# Install the necessary module
+npm install
+
+# Install webpack
+npm install -g webpack webpack-cli
+
+# Compile TypeScript and pack the source
+webpack
+
+# Launch web server
+node .
+```
+
+Note:  
+The port for the web interface is 33333
+
+The default port to the server module is 33334 (on localhost)  
+You can change it via the flag `--serv`
+
+Example:
+```bash
+node . --serv=10.14.59.200:8080
+```
