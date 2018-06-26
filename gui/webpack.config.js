@@ -20,7 +20,7 @@ module.exports = {
             path.join(__dirname, 'node_modules')
         ]
     },
-    mode: 'development',
+    mode: 'production',
     output: {
         path: path.resolve(__dirname, 'public/dist'),
         filename: 'bundle.js'
