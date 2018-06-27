@@ -9,8 +9,6 @@
     "@types/socket.io-client": "^1.4.32",
     "@types/three": "^0.92.5",
     "express": "^4.16.3",
-    "gulp": "^3.9.1",
-    "gulp-tsc": "^1.3.2",
     "io": "^1.0.0",
     "serve-static": "^1.13.2",
     "socket.io": "^2.1.1",
