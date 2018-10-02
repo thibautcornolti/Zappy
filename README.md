@@ -1,5 +1,7 @@
 # PSU Network Unit - Zappy
 
+**Subject [here](https://github.com/thibautcornolti/Zappy/blob/master/Subject.pdf)**
+
 ## Introduction
 
 This project is about playing a game.  
